@@ -17,9 +17,7 @@ export function getTests(): Test {
                 fc.asyncProperty(fc.string(), async (message) => {
                     await expect(
                         canister.alwaysRejectQuery(message)
-                    ).rejects.toThrow(
-                        message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-                    );
+                    ).rejects.toThrow(message);
                 }),
                 defaultPropTestParams()
             );
