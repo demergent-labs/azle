@@ -148,8 +148,6 @@ jobs:
               run: npx tsx .github/scripts/analyze_benchmarks/index.ts
 
             - uses: ./.github/actions/commit_and_push
-              env:
-                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'analyze benchmark results'
