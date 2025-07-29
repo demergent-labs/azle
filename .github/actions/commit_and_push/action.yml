@@ -1,5 +1,5 @@
 name: Commit and Push Changes
-description: 'Commits and pushes changes with optional GPG signing using GitHub App token'
+description: 'Commits and pushes changes using GraphQL for App-signed commits'
 
 inputs:
     branch-name:
@@ -17,67 +17,18 @@ inputs:
         required: false
         default: '--all'
     token:
-        description: 'GitHub App token'
+        description: 'GitHub App token with repo access'
         required: true
-    gpg-private-key:
-        description: 'GPG private key for signing commits (base64 encoded)'
-        required: false
-    gpg-passphrase:
-        description: 'Passphrase for the GPG key'
-        required: false
-    committer-name:
-        description: 'Committer name for signed commits'
-        required: false
-        default: 'azle-bot[bot]'
-    committer-email:
-        description: 'Committer email for signed commits'
-        required: false
-        default: 'azle-bot[bot]@users.noreply.github.com'
 
 runs:
     using: composite
     steps:
-        - name: Setup GPG if provided
-          shell: bash
-          if: ${{ inputs.gpg-private-key != '' }}
-          run: |
-              echo "Setting up GPG..."
-              sudo apt-get update && sudo apt-get install -y gnupg
-              echo "${{ inputs.gpg-private-key }}" | base64 --decode | gpg --batch --passphrase "${{ inputs.gpg-passphrase }}" --import
-              git config --global commit.gpgsign true
-              git config --global user.signingkey $(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $2}' | cut -d '/' -f2)
-        - name: Commit via GraphQL
+        - name: Commit via GraphQL Script
           shell: bash
           env:
               GITHUB_TOKEN: ${{ inputs.token }}
-          run: |
-              REPO="${{ github.repository_owner }}/${{ github.event.repository.name }}"
-              BASE_BRANCH="${{ github.ref_name }}"
-              TARGET_BRANCH="${{ inputs.branch-name }}"
-
-              # Determine base SHA and create branch if needed
-              BASE_SHA=$(gh api repos/$REPO/git/ref/heads/$BASE_BRANCH --jq .object.sha)
-              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
-                if ! gh api repos/$REPO/git/ref/heads/$TARGET_BRANCH >/dev/null 2>&1; then
-                  gh api repos/$REPO/git/refs -X POST -f ref="refs/heads/$TARGET_BRANCH" -f sha="$BASE_SHA"
-                fi
-              fi
-
-              # Stage and detect changes
-              git add "${{ inputs.add-files }}"
-              CHANGED=$(git diff --cached --name-only)
-              if [ -z "$CHANGED" ]; then
-                echo "No changes to commit"
-                exit 0
-              fi
-
-              # Build fileChanges JSON array
-              CHANGES_JSON="[]"
-              for f in $CHANGED; do
-                CONTENT=$(base64 -w0 "$f")
-                CHANGES_JSON=$(echo "$CHANGES_JSON" | jq --arg path "$f" --arg contents "$CONTENT" '. += [{"path": $path, "contents": $contents}]')
-              done
-
-              # Run GraphQL mutation to commit
-              gh api graphql -f query='mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid url } } }' \
-                -f input='{"branch":{"repositoryNameWithOwner":"'"$REPO"'","branchName":"'"$TARGET_BRANCH"'"},"fileChanges":{"replacements":'"$CHANGES_JSON"'},"commit":{"message":{"headline":"'"${{ inputs.commit-message }}"'"}}}'
+              BRANCH_NAME: ${{ inputs.branch-name }}
+              CREATE_BRANCH: ${{ inputs.create-branch }}
+              COMMIT_MESSAGE: ${{ inputs.commit-message }}
+              ADD_FILES: ${{ inputs.add-files }}
+          run: ./.github/actions/commit_and_push/run.sh
