@@ -54,9 +54,6 @@ runs:
                   for file in $CHANGED_FILES; do
                       echo "Updating file: $file"
 
-                      # Get current file content in base64
-                      CONTENT_BASE64=$(base64 -w 0 "$file")
-
                       # Get current file SHA if it exists
                       FILE_SHA=""
                       if gh api "repos/:owner/:repo/contents/$file?ref=${{ inputs.branch-name }}" >/dev/null 2>&1; then
@@ -66,25 +63,40 @@ runs:
                           echo "New file: $file"
                       fi
 
-                      # Update/create file using Contents API
+                      # Create temporary JSON payload file for large content
+                      TEMP_PAYLOAD=$(mktemp)
+
+                      # Get current file content in base64
+                      CONTENT_BASE64=$(base64 -w 0 "$file")
+
+                      # Create JSON payload
                       if [[ -n "$FILE_SHA" ]]; then
                           # Update existing file
-                          gh api \
-                              --method PUT \
-                              "repos/:owner/:repo/contents/$file" \
-                              -f message="${{ inputs.commit-message }}" \
-                              -f content="$CONTENT_BASE64" \
-                              -f branch="${{ inputs.branch-name }}" \
-                              -f sha="$FILE_SHA"
+                          jq -n \
+                              --arg message "${{ inputs.commit-message }}" \
+                              --arg content "$CONTENT_BASE64" \
+                              --arg branch "${{ inputs.branch-name }}" \
+                              --arg sha "$FILE_SHA" \
+                              '{message: $message, content: $content, branch: $branch, sha: $sha}' \
+                              > "$TEMP_PAYLOAD"
                       else
                           # Create new file
-                          gh api \
-                              --method PUT \
-                              "repos/:owner/:repo/contents/$file" \
-                              -f message="${{ inputs.commit-message }}" \
-                              -f content="$CONTENT_BASE64" \
-                              -f branch="${{ inputs.branch-name }}"
+                          jq -n \
+                              --arg message "${{ inputs.commit-message }}" \
+                              --arg content "$CONTENT_BASE64" \
+                              --arg branch "${{ inputs.branch-name }}" \
+                              '{message: $message, content: $content, branch: $branch}' \
+                              > "$TEMP_PAYLOAD"
                       fi
+
+                      # Update/create file using Contents API with file input
+                      gh api \
+                          --method PUT \
+                          "repos/:owner/:repo/contents/$file" \
+                          --input "$TEMP_PAYLOAD"
+
+                      # Clean up temporary file
+                      rm "$TEMP_PAYLOAD"
 
                       echo "Updated file: $file"
                   done
