@@ -43,36 +43,53 @@ runs:
               echo "Adding files: ${{ inputs.add-files }}"
               git add "${{ inputs.add-files }}"
 
-              if ! git diff --cached --quiet; then
-                  echo "Creating verified commit using GitHub API..."
+                                                                      if ! git diff --cached --quiet; then
+                  echo "Creating verified commit using GitHub Contents API..."
 
-                  # Get the current branch SHA
-                  CURRENT_SHA=$(git rev-parse HEAD)
-                  echo "Current SHA: $CURRENT_SHA"
+                  # Get list of changed files
+                  CHANGED_FILES=$(git diff --cached --name-only)
+                  echo "Changed files: $CHANGED_FILES"
 
-                  # Get the tree SHA for the staged changes
-                  TREE_SHA=$(git write-tree)
-                  echo "Tree SHA: $TREE_SHA"
+                  # Update each file using GitHub Contents API
+                  for file in $CHANGED_FILES; do
+                      echo "Updating file: $file"
 
-                  # Create commit using GitHub API (this will be automatically verified)
-                  COMMIT_RESPONSE=$(gh api \
-                    --method POST \
-                    repos/:owner/:repo/git/commits \
-                    -f message="${{ inputs.commit-message }}" \
-                    -f tree="$TREE_SHA" \
-                    -f parents[]="$CURRENT_SHA")
+                      # Get current file content in base64
+                      CONTENT_BASE64=$(base64 -w 0 "$file")
 
-                  # Extract the new commit SHA
-                  NEW_COMMIT_SHA=$(echo "$COMMIT_RESPONSE" | jq -r '.sha')
-                  echo "New commit SHA: $NEW_COMMIT_SHA"
+                      # Get current file SHA if it exists
+                      FILE_SHA=""
+                      if gh api "repos/:owner/:repo/contents/$file?ref=${{ inputs.branch-name }}" >/dev/null 2>&1; then
+                          FILE_SHA=$(gh api "repos/:owner/:repo/contents/$file?ref=${{ inputs.branch-name }}" --jq '.sha')
+                          echo "Existing file SHA: $FILE_SHA"
+                      else
+                          echo "New file: $file"
+                      fi
 
-                  # Update the branch reference to point to the new commit
-                  gh api \
-                    --method PATCH \
-                    repos/:owner/:repo/git/refs/heads/${{ inputs.branch-name }} \
-                    -f sha="$NEW_COMMIT_SHA"
+                      # Update/create file using Contents API
+                      if [[ -n "$FILE_SHA" ]]; then
+                          # Update existing file
+                          gh api \
+                              --method PUT \
+                              "repos/:owner/:repo/contents/$file" \
+                              -f message="${{ inputs.commit-message }}" \
+                              -f content="$CONTENT_BASE64" \
+                              -f branch="${{ inputs.branch-name }}" \
+                              -f sha="$FILE_SHA"
+                      else
+                          # Create new file
+                          gh api \
+                              --method PUT \
+                              "repos/:owner/:repo/contents/$file" \
+                              -f message="${{ inputs.commit-message }}" \
+                              -f content="$CONTENT_BASE64" \
+                              -f branch="${{ inputs.branch-name }}"
+                      fi
 
-                  echo "Successfully created verified commit using GitHub API"
+                      echo "Updated file: $file"
+                  done
+
+                  echo "Successfully created verified commit(s) using GitHub Contents API"
               else
                   echo "No changes to commit. Skipping commit and push."
               fi
