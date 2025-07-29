@@ -8,11 +8,22 @@ REPO="${GITHUB_REPOSITORY}"            # provided by GitHub Actions
 BASE_BRANCH="${GITHUB_REF_NAME}"       # provided by Actions
 TARGET_BRANCH="$BRANCH_NAME"
 
-# Ensure branch exists
+# Ensure branch exists via GraphQL
 BASE_SHA=$(gh api repos/$REPO/git/ref/heads/$BASE_BRANCH --jq .object.sha)
 if [[ "$CREATE_BRANCH" == "true" ]]; then
+  # If the branch ref does not exist, create it via GraphQL
   if ! gh api repos/$REPO/git/ref/heads/$TARGET_BRANCH >/dev/null 2>&1; then
-    gh api repos/$REPO/git/refs -X POST -f ref="refs/heads/$TARGET_BRANCH" -f sha="$BASE_SHA"
+    OWNER=${REPO%%/*}
+    NAME=${REPO#*/}
+    # Fetch repository Node ID
+    REPO_ID=$(gh api graphql \
+      -f query='query($owner:String!,$name:String!){repository(owner:$owner,name:$name){id}}' \
+      -f owner="$OWNER" -f name="$NAME" --jq '.data.repository.id')
+
+    # Create branch reference via GraphQL createRef mutation
+    gh api graphql \
+      -f query='mutation($input:CreateRefInput!){createRef(input:$input){ref{name}}}' \
+      -f input='{"input":{"repositoryId":"'$REPO_ID'","name":"refs/heads/'$TARGET_BRANCH'","oid":"'$BASE_SHA'"}}'
   fi
 fi
 
