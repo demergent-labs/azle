@@ -20,10 +20,12 @@ if [[ "$CREATE_BRANCH" == "true" ]]; then
       -f query='query($owner:String!,$name:String!){repository(owner:$owner,name:$name){id}}' \
       -f owner="$OWNER" -f name="$NAME" --jq '.data.repository.id')
 
-    # Create branch reference via GraphQL createRef mutation
-    gh api graphql \
-      -f query='mutation($input:CreateRefInput!){createRef(input:$input){ref{name}}}' \
-      -f input='{"input":{"repositoryId":"'$REPO_ID'","name":"refs/heads/'$TARGET_BRANCH'","oid":"'$BASE_SHA'"}}'
+    # Create branch reference via GraphQL using here-doc to avoid quoting issues
+    gh api graphql -X POST https://api.github.com/graphql \
+      -H "Authorization: bearer $GITHUB_TOKEN" \
+      -H "Content-Type: application/json" <<EOF
+{"query":"mutation(\$input:CreateRefInput!){createRef(input:\$input){ref{name}}}","variables":{"input":{"repositoryId":"$REPO_ID","name":"refs/heads/$TARGET_BRANCH","oid":"$BASE_SHA"}}}
+EOF
   fi
 fi
 
