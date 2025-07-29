@@ -79,9 +79,7 @@ export function getTests(): Test {
                         ).rejects.toThrow(expectedErrorMessage);
                         await expect(
                             actor.inspectMessageTrap(message)
-                        ).rejects.toThrow(
-                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-                        );
+                        ).rejects.toThrow(message);
                     }
                 ),
                 defaultPropTestParams()
