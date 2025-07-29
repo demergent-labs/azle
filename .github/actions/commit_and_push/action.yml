@@ -127,31 +127,46 @@ runs:
                     echo "File $file doesn't exist yet, creating new file"
                   fi
 
-                  # Create file content
-                  FILE_CONTENT=$(base64 -w 0 "$file")
+                  # Create file content and write to temp file to avoid argument length limits
+                  TEMP_CONTENT=$(mktemp)
+                  base64 -w 0 "$file" > "$TEMP_CONTENT"
 
-                  # Update/create file using Contents API
-                  PAYLOAD=$(jq -n \
-                    --arg message "${{ inputs.commit-message }}" \
-                    --arg content "$FILE_CONTENT" \
-                    --arg branch "$TARGET_BRANCH" \
-                    $([ -n "$CURRENT_SHA" ] && echo "--arg sha \"$CURRENT_SHA\"") \
-                    '{
-                      message: $message,
-                      content: $content,
-                      branch: $branch
-                    } + (if $sha then {sha: $sha} else {} end)')
+                  # Create JSON payload using a temporary file to avoid argument length limits
+                  TEMP_PAYLOAD=$(mktemp)
+
+                  # Build JSON structure piece by piece
+                  echo "{" > "$TEMP_PAYLOAD"
+                  echo "  \"message\": $(echo "${{ inputs.commit-message }}" | jq -R .)," >> "$TEMP_PAYLOAD"
+                  echo -n "  \"content\": " >> "$TEMP_PAYLOAD"
+                  jq -R . < "$TEMP_CONTENT" >> "$TEMP_PAYLOAD"
+                  echo "," >> "$TEMP_PAYLOAD"
+                  echo "  \"branch\": $(echo "$TARGET_BRANCH" | jq -R .)" >> "$TEMP_PAYLOAD"
+
+                  # Add SHA if it exists
+                  if [ -n "$CURRENT_SHA" ]; then
+                    echo "," >> "$TEMP_PAYLOAD"
+                    echo "  \"sha\": $(echo "$CURRENT_SHA" | jq -R .)" >> "$TEMP_PAYLOAD"
+                  fi
+
+                  echo "}" >> "$TEMP_PAYLOAD"
+
+                  # Clean up content temp file
+                  rm "$TEMP_CONTENT"
 
                   echo "Updating $file via Contents API..."
-                  if echo "$PAYLOAD" | gh api "repos/$REPO_OWNER/$REPO_NAME/contents/$file" \
+                  if cat "$TEMP_PAYLOAD" | gh api "repos/$REPO_OWNER/$REPO_NAME/contents/$file" \
                     --method PUT \
                     --input - \
                     --jq '.commit.sha'; then
                     echo "✅ Successfully updated $file"
                   else
                     echo "❌ Failed to update $file"
+                    rm "$TEMP_PAYLOAD"
                     exit 1
                   fi
+
+                  # Clean up temp file
+                  rm "$TEMP_PAYLOAD"
                 fi
               done
 
