@@ -1,8 +1,7 @@
 import jsSHA from 'jssha';
+import { getCrc32 } from '@dfinity/principal';
 
 import { Principal } from '#lib/index';
-
-import { getCrc32 } from './get_crc_32';
 
 // TODO we need to review these heavily
 export function hexAddressFromPrincipal(
