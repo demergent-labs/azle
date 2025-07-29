@@ -15,22 +15,17 @@ inputs:
         description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
         required: false
         default: '--all'
-    token:
-        description: 'GitHub token for authentication'
-        required: false
-        default: ''
 runs:
     using: composite
     steps:
+        - uses: ./.github/actions/configure_git
+
         - name: Commit and push changes
           shell: bash
-          env:
-              GH_TOKEN: ${{ inputs.token || github.token }}
           run: |
               # Create new branch if requested
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                   git switch -c "${{ inputs.branch-name }}"
-                  git push origin "${{ inputs.branch-name }}"
               else
                   git switch "${{ inputs.branch-name }}"
               fi
@@ -39,69 +34,14 @@ runs:
               echo "Current git status:"
               git status
 
-              # Add and stage changes if there are any
+              # Add and commit changes if there are any
               echo "Adding files: ${{ inputs.add-files }}"
               git add "${{ inputs.add-files }}"
 
-                                                                      if ! git diff --cached --quiet; then
-                  echo "Creating verified commit using GitHub Contents API..."
-
-                  # Get list of changed files
-                  CHANGED_FILES=$(git diff --cached --name-only)
-                  echo "Changed files: $CHANGED_FILES"
-
-                  # Update each file using GitHub Contents API
-                  for file in $CHANGED_FILES; do
-                      echo "Updating file: $file"
-
-                      # Get current file SHA if it exists
-                      FILE_SHA=""
-                      if gh api "repos/:owner/:repo/contents/$file?ref=${{ inputs.branch-name }}" >/dev/null 2>&1; then
-                          FILE_SHA=$(gh api "repos/:owner/:repo/contents/$file?ref=${{ inputs.branch-name }}" --jq '.sha')
-                          echo "Existing file SHA: $FILE_SHA"
-                      else
-                          echo "New file: $file"
-                      fi
-
-                      # Create temporary JSON payload file for large content
-                      TEMP_PAYLOAD=$(mktemp)
-
-                      # Get current file content in base64
-                      CONTENT_BASE64=$(base64 -w 0 "$file")
-
-                      # Create JSON payload
-                      if [[ -n "$FILE_SHA" ]]; then
-                          # Update existing file
-                          jq -n \
-                              --arg message "${{ inputs.commit-message }}" \
-                              --arg content "$CONTENT_BASE64" \
-                              --arg branch "${{ inputs.branch-name }}" \
-                              --arg sha "$FILE_SHA" \
-                              '{message: $message, content: $content, branch: $branch, sha: $sha}' \
-                              > "$TEMP_PAYLOAD"
-                      else
-                          # Create new file
-                          jq -n \
-                              --arg message "${{ inputs.commit-message }}" \
-                              --arg content "$CONTENT_BASE64" \
-                              --arg branch "${{ inputs.branch-name }}" \
-                              '{message: $message, content: $content, branch: $branch}' \
-                              > "$TEMP_PAYLOAD"
-                      fi
-
-                      # Update/create file using Contents API with file input
-                      gh api \
-                          --method PUT \
-                          "repos/:owner/:repo/contents/$file" \
-                          --input "$TEMP_PAYLOAD"
-
-                      # Clean up temporary file
-                      rm "$TEMP_PAYLOAD"
-
-                      echo "Updated file: $file"
-                  done
-
-                  echo "Successfully created verified commit(s) using GitHub Contents API"
+              if ! git diff --cached --quiet; then
+                git commit -m "${{ inputs.commit-message }}"
+                git push origin "${{ inputs.branch-name }}"
               else
-                  echo "No changes to commit. Skipping commit and push."
+                # The above commands exit with 1 if there are no changes to commit
+                echo "No changes to commit. Skipping commit and push."
               fi
