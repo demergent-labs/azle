@@ -75,3 +75,4 @@ jobs:
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
+                  token: ${{ steps.github-app-auth.outputs.token }}
