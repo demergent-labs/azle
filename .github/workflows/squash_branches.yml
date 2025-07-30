@@ -79,9 +79,8 @@ jobs:
             - name: Commit squashed changes
               uses: ./.github/actions/commit_and_push
               with:
-                  branch-name: ${{ github.ref_name }}
+                  branch-name: ${{ inputs.base-branch }}
                   commit-message: ${{ inputs.commit-message }}
-                  add-files: '--all'
                   token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Delete branches
