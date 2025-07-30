@@ -1,19 +1,18 @@
 name: Commit and Push Changes
-description: 'Commits and pushes changes using GraphQL for App-signed commits'
-
+description: 'Configures git, commits changes, and pushes to a new branch'
 inputs:
     branch-name:
         description: 'Name of the branch to push to'
         required: true
     create-branch:
-        description: 'Whether to create the branch if it does not exist'
+        description: 'Whether to create the branch specified by branch-name'
         required: false
         default: 'false'
     commit-message:
         description: 'Commit message'
         required: true
     add-files:
-        description: 'File pattern to git add. Defaults to "--all"'
+        description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
         required: false
         default: '--all'
     token:
@@ -21,8 +20,7 @@ inputs:
         required: true
     github-token:
         description: 'GITHUB_TOKEN for git operations (branch creation)'
-        required: false
-        default: ''
+        required: true
 
 runs:
     using: composite

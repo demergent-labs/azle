@@ -66,8 +66,10 @@ jobs:
 
             - name: Squash changes
               run: |
+                  CURRENT_BRANCH=$(git branch --show-current)
+
                   for branch in ${{ steps.collect-branches.outputs.branches }}; do
-                    echo "Merging $branch into $(git branch --show-current)"
+                    echo "Merging $branch into $CURRENT_BRANCH"
                     git merge --squash $branch
                   done
 
