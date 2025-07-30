@@ -153,19 +153,14 @@ jobs:
               with:
                   prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
                   path: ${{ matrix.test.displayPath }}
-            - name: Ensure test branch exists
-              shell: bash
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  git fetch origin
-                  git checkout -b ${{ steps.create-branch-name.outputs.branch-name }} ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  git push --set-upstream origin ${{ steps.create-branch-name.outputs.branch-name }}
+
             - uses: ./.github/actions/commit_and_push
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Example/test maintenance: update dependencies'
                   token: ${{ steps.github-app-auth.outputs.token }}
+                  create-branch: 'true'
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
         needs:
