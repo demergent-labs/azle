@@ -18,7 +18,7 @@ on:
                 required: true
 
 permissions:
-    contents: read
+    contents: write
 
 jobs:
     squash:
@@ -77,7 +77,7 @@ jobs:
                   branch-name: ${{ github.ref_name }}
                   commit-message: ${{ inputs.commit-message }}
                   add-files: '--all'
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Delete branches
               run: |
