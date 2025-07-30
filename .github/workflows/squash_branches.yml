@@ -73,6 +73,9 @@ jobs:
                     git merge --squash $branch
                   done
 
+                  echo "Merge completed. Checking git status..."
+                  git status
+
             - name: Commit squashed changes
               uses: ./.github/actions/commit_and_push
               with:
