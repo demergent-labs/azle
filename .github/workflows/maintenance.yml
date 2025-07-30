@@ -91,7 +91,7 @@ jobs:
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  directories: ${{ github.workspace }}/examples/experimental/test/end_to_end/http_server/apollo_server
+                  directories: ${{ github.workspace }}/examples/stable/test/property/ic_api/caller
 
     update-test-dependencies:
         needs:
