@@ -31,11 +31,11 @@ runs:
           if: inputs.create-branch == 'true'
           shell: bash
           env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              GITHUB_TOKEN: ${{ inputs.github-token }}
           run: |
               git fetch origin
-              git checkout -b ${{ steps.create-branch-name.outputs.branch-name }} ${{ needs.create-branch-prefix.outputs.base-branch }}
-              git push --set-upstream origin ${{ steps.create-branch-name.outputs.branch-name }}
+              git checkout -b ${{ inputs.branch-name }}
+              git push --set-upstream origin ${{ inputs.branch-name }}
 
         - name: Commit via GraphQL Script
           shell: bash
