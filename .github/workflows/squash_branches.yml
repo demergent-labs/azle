@@ -66,9 +66,10 @@ jobs:
 
             - name: Squash changes
               env:
-                  PAT: ${{ steps.github-app-auth.outputs.token }}
+                  GITHUB_TOKEN: ${{ steps.github-app-auth.outputs.token }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
+                  REPO="${GITHUB_REPOSITORY}"
 
                   for branch in ${{ steps.collect-branches.outputs.branches }}; do
                     echo "Merging $branch into $CURRENT_BRANCH"
@@ -79,9 +80,61 @@ jobs:
                   if git diff --staged --quiet; then
                     echo "No changes to commit"
                   else
-                    # Create a merge commit with a descriptive message
-                    git commit -am "${{ inputs.commit-message }}"
-                    git push origin HEAD:$CURRENT_BRANCH
+                    # Stage all changes for commit via API
+                    git add -A
+                    CHANGED=$(git diff --cached --name-only)
+
+                    if [ -n "$CHANGED" ]; then
+                      # Get current branch HEAD for expectedHeadOid
+                      EXPECTED_HEAD=$(gh api repos/$REPO/git/ref/heads/$CURRENT_BRANCH --jq .object.sha)
+
+                      # Build GraphQL payload for commit
+                      tmp=$(mktemp)
+                      cat > "$tmp" << 'GRAPHQL_START'
+                  {"query":"mutation($input:CreateCommitOnBranchInput!){createCommitOnBranch(input:$input){commit{oid url}}}","variables":{"input":{"branch":{"repositoryNameWithOwner":"
+                  GRAPHQL_START
+
+                      echo -n "$REPO" >> "$tmp"
+                      cat >> "$tmp" << 'GRAPHQL_MID'
+                  ","branchName":"
+                  GRAPHQL_MID
+
+                      echo -n "$CURRENT_BRANCH" >> "$tmp"
+                      cat >> "$tmp" << 'GRAPHQL_FILES'
+                  "},"fileChanges":{"additions":[
+                  GRAPHQL_FILES
+
+                      first=true
+                      while IFS= read -r f; do
+                        content=$(base64 -w0 "$f")
+                        if [ "$first" = true ]; then
+                          first=false
+                        else
+                          echo "," >> "$tmp"
+                        fi
+                        echo -n "{\"path\":\"$f\",\"contents\":\"$content\"}" >> "$tmp"
+                      done <<< "$CHANGED"
+
+                      # Close additions, add commit message and expectedHeadOid
+                      cat >> "$tmp" << 'GRAPHQL_END'
+                  ]},"message":{"headline":"
+                  GRAPHQL_END
+
+                      echo -n "${{ inputs.commit-message }}" >> "$tmp"
+                      cat >> "$tmp" << 'GRAPHQL_FINAL'
+                  "},"expectedHeadOid":"
+                  GRAPHQL_FINAL
+
+                      echo -n "$EXPECTED_HEAD" >> "$tmp"
+                      echo '"}}}' >> "$tmp"
+
+                      # Execute GraphQL commit using GitHub API
+                      echo "Creating commit via GitHub API for branch $CURRENT_BRANCH"
+                      gh api graphql --input="$tmp" | jq
+
+                      # Cleanup temp file
+                      rm -f "$tmp"
+                    fi
                   fi
 
             - name: Delete branches
