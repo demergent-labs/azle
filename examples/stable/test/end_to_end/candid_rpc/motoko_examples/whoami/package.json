@@ -7,6 +7,6 @@
         "azle": "0.32.0"
     },
     "devDependencies": {
-        "@dfinity/identity": "^2.4.1"
+        "@dfinity/identity": "^3.1.0"
     }
 }
