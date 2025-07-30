@@ -58,8 +58,19 @@ while IFS= read -r f; do
   echo "{\"path\":\"$f\",\"contents\":\"$content\"}" >> "$tmp"
 done <<< "$CHANGED"
 
-  # Close additions, add commit and expectedHeadOid
-  echo "]},"commit":{"message":{"headline":"$COMMIT_MESSAGE"}},"expectedHeadOid":"$EXPECTED_HEAD"}}}" >> "$tmp"
+        # Close additions, add commit and expectedHeadOid
+        cat <<EOF >> "$tmp"
+        ]},
+        "commit": {
+          "message": {
+            "headline": "$COMMIT_MESSAGE"
+          }
+        },
+        "expectedHeadOid": "$EXPECTED_HEAD"
+      }
+  }
+}
+EOF
 
 # Execute GraphQL commit using CLI
 echo "Running GraphQL commit for branch $TARGET_BRANCH"
