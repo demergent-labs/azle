@@ -61,10 +61,8 @@ done <<< "$CHANGED"
         # Close additions, add commit and expectedHeadOid
         cat <<EOF >> "$tmp"
         ]},
-        "commit": {
-          "message": {
-            "headline": "$COMMIT_MESSAGE"
-          }
+        "message": {
+          "headline": "$COMMIT_MESSAGE"
         },
         "expectedHeadOid": "$EXPECTED_HEAD"
       }
