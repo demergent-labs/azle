@@ -20,12 +20,13 @@ if [[ "$CREATE_BRANCH" == "true" ]]; then
       -f query='query($owner:String!,$name:String!){repository(owner:$owner,name:$name){id}}' \
       -f owner="$OWNER" -f name="$NAME" --jq '.data.repository.id')
 
-    # Create branch reference via GraphQL using here-doc to avoid quoting issues
-    gh api graphql -X POST https://api.github.com/graphql \
-      -H "Authorization: bearer $GITHUB_TOKEN" \
-      -H "Content-Type: application/json" <<EOF
+    # Create branch reference via GraphQL
+    REF_PAYLOAD=$(mktemp)
+    cat <<EOF > "$REF_PAYLOAD"
 {"query":"mutation(\$input:CreateRefInput!){createRef(input:\$input){ref{name}}}","variables":{"input":{"repositoryId":"$REPO_ID","name":"refs/heads/$TARGET_BRANCH","oid":"$BASE_SHA"}}}
 EOF
+    gh api graphql --input="$REF_PAYLOAD"
+    rm -f "$REF_PAYLOAD"
   fi
 fi
 
@@ -52,10 +53,9 @@ done <<< "$CHANGED"
 
 echo "]}},\"commit\":{\"message\":{\"headline\":\"$COMMIT_MESSAGE\"}}}}" >> "$tmp"
 
-# Execute GraphQL
+# Execute GraphQL commit using CLI
 echo "Running GraphQL commit for branch $TARGET_BRANCH"
-response=$(curl -s -H "Authorization: bearer $GITHUB_TOKEN" -H "Content-Type: application/json" -d @"$tmp" https://api.github.com/graphql)
-echo "$response" | jq
+gh api graphql --input="$tmp" | jq
 
 # Cleanup
 echo "Cleaning up"
