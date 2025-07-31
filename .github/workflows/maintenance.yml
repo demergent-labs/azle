@@ -140,13 +140,16 @@ jobs:
                   prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
                   path: ${{ matrix.test.displayPath }}
 
+            - uses: ./.github/actions/create_branch
+              with:
+                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
             - uses: ./.github/actions/commit_and_push
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Example/test maintenance: update dependencies'
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  create-branch: 'true'
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
         needs:

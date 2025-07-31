@@ -143,7 +143,6 @@ jobs:
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'analyze benchmark results'
-                  create-branch: 'false'
                   token: ${{ secrets.GITHUB_TOKEN }}
 
     create-pr:
