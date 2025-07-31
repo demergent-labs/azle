@@ -18,7 +18,7 @@ on:
                 description: 'The generated base branch name ({prefix}--{version})'
                 value: ${{ jobs.create-branch-prefix.outputs.base-branch }}
         secrets:
-            AZLE_BOT_KEY:
+            GH_TOKEN:
                 required: true
 
 permissions:
@@ -34,17 +34,10 @@ jobs:
             branch-prefix: ${{ steps.create-prefix.outputs.branch-prefix }}
             base-branch: ${{ steps.create-prefix.outputs.base-branch }}
         steps:
-            - name: Generate GitHub App Token
-              id: github-app-auth
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.ref }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - id: create-prefix
               shell: bash
