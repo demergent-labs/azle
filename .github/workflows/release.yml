@@ -18,7 +18,7 @@ jobs:
             prefix: 'release'
             version: ${{ inputs.release-version }}
         secrets:
-            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     prepare-release:
         name: Prepare Release
@@ -31,17 +31,10 @@ jobs:
             release-version: ${{ inputs.release-version }}
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
-            - name: Generate GitHub App Token
-              id: github-app-auth
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - uses: ./.github/actions/setup_node
               with:
@@ -82,7 +75,7 @@ jobs:
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'Prepare release ${{ inputs.release-version }}'
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Publish to npm
               run: |
@@ -110,17 +103,10 @@ jobs:
             matrix:
                 test: ${{ fromJson(needs.prepare-release.outputs.test-infos) }}
         steps:
-            - name: Generate GitHub App Token
-              id: github-app-auth
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - uses: ./.github/actions/setup_node
 
@@ -162,7 +148,7 @@ jobs:
                   commit-message: 'Update test files for ${{ matrix.test.displayPath }}'
                   add-files: ${{ matrix.test.path }}
                   create-branch: 'true'
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
         needs:
@@ -175,7 +161,6 @@ jobs:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'Update test files for all tests and examples ${{ inputs.release-version }}'
         secrets:
-            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     create-release:

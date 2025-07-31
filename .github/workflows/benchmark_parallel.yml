@@ -59,16 +59,10 @@ jobs:
             matrix:
                 test: ${{ fromJson(needs.prepare-benchmark.outputs.test-infos) }}
         steps:
-            - id: github-app-auth
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
@@ -131,4 +125,4 @@ jobs:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
                   create-branch: 'true'
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}

@@ -62,7 +62,7 @@ jobs:
             prefix: 'benchmark'
             version: $(jq -r '.version' package.json)
         secrets:
-            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}
@@ -99,7 +99,6 @@ jobs:
                       }
         uses: ./.github/workflows/benchmark_parallel.yml
         secrets:
-            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
@@ -115,7 +114,6 @@ jobs:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'run benchmarks'
         secrets:
-            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     analyze-benchmarks:
@@ -125,16 +123,10 @@ jobs:
             - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
-            - id: github-app-auth
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - uses: ./.github/actions/setup_node
 
@@ -152,7 +144,7 @@ jobs:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'analyze benchmark results'
                   create-branch: 'false'
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
     create-pr:
         needs:
@@ -160,6 +152,12 @@ jobs:
             - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
+            - id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.ref }}

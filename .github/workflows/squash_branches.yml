@@ -12,8 +12,6 @@ on:
                 required: true
                 type: string
         secrets:
-            AZLE_BOT_KEY:
-                required: true
             GH_TOKEN:
                 required: true
 
@@ -27,17 +25,10 @@ jobs:
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
-            - name: Generate GitHub App Token
-              id: github-app-auth
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
                   fetch-depth: 0
 
             - name: Collect branches
