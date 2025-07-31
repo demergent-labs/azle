@@ -109,6 +109,8 @@ jobs:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
+        permissions:
+            contents: write
         needs: [run-benchmarks, create-branch-prefix]
         uses: ./.github/workflows/squash_branches.yml
         with:
