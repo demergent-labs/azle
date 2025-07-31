@@ -159,7 +159,6 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
-        name: Squash branches
         permissions:
             contents: write
         needs:
