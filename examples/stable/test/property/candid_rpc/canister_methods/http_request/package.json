@@ -3,6 +3,6 @@
         "test": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ]; then echo 'Skipping test on WSL due sub domain issues'; exit 0; else tsx test/test.ts; fi"
     },
     "dependencies": {
-        "azle": "0.32.0"
+        "azle": "0.32.1-rc.2"
     }
 }
