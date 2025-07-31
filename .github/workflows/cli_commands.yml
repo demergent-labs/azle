@@ -16,10 +16,10 @@ permissions:
 
 jobs:
     setup-and-pack:
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         outputs:
             test-version: ${{ steps.create-test-version.outputs.test-version }}
             packed-file-name: ${{ steps.pack-azle-source.outputs.packed-file-name }}
@@ -64,10 +64,10 @@ jobs:
 
     test-version-command:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -97,10 +97,10 @@ jobs:
 
     test-dev-setup-command:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -213,10 +213,10 @@ jobs:
 
     test-dev-template-commands:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -367,10 +367,10 @@ jobs:
 
     test-generate-command:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -407,10 +407,10 @@ jobs:
 
     test-stable-project-creation:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -441,10 +441,10 @@ jobs:
 
     test-experimental-project-creation:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -475,10 +475,10 @@ jobs:
 
     test-http-server-project-creation:
         needs: setup-and-pack
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 

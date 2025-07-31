@@ -24,10 +24,10 @@ jobs:
               run: echo "prefix=maintenance-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
     create-branch-prefix:
-        needs:
-            - determine-prefix
         permissions:
             contents: write
+        needs:
+            - determine-prefix
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: ${{ needs.determine-prefix.outputs.prefix }}
@@ -87,10 +87,10 @@ jobs:
                   directories: ${{ github.workspace }}/examples
 
     update-test-dependencies:
+        name: Update dependencies for ${{ matrix.test.name }}
         needs:
             - prepare-maintenance
             - create-branch-prefix
-        name: Update dependencies for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

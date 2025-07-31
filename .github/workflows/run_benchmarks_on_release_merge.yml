@@ -21,9 +21,9 @@ jobs:
 
     run-benchmarks:
         name: Run Benchmarks
-        needs: determine-context
         permissions:
             contents: write
+        needs: determine-context
         if: needs.determine-context.outputs.should-run == 'true'
         uses: ./.github/workflows/benchmark.yml
         with:

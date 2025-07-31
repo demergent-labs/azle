@@ -100,13 +100,13 @@ jobs:
                           directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/benchmark_parallel.yml
-        secrets:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             directories: ${{ matrix.benchmark_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
+        secrets:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
         needs: [run-benchmarks, create-branch-prefix]

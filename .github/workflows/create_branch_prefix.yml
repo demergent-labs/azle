@@ -27,9 +27,9 @@ permissions:
 jobs:
     create-branch-prefix:
         name: Create Branch and Branch Prefix
-        runs-on: ubuntu-latest
         permissions:
             contents: write
+        runs-on: ubuntu-latest
         outputs:
             branch-prefix: ${{ steps.create-prefix.outputs.branch-prefix }}
             base-branch: ${{ steps.create-prefix.outputs.base-branch }}

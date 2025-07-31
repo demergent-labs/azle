@@ -93,12 +93,12 @@ jobs:
                   directories: ./examples
 
     update-test-files-for-release-commit:
-        needs:
-            - prepare-release
-            - create-branch-prefix
         name: Update ${{ matrix.test.name }} files for release commit
         permissions:
             contents: write
+        needs:
+            - prepare-release
+            - create-branch-prefix
         runs-on: ubuntu-latest
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -159,13 +159,13 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
+        name: Squash branches
+        permissions:
+            contents: write
         needs:
             - prepare-release
             - update-test-files-for-release-commit
             - create-branch-prefix
-        name: Squash branches
-        permissions:
-            contents: write
         uses: ./.github/workflows/squash_branches.yml
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
@@ -175,10 +175,10 @@ jobs:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     create-release:
+        name: Create Release
         needs:
             - prepare-release
             - squash-branches
-        name: Create Release
         runs-on: ubuntu-latest
         steps:
             - name: Generate GitHub App Token
