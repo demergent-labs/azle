@@ -22,6 +22,8 @@ jobs:
 
     prepare-release:
         name: Prepare Release
+        permissions:
+            contents: write
         needs:
             - create-branch-prefix
         runs-on: ubuntu-latest
@@ -95,6 +97,8 @@ jobs:
             - prepare-release
             - create-branch-prefix
         name: Update ${{ matrix.test.name }} files for release commit
+        permissions:
+            contents: write
         runs-on: ubuntu-latest
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -159,6 +163,9 @@ jobs:
             - prepare-release
             - update-test-files-for-release-commit
             - create-branch-prefix
+        name: Squash branches
+        permissions:
+            contents: write
         uses: ./.github/workflows/squash_branches.yml
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}

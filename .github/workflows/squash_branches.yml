@@ -16,11 +16,13 @@ on:
                 required: true
 
 permissions:
-    contents: write
+    contents: read
 
 jobs:
     squash:
         name: Squash Branches
+        permissions:
+            contents: write
         runs-on: ubuntu-latest
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

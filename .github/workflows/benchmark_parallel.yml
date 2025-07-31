@@ -49,8 +49,10 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-benchmarks:
-        needs: prepare-benchmark
         name: Run benchmarks for ${{ matrix.test.name }}
+        permissions:
+            contents: write
+        needs: prepare-benchmark
         runs-on: ubuntu-latest
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

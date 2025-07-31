@@ -66,6 +66,8 @@ jobs:
 
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}
+        permissions:
+            contents: write
         needs:
             - get-exclude-dirs
             - create-branch-prefix
@@ -118,6 +120,8 @@ jobs:
 
     analyze-benchmarks:
         name: Analyze Benchmark Results
+        permissions:
+            contents: write
         needs:
             - squash-branches
             - create-branch-prefix
