@@ -25,4 +25,4 @@ runs:
               BRANCH_NAME: ${{ inputs.branch-name }}
               COMMIT_MESSAGE: ${{ inputs.commit-message }}
               ADD_FILES: ${{ inputs.add-files }}
-          run: ./.github/actions/commit_and_push/run.sh
+          run: ./.github/actions/commit_and_push/commit_and_push.sh
