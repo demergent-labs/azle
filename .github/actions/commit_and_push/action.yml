@@ -1,13 +1,9 @@
 name: Commit and Push Changes
-description: 'Configures git, commits changes, and pushes to a new branch'
+description: 'Configures git, commits changes, and pushes to an existing branch'
 inputs:
     branch-name:
         description: 'Name of the branch to push to'
         required: true
-    create-branch:
-        description: 'Whether to create the branch specified by branch-name'
-        required: false
-        default: 'false'
     commit-message:
         description: 'Commit message'
         required: true
@@ -18,29 +14,15 @@ inputs:
     token:
         description: 'GitHub App token with repo access'
         required: true
-    github-token:
-        description: 'GITHUB_TOKEN for git operations (branch creation)'
-        required: true
 
 runs:
     using: composite
     steps:
-        - name: Create branch if requested
-          if: inputs.create-branch == 'true'
-          shell: bash
-          env:
-              GITHUB_TOKEN: ${{ inputs.github-token }}
-          run: |
-              git fetch origin
-              git checkout -b ${{ inputs.branch-name }}
-              git push --set-upstream origin ${{ inputs.branch-name }}
-
         - name: Commit via GraphQL Script
           shell: bash
           env:
               GITHUB_TOKEN: ${{ inputs.token }}
               BRANCH_NAME: ${{ inputs.branch-name }}
-              CREATE_BRANCH: ${{ inputs.create-branch }}
               COMMIT_MESSAGE: ${{ inputs.commit-message }}
               ADD_FILES: ${{ inputs.add-files }}
           run: ./.github/actions/commit_and_push/run.sh

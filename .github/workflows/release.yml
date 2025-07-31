@@ -142,12 +142,16 @@ jobs:
                   prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
                   path: ${{ matrix.test.displayPath }}
 
+            - uses: ./.github/actions/create_branch
+              with:
+                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
             - uses: ./.github/actions/commit_and_push
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Update test files for ${{ matrix.test.displayPath }}'
                   add-files: ${{ matrix.test.path }}
-                  create-branch: 'true'
                   token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
