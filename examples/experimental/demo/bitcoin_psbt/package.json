@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
-        "azle": "0.32.0",
+        "azle": "0.32.1-rc.1",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d1ccd00dc75e49609949ed7910a4e610c49027b7",
         "@azle/basic_bitcoin_demo": "0.0.0",
         "bitcoinjs-lib": "^6.1.5",
