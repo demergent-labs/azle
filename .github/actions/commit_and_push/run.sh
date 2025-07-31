@@ -16,8 +16,29 @@ TARGET_BRANCH="$BRANCH_NAME"
     exit 0
   fi
 
-# Determine expectedHeadOid for commit (existing branch)
-EXPECTED_HEAD=$(gh api repos/$REPO/git/ref/heads/$TARGET_BRANCH --jq .object.sha)
+# Determine expectedHeadOid for commit (existing branch) with retry logic
+get_branch_head() {
+  local retries=5
+  local delay=1
+
+  for ((i=1; i<=retries; i++)); do
+    if EXPECTED_HEAD=$(gh api repos/$REPO/git/ref/heads/$TARGET_BRANCH --jq .object.sha 2>/dev/null); then
+      echo "Successfully got branch HEAD: $EXPECTED_HEAD"
+      return 0
+    fi
+
+    if [ $i -lt $retries ]; then
+      echo "Attempt $i failed to get branch HEAD, retrying in ${delay}s..."
+      sleep $delay
+      delay=$((delay * 2))  # Exponential backoff
+    fi
+  done
+
+  echo "Failed to get branch HEAD after $retries attempts"
+  return 1
+}
+
+get_branch_head
 
 # Build GraphQL payload in temp file
   tmp=$(mktemp)
