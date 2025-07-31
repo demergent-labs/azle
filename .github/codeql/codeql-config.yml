@@ -1,0 +1,34 @@
+name: 'Azle CodeQL Configuration'
+
+disable-default-rules: false
+
+queries:
+    - uses: security-and-quality
+
+paths-ignore:
+    - node_modules
+    - dist
+    - target
+    - benchmarks.json
+    - docs
+    - logo
+    - the_azle_book
+    - examples/**/node_modules
+    - examples/**/dist
+    - examples/**/target
+    - '**/*.generated.ts'
+    - '**/*.generated.js'
+
+paths:
+    - src
+    - examples
+
+languages:
+    javascript:
+        # Include TypeScript files
+        queries:
+            - uses: security-and-quality
+
+    rust:
+        queries:
+            - uses: security-and-quality
