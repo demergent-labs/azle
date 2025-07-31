@@ -54,29 +54,29 @@
             "version": "0.32.0",
             "benchmarks": [
                 {
-                    "instructions": "11726701141",
-                    "method_name": "postUpgrade",
-                    "timestamp": "1750853972657495691"
+                    "instructions": "12320585833",
+                    "method_name": "4",
+                    "timestamp": "1753985275941573065"
                 },
                 {
-                    "instructions": "151439396",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750853979222521804"
+                    "instructions": "144060950",
+                    "method_name": "1",
+                    "timestamp": "1753985282662865377"
                 },
                 {
-                    "instructions": "75168305",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750853979548647307"
+                    "instructions": "67866549",
+                    "method_name": "1",
+                    "timestamp": "1753985282992902480"
                 },
                 {
-                    "instructions": "144165504",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750853979853800453"
+                    "instructions": "136626669",
+                    "method_name": "1",
+                    "timestamp": "1753985283293217596"
                 },
                 {
-                    "instructions": "83288415",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750853980172837571"
+                    "instructions": "75988249",
+                    "method_name": "1",
+                    "timestamp": "1753985283610217786"
                 }
             ]
         }
