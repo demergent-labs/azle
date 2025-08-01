@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import { readFile, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
+import { v4 } from 'uuid';
 
 type CreateCommitInput = {
     branch: {
@@ -22,12 +23,18 @@ type Addition = {
     contents: string;
 };
 
-async function commitAndPush(): Promise<void> {
-    verifyEnvironmentVariables();
+type EnvironmentVariables = {
+    GITHUB_REPOSITORY: string;
+    BRANCH_NAME: string;
+    COMMIT_MESSAGE: string;
+    ADD_FILES: string;
+};
 
-    execSync(`git add ${process.env.ADD_FILES || '--all'}`, {
-        stdio: 'inherit'
-    });
+async function commitAndPush(): Promise<void> {
+    const { ADD_FILES, BRANCH_NAME, COMMIT_MESSAGE, GITHUB_REPOSITORY } =
+        extractEnvironmentVariables();
+
+    execSync(`git add ${ADD_FILES}`, { stdio: 'inherit' });
 
     const changedFiles = getChangedFiles();
 
@@ -42,26 +49,42 @@ async function commitAndPush(): Promise<void> {
 
     const additions = await encodeFileContents(changedFiles);
 
-    const input = createInput(additions, expectedHeadOid);
+    const input = createInput(
+        additions,
+        expectedHeadOid,
+        BRANCH_NAME,
+        COMMIT_MESSAGE,
+        GITHUB_REPOSITORY
+    );
 
     await createCommitWithRetry(input);
 
     console.info('✅ Commit created successfully!');
 }
 
-function verifyEnvironmentVariables(): void {
-    // Validate required environment variables
-    const requiredEnvVars = [
-        'GH_TOKEN',
-        'BRANCH_NAME',
-        'COMMIT_MESSAGE',
-        'GITHUB_REPOSITORY'
-    ];
-    for (const envVar of requiredEnvVars) {
-        if (!process.env[envVar]) {
-            throw new Error(`Missing required environment variable: ${envVar}`);
-        }
+function extractEnvironmentVariables(): EnvironmentVariables {
+    if (process.env.GITHUB_REPOSITORY === undefined) {
+        throw new Error(
+            'Missing required environment variable: GITHUB_REPOSITORY'
+        );
     }
+
+    if (process.env.BRANCH_NAME === undefined) {
+        throw new Error('Missing required environment variable: BRANCH_NAME');
+    }
+
+    if (process.env.COMMIT_MESSAGE === undefined) {
+        throw new Error(
+            'Missing required environment variable: COMMIT_MESSAGE'
+        );
+    }
+
+    return {
+        GITHUB_REPOSITORY: process.env.GITHUB_REPOSITORY.trim(),
+        BRANCH_NAME: process.env.BRANCH_NAME.trim(),
+        COMMIT_MESSAGE: process.env.COMMIT_MESSAGE.trim(),
+        ADD_FILES: process.env.ADD_FILES?.trim() ?? '--all'
+    };
 }
 
 function getChangedFiles(): string[] {
@@ -100,18 +123,21 @@ async function encodeFileContents(changedFiles: string[]): Promise<Addition[]> {
 
 function createInput(
     additions: Addition[],
-    expectedHeadOid: string
+    expectedHeadOid: string,
+    branchName: string,
+    commitMessage: string,
+    repositoryNameWithOwner: string
 ): CreateCommitInput {
     return {
         branch: {
-            repositoryNameWithOwner: process.env.GITHUB_REPOSITORY!,
-            branchName: process.env.BRANCH_NAME!
+            repositoryNameWithOwner,
+            branchName
         },
         fileChanges: {
             additions
         },
         message: {
-            headline: process.env.COMMIT_MESSAGE!
+            headline: commitMessage
         },
         expectedHeadOid
     };
@@ -124,7 +150,6 @@ async function createCommitWithRetry(
     try {
         await createCommit(input);
     } catch (error: any) {
-        // Handle rate limit errors specifically
         const errorMessage = error.message || error.toString();
         if (errorMessage.includes('rate limit') && retries > 0) {
             console.warn('⚠️ Rate limit exceeded.');
@@ -144,7 +169,6 @@ async function createCommitWithRetry(
 }
 
 async function createCommit(input: CreateCommitInput): Promise<void> {
-    // Build GraphQL payload
     const payload = {
         query: `
                 mutation ($input: CreateCommitOnBranchInput!) {
@@ -156,30 +180,19 @@ async function createCommit(input: CreateCommitInput): Promise<void> {
         variables: { input }
     };
 
-    // Write payload to temp file
-    const tempFile = join(tmpdir(), `graphql-${Date.now()}.json`);
+    const tempFile = join(tmpdir(), `graphql-${v4()}.json`);
     await writeFile(tempFile, JSON.stringify(payload));
 
-    try {
-        // Execute GraphQL via gh CLI
-        const responseJson = execSync(`gh api graphql --input="${tempFile}"`, {
-            encoding: 'utf8',
-            env: {
-                ...process.env,
-                GH_TOKEN: process.env.GH_TOKEN
-            }
-        });
-
-        const response = JSON.parse(responseJson);
-        console.info(response);
-    } finally {
-        // Cleanup temp file
-        try {
-            execSync(`rm -f "${tempFile}"`);
-        } catch {
-            // Ignore cleanup errors
+    const responseJson = execSync(`gh api graphql --input="${tempFile}"`, {
+        encoding: 'utf8',
+        env: {
+            ...process.env,
+            GH_TOKEN: process.env.GH_TOKEN
         }
-    }
+    });
+
+    const response = JSON.parse(responseJson);
+    console.info(response);
 }
 
 commitAndPush();
