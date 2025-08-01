@@ -20,7 +20,7 @@ runs:
         - name: Commit via GraphQL Script
           shell: bash
           env:
-              GH_TOKEN: ${{ inputs.token }}
+              GH_TOKEN: ${{ github.token }}
               BRANCH_NAME: ${{ inputs.branch-name }}
               COMMIT_MESSAGE: ${{ inputs.commit-message }}
               ADD_FILES: ${{ inputs.add-files }}
