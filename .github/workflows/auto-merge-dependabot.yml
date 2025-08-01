@@ -64,23 +64,14 @@ jobs:
         needs: evaluate-auto-merge-conditions
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
         steps:
-            - id: github-app-auth
-              uses: actions/create-github-app-token@v2
-              with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_KEY }}
-
-            - uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.event.pull_request.head.ref }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
-
             - name: Approve dependency update PR
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
 
             - name: Merge dependency update PR
               run: |
@@ -89,4 +80,3 @@ jobs:
                       --auto
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
