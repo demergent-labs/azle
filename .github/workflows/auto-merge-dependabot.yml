@@ -61,12 +61,14 @@ jobs:
                   echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
 
     perform-auto-merge:
-        needs: evaluate-auto-merge-conditions
-        if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
-        runs-on: ubuntu-latest
         permissions:
             contents: read
             pull-requests: write
+        needs: evaluate-auto-merge-conditions
+        if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
+        runs-on: ubuntu-latest
+        env:
+            GH_TOKEN: ${{ github.token }}
         steps:
             - name: Approve dependency update PR
               run: gh pr review --approve "$PR_NUMBER"

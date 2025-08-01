@@ -17,6 +17,8 @@ jobs:
         name: All PR checkboxes marked completed
         if: github.event.pull_request.draft == false
         runs-on: ubuntu-latest
+        env:
+            GH_TOKEN: ${{ github.token }}
         steps:
             - uses: actions/checkout@v4
 
