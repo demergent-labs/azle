@@ -16,10 +16,6 @@ on:
                 type: string
                 default: ''
 
-        secrets:
-            GH_TOKEN:
-                required: true
-
 permissions:
     contents: read
 
@@ -52,8 +48,6 @@ jobs:
             contents: write
         needs: prepare-benchmark
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
@@ -62,7 +56,6 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
@@ -128,4 +121,3 @@ jobs:
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
-                  token: ${{ secrets.GITHUB_TOKEN }}

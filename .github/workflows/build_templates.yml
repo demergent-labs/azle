@@ -46,7 +46,6 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref }}
-                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - uses: ./.github/actions/setup_node
 

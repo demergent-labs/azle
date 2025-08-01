@@ -80,7 +80,7 @@ jobs:
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GITHUB_TOKEN: ${{ steps.github-app-auth.outputs.token }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
 
             - name: Merge dependency update PR
               run: |
@@ -89,4 +89,4 @@ jobs:
                       --auto
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GITHUB_TOKEN: ${{ steps.github-app-auth.outputs.token }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}

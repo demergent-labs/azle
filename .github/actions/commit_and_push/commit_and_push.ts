@@ -24,7 +24,7 @@ type CreateCommitInput = {
 function verifyEnvironmentVariables(): void {
     // Validate required environment variables
     const requiredEnvVars = [
-        'GITHUB_TOKEN',
+        'GH_TOKEN',
         'BRANCH_NAME',
         'COMMIT_MESSAGE',
         'GITHUB_REPOSITORY'
@@ -137,7 +137,7 @@ function createCommit(input: CreateCommitInput): void {
             encoding: 'utf8',
             env: {
                 ...process.env,
-                GITHUB_TOKEN: process.env.GITHUB_TOKEN
+                GH_TOKEN: process.env.GH_TOKEN
             }
         });
 

@@ -32,8 +32,6 @@ jobs:
         with:
             prefix: ${{ needs.determine-prefix.outputs.prefix }}
             version: $(jq -r '.version' package.json)
-        secrets:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     prepare-maintenance:
         name: Prepare Maintenance
@@ -46,7 +44,6 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - uses: ./.github/actions/setup_node
 
@@ -79,7 +76,6 @@ jobs:
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'Example/test maintenance: formatting and linting'
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -92,8 +88,6 @@ jobs:
             - prepare-maintenance
             - create-branch-prefix
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
@@ -102,7 +96,6 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - uses: ./.github/actions/setup_node
 
@@ -148,7 +141,6 @@ jobs:
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Example/test maintenance: update dependencies'
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
         needs:
@@ -159,8 +151,6 @@ jobs:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'Example/test maintenance: update dependencies'
-        secrets:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     create-pr:
         needs:
