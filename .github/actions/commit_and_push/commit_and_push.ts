@@ -10,16 +10,45 @@ type CreateCommitInput = {
         branchName: string;
     };
     fileChanges: {
-        additions: Array<{
-            path: string;
-            contents: string;
-        }>;
+        additions: Addition[];
     };
     message: {
         headline: string;
     };
     expectedHeadOid: string;
 };
+
+type Addition = {
+    path: string;
+    contents: string;
+};
+
+async function commitAndPush(): Promise<void> {
+    verifyEnvironmentVariables();
+
+    execSync(`git add ${process.env.ADD_FILES || '--all'}`, {
+        stdio: 'inherit'
+    });
+
+    const changedFiles = getChangedFiles();
+
+    if (changedFiles.length === 0) {
+        console.log('ℹ️ No changes to commit');
+        return;
+    }
+    console.log(`📝 Found ${changedFiles.length} changed files:`);
+    changedFiles.forEach((file) => console.log(`  - ${file}`));
+
+    const expectedHeadOid = getExpectedHeadOid();
+
+    const additions = encodeFileContents(changedFiles);
+
+    const input = createInput(additions, expectedHeadOid);
+
+    await createCommitWithRetry(input);
+
+    console.log('✅ Commit created successfully!');
+}
 
 function verifyEnvironmentVariables(): void {
     // Validate required environment variables
@@ -54,10 +83,7 @@ function getExpectedHeadOid(): string {
     }).trim();
 }
 
-function encodeFileContents(changedFiles: string[]): {
-    path: string;
-    contents: string;
-}[] {
+function encodeFileContents(changedFiles: string[]): Addition[] {
     return changedFiles.map((file) => {
         try {
             const content = readFileSync(file).toString('base64');
@@ -71,28 +97,11 @@ function encodeFileContents(changedFiles: string[]): {
     });
 }
 
-async function commitAndPush(): Promise<void> {
-    verifyEnvironmentVariables();
-
-    execSync(`git add ${process.env.ADD_FILES || '--all'}`, {
-        stdio: 'inherit'
-    });
-
-    const changedFiles = getChangedFiles();
-
-    if (changedFiles.length === 0) {
-        console.log('ℹ️ No changes to commit');
-        return;
-    }
-
-    console.log(`📝 Found ${changedFiles.length} changed files:`);
-    changedFiles.forEach((file) => console.log(`  - ${file}`));
-
-    const expectedHeadOid = getExpectedHeadOid();
-
-    const additions = encodeFileContents(changedFiles);
-
-    const input: CreateCommitInput = {
+function createInput(
+    additions: Addition[],
+    expectedHeadOid: string
+): CreateCommitInput {
+    return {
         branch: {
             repositoryNameWithOwner: process.env.GITHUB_REPOSITORY!,
             branchName: process.env.BRANCH_NAME!
@@ -105,10 +114,32 @@ async function commitAndPush(): Promise<void> {
         },
         expectedHeadOid
     };
+}
 
-    await createCommitWithRetry(input);
+async function createCommitWithRetry(
+    input: CreateCommitInput,
+    retries = 1
+): Promise<void> {
+    try {
+        createCommit(input);
+    } catch (error: any) {
+        // Handle rate limit errors specifically
+        const errorMessage = error.message || error.toString();
+        if (errorMessage.includes('rate limit') && retries > 0) {
+            console.log('⚠️ Rate limit exceeded.');
+            console.log(
+                'Rate limit will reset automatically. Retrying in 60 seconds...'
+            );
 
-    console.log('✅ Commit created successfully!');
+            await new Promise((resolve) => setTimeout(resolve, 60000));
+
+            console.log('🔄 Retrying commit after rate limit wait...');
+            createCommitWithRetry(input, retries - 1);
+        }
+
+        console.error('GraphQL operation failed:', errorMessage);
+        throw error;
+    }
 }
 
 function createCommit(input: CreateCommitInput): void {
@@ -153,31 +184,4 @@ function createCommit(input: CreateCommitInput): void {
     }
 }
 
-async function createCommitWithRetry(
-    input: CreateCommitInput,
-    retries = 1
-): Promise<void> {
-    try {
-        createCommit(input);
-    } catch (error: any) {
-        // Handle rate limit errors specifically
-        const errorMessage = error.message || error.toString();
-        if (errorMessage.includes('rate limit') && retries > 0) {
-            console.log('⚠️ Rate limit exceeded.');
-            console.log(
-                'Rate limit will reset automatically. Retrying in 60 seconds...'
-            );
-
-            await new Promise((resolve) => setTimeout(resolve, 60000));
-
-            console.log('🔄 Retrying commit after rate limit wait...');
-            createCommitWithRetry(input, retries - 1);
-        }
-
-        console.error('GraphQL operation failed:', errorMessage);
-        throw error;
-    }
-}
-
-// Execute if run directly
 commitAndPush();
