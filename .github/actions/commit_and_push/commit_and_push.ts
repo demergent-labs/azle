@@ -1,0 +1,194 @@
+#!/usr/bin/env node
+import { execSync } from 'child_process';
+import { readFileSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+
+type CreateCommitInput = {
+    branch: {
+        repositoryNameWithOwner: string;
+        branchName: string;
+    };
+    fileChanges: {
+        additions: Array<{
+            path: string;
+            contents: string;
+        }>;
+    };
+    message: {
+        headline: string;
+    };
+    expectedHeadOid: string;
+};
+
+type CommitResponse = {
+    createCommitOnBranch: {
+        commit: {
+            oid: string;
+            url: string;
+        };
+    };
+};
+
+function verifyEnvironmentVariables(): void {
+    // Validate required environment variables
+    const requiredEnvVars = [
+        'GITHUB_TOKEN',
+        'BRANCH_NAME',
+        'COMMIT_MESSAGE',
+        'GITHUB_REPOSITORY'
+    ];
+    for (const envVar of requiredEnvVars) {
+        if (!process.env[envVar]) {
+            throw new Error(`Missing required environment variable: ${envVar}`);
+        }
+    }
+}
+
+function getChangedFiles(): string[] {
+    const changedFilesOutput = execSync('git diff --cached --name-only', {
+        encoding: 'utf8'
+    });
+    const changedFiles = changedFilesOutput
+        .trim()
+        .split('\n')
+        .filter((f) => f.length > 0);
+
+    return changedFiles;
+}
+
+function getExpectedHeadOid(): string {
+    return execSync('git rev-parse HEAD', {
+        encoding: 'utf8'
+    }).trim();
+}
+
+function encodeFileContents(changedFiles: string[]): {
+    path: string;
+    contents: string;
+}[] {
+    return changedFiles.map((file) => {
+        try {
+            const content = readFileSync(file).toString('base64');
+            return {
+                path: file,
+                contents: content
+            };
+        } catch (error) {
+            throw new Error(`Failed to read file ${file}: ${error}`);
+        }
+    });
+}
+
+async function commitAndPush(): Promise<void> {
+    verifyEnvironmentVariables();
+
+    execSync(`git add ${process.env.ADD_FILES || '--all'}`, {
+        stdio: 'inherit'
+    });
+
+    const changedFiles = getChangedFiles();
+
+    if (changedFiles.length === 0) {
+        console.log('ℹ️ No changes to commit');
+        return;
+    }
+
+    console.log(`📝 Found ${changedFiles.length} changed files:`);
+    changedFiles.forEach((file) => console.log(`  - ${file}`));
+
+    const expectedHeadOid = getExpectedHeadOid();
+
+    const additions = encodeFileContents(changedFiles);
+
+    const input: CreateCommitInput = {
+        branch: {
+            repositoryNameWithOwner: process.env.GITHUB_REPOSITORY!,
+            branchName: process.env.BRANCH_NAME!
+        },
+        fileChanges: {
+            additions
+        },
+        message: {
+            headline: process.env.COMMIT_MESSAGE!
+        },
+        expectedHeadOid
+    };
+
+    const response = await createCommitWithRetry(input);
+
+    console.log('✅ Commit created successfully!');
+    console.log(`🔗 Commit URL: ${response.createCommitOnBranch.commit.url}`);
+    console.log(`🆔 Commit SHA: ${response.createCommitOnBranch.commit.oid}`);
+}
+
+function createCommit(input: CreateCommitInput): CommitResponse {
+    // Build GraphQL payload
+    const payload = {
+        query: `
+                mutation ($input: CreateCommitOnBranchInput!) {
+                    createCommitOnBranch(input: $input) {
+                        commit {
+                            oid
+                            url
+                        }
+                    }
+                }
+            `,
+        variables: { input }
+    };
+
+    // Write payload to temp file
+    const tempFile = join(tmpdir(), `graphql-${Date.now()}.json`);
+    writeFileSync(tempFile, JSON.stringify(payload));
+
+    try {
+        // Execute GraphQL via gh CLI
+        const responseJson = execSync(`gh api graphql --input="${tempFile}"`, {
+            encoding: 'utf8',
+            env: {
+                ...process.env,
+                GITHUB_TOKEN: process.env.GITHUB_TOKEN
+            }
+        });
+
+        const response: CommitResponse = JSON.parse(responseJson);
+        return response;
+    } finally {
+        // Cleanup temp file
+        try {
+            execSync(`rm -f "${tempFile}"`);
+        } catch {
+            // Ignore cleanup errors
+        }
+    }
+}
+
+async function createCommitWithRetry(
+    input: CreateCommitInput,
+    retries = 1
+): Promise<CommitResponse> {
+    try {
+        return createCommit(input);
+    } catch (error: any) {
+        // Handle rate limit errors specifically
+        const errorMessage = error.message || error.toString();
+        if (errorMessage.includes('rate limit') && retries > 0) {
+            console.log('⚠️ Rate limit exceeded.');
+            console.log(
+                'Rate limit will reset automatically. Retrying in 60 seconds...'
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 60000));
+
+            console.log('🔄 Retrying commit after rate limit wait...');
+            return createCommitWithRetry(input, retries - 1);
+        }
+
+        console.error('GraphQL operation failed:', errorMessage);
+        throw error;
+    }
+}
+
+// Execute if run directly
+commitAndPush();

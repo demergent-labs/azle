@@ -1,5 +1,5 @@
 name: Commit and Push Changes
-description: 'Configures git, commits changes, and pushes to an existing branch'
+description: 'Commits and pushes to an existing branch'
 inputs:
     branch-name:
         description: 'Name of the branch to push to'
@@ -18,6 +18,8 @@ inputs:
 runs:
     using: composite
     steps:
+        - uses: ./.github/actions/setup_node
+
         - name: Commit via GraphQL Script
           shell: bash
           env:
@@ -25,4 +27,4 @@ runs:
               BRANCH_NAME: ${{ inputs.branch-name }}
               COMMIT_MESSAGE: ${{ inputs.commit-message }}
               ADD_FILES: ${{ inputs.add-files }}
-          run: ./.github/actions/commit_and_push/commit_and_push.sh
+          run: npx tsx ./.github/actions/commit_and_push/commit_and_push.ts
