@@ -149,9 +149,7 @@ async function createCommit(input: CreateCommitInput): Promise<void> {
         query: `
                 mutation ($input: CreateCommitOnBranchInput!) {
                     createCommitOnBranch(input: $input) {
-                        commit {
-                            oid
-                        }
+                        id
                     }
                 }
             `,
