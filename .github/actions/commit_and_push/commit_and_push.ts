@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
@@ -32,21 +32,21 @@ async function commitAndPush(): Promise<void> {
     const changedFiles = getChangedFiles();
 
     if (changedFiles.length === 0) {
-        console.log('ℹ️ No changes to commit');
+        console.info('ℹ️ No changes to commit');
         return;
     }
-    console.log(`📝 Found ${changedFiles.length} changed files:`);
-    changedFiles.forEach((file) => console.log(`  - ${file}`));
+    console.info(`📝 Found ${changedFiles.length} changed files:`);
+    changedFiles.forEach((file) => console.info(`  - ${file}`));
 
     const expectedHeadOid = getExpectedHeadOid();
 
-    const additions = encodeFileContents(changedFiles);
+    const additions = await encodeFileContents(changedFiles);
 
     const input = createInput(additions, expectedHeadOid);
 
     await createCommitWithRetry(input);
 
-    console.log('✅ Commit created successfully!');
+    console.info('✅ Commit created successfully!');
 }
 
 function verifyEnvironmentVariables(): void {
@@ -82,18 +82,20 @@ function getExpectedHeadOid(): string {
     }).trim();
 }
 
-function encodeFileContents(changedFiles: string[]): Addition[] {
-    return changedFiles.map((file) => {
-        try {
-            const content = readFileSync(file).toString('base64');
-            return {
-                path: file,
-                contents: content
-            };
-        } catch (error) {
-            throw new Error(`Failed to read file ${file}: ${error}`);
-        }
-    });
+async function encodeFileContents(changedFiles: string[]): Promise<Addition[]> {
+    return Promise.all(
+        changedFiles.map(async (file) => {
+            try {
+                const content = (await readFile(file)).toString('base64');
+                return {
+                    path: file,
+                    contents: content
+                };
+            } catch (error) {
+                throw new Error(`Failed to read file ${file}: ${error}`);
+            }
+        })
+    );
 }
 
 function createInput(
@@ -120,20 +122,20 @@ async function createCommitWithRetry(
     retries = 1
 ): Promise<void> {
     try {
-        createCommit(input);
+        await createCommit(input);
     } catch (error: any) {
         // Handle rate limit errors specifically
         const errorMessage = error.message || error.toString();
         if (errorMessage.includes('rate limit') && retries > 0) {
-            console.log('⚠️ Rate limit exceeded.');
-            console.log(
+            console.warn('⚠️ Rate limit exceeded.');
+            console.info(
                 'Rate limit will reset automatically. Retrying in 60 seconds...'
             );
 
             await new Promise((resolve) => setTimeout(resolve, 60000));
 
-            console.log('🔄 Retrying commit after rate limit wait...');
-            createCommitWithRetry(input, retries - 1);
+            console.info('🔄 Retrying commit after rate limit wait...');
+            await createCommitWithRetry(input, retries - 1);
         }
 
         console.error('GraphQL operation failed:', errorMessage);
@@ -141,7 +143,7 @@ async function createCommitWithRetry(
     }
 }
 
-function createCommit(input: CreateCommitInput): void {
+async function createCommit(input: CreateCommitInput): Promise<void> {
     // Build GraphQL payload
     const payload = {
         query: `
@@ -159,7 +161,7 @@ function createCommit(input: CreateCommitInput): void {
 
     // Write payload to temp file
     const tempFile = join(tmpdir(), `graphql-${Date.now()}.json`);
-    writeFileSync(tempFile, JSON.stringify(payload));
+    await writeFile(tempFile, JSON.stringify(payload));
 
     try {
         // Execute GraphQL via gh CLI
@@ -172,7 +174,7 @@ function createCommit(input: CreateCommitInput): void {
         });
 
         const response = JSON.parse(responseJson);
-        console.log(response);
+        console.info(response);
     } finally {
         // Cleanup temp file
         try {
