@@ -48,8 +48,6 @@ jobs:
             contents: write
         needs: prepare-benchmark
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ github.token }}
         strategy:
             fail-fast: false
             matrix:
