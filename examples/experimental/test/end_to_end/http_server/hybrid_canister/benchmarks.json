@@ -36,19 +36,14 @@
             "version": "0.32.0",
             "benchmarks": [
                 {
-                    "instructions": "7744671598",
-                    "method_name": "init",
-                    "timestamp": "1750853949164432890"
+                    "instructions": "37178125",
+                    "method_name": "1",
+                    "timestamp": "1754066051782340347"
                 },
                 {
-                    "instructions": "44454677",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750853984988232777"
-                },
-                {
-                    "instructions": "1436014",
-                    "method_name": "candidUpdate",
-                    "timestamp": "1750853985267575522"
+                    "instructions": "1416960",
+                    "method_name": "3",
+                    "timestamp": "1754066052183486278"
                 }
             ]
         }
@@ -90,19 +85,19 @@
             "version": "0.32.0",
             "benchmarks": [
                 {
-                    "instructions": "7768414563",
-                    "method_name": "postUpgrade",
-                    "timestamp": "1750853993463376616"
+                    "instructions": "8343677167",
+                    "method_name": "3",
+                    "timestamp": "1754066060448543230"
                 },
                 {
-                    "instructions": "44942212",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750854000979830193"
+                    "instructions": "37633594",
+                    "method_name": "1",
+                    "timestamp": "1754066067970073298"
                 },
                 {
-                    "instructions": "1798377",
-                    "method_name": "candidUpdate",
-                    "timestamp": "1750854001275539882"
+                    "instructions": "1783772",
+                    "method_name": "5",
+                    "timestamp": "1754066068250522190"
                 }
             ]
         }
