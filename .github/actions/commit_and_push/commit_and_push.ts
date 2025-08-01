@@ -132,7 +132,7 @@ async function createCommitWithRetry(
                 'Rate limit will reset automatically. Retrying in 60 seconds...'
             );
 
-            await new Promise((resolve) => setTimeout(resolve, 60000));
+            await new Promise((resolve) => setTimeout(resolve, 60_000));
 
             console.info('🔄 Retrying commit after rate limit wait...');
             await createCommitWithRetry(input, retries - 1);
