@@ -38,7 +38,7 @@ jobs:
         steps:
             - name: Generate GitHub App Token
               id: github-app-auth
-              uses: actions/create-github-app-token@v1
+              uses: actions/create-github-app-token@v2
               with:
                   app-id: ${{ vars.AZLE_BOT_ID }}
                   private-key: ${{ secrets.AZLE_BOT_KEY }}
