@@ -12,7 +12,7 @@ on:
         - cron: '0 10 * * *'
 
 permissions:
-    contents: write
+    contents: read
 
 jobs:
     determine-prefix:
@@ -35,6 +35,8 @@ jobs:
 
     prepare-maintenance:
         name: Prepare Maintenance
+        permissions:
+            contents: write
         needs:
             - create-branch-prefix
         runs-on: ubuntu-latest
@@ -84,6 +86,8 @@ jobs:
 
     update-test-dependencies:
         name: Update dependencies for ${{ matrix.test.name }}
+        permissions:
+            contents: write
         needs:
             - prepare-maintenance
             - create-branch-prefix
@@ -143,6 +147,8 @@ jobs:
                   commit-message: 'Example/test maintenance: update dependencies'
 
     squash-branches:
+        permissions:
+            contents: write
         needs:
             - update-test-dependencies
             - create-branch-prefix
