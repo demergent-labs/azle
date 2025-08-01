@@ -57,7 +57,8 @@
         "jssha": "^3.3.1",
         "tsx": "^4.20.3",
         "typescript": "^5.8.3",
-        "uuid": "^11.1.0"
+        "uuid": "^11.1.0",
+        "zwitterion": "^0.47.0"
     },
     "devDependencies": {
         "@dfinity/identity": "^3.1.0",
