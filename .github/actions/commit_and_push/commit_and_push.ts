@@ -23,18 +23,11 @@ type Addition = {
     contents: string;
 };
 
-type EnvironmentVariables = {
-    GITHUB_REPOSITORY: string;
-    BRANCH_NAME: string;
-    COMMIT_MESSAGE: string;
-    ADD_FILES: string;
-};
-
 async function commitAndPush(): Promise<void> {
-    const { ADD_FILES, BRANCH_NAME, COMMIT_MESSAGE, GITHUB_REPOSITORY } =
+    const { addFiles, branchName, commitMessage, githubRepository } =
         extractEnvironmentVariables();
 
-    execSync(`git add ${ADD_FILES}`, { stdio: 'inherit' });
+    execSync(`git add ${addFiles}`, { stdio: 'inherit' });
 
     const changedFiles = getChangedFiles();
 
@@ -52,9 +45,9 @@ async function commitAndPush(): Promise<void> {
     const input = createInput(
         additions,
         expectedHeadOid,
-        BRANCH_NAME,
-        COMMIT_MESSAGE,
-        GITHUB_REPOSITORY
+        branchName,
+        commitMessage,
+        githubRepository
     );
 
     await createCommitWithRetry(input);
@@ -62,7 +55,12 @@ async function commitAndPush(): Promise<void> {
     console.info('✅ Commit created successfully!');
 }
 
-function extractEnvironmentVariables(): EnvironmentVariables {
+function extractEnvironmentVariables(): {
+    githubRepository: string;
+    branchName: string;
+    commitMessage: string;
+    addFiles: string;
+} {
     if (process.env.GITHUB_REPOSITORY === undefined) {
         throw new Error(
             'Missing required environment variable: GITHUB_REPOSITORY'
@@ -80,10 +78,10 @@ function extractEnvironmentVariables(): EnvironmentVariables {
     }
 
     return {
-        GITHUB_REPOSITORY: process.env.GITHUB_REPOSITORY.trim(),
-        BRANCH_NAME: process.env.BRANCH_NAME.trim(),
-        COMMIT_MESSAGE: process.env.COMMIT_MESSAGE.trim(),
-        ADD_FILES: process.env.ADD_FILES?.trim() ?? '--all'
+        githubRepository: process.env.GITHUB_REPOSITORY.trim(),
+        branchName: process.env.BRANCH_NAME.trim(),
+        commitMessage: process.env.COMMIT_MESSAGE.trim(),
+        addFiles: process.env.ADD_FILES?.trim() ?? '--all'
     };
 }
 
