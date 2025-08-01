@@ -1,44 +1,42 @@
 # Benchmarks for bitcoinjs_lib
 
 ## Current benchmarks Azle version: 0.32.0
-
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init                | 48_116_950_344 | 38_447_370_137 | $0.0511223147 | $51_122.31        | <font color="green">-712_993_443</font> |
-| 1   | http_request_update | 54_994_000     | 22_587_600     | $0.0000300341 | $30.03            | <font color="red">+174_470</font>       |
-| 2   | http_request_update | 939_108_541    | 376_233_416    | $0.0005002663 | $500.26           | <font color="red">+2_495_010</font>     |
-| 3   | http_request_update | 6_820_814_529  | 5_128_915_811  | $0.0068197655 | $6_819.76         | <font color="red">+8_827_403</font>     |
-| 4   | http_request_update | 6_667_579_774  | 5_067_621_909  | $0.0067382648 | $6_738.26         | <font color="red">+8_524_910</font>     |
-| 5   | http_request_update | 12_391_067_956 | 9_757_017_182  | $0.0129736130 | $12_973.61        | <font color="red">+123_240</font>       |
-| 6   | http_request_update | 939_212_882    | 376_275_152    | $0.0005003218 | $500.32           | <font color="red">+2_571_706</font>     |
-| 7   | http_request_update | 3_341_415_599  | 2_537_156_239  | $0.0033735805 | $3_373.58         | <font color="red">+278_584</font>       |
-| 8   | http_request_update | 11_327_721_920 | 8_931_678_768  | $0.0118761853 | $11_876.18        | <font color="green">-240_656</font>     |
-| 9   | http_request_update | 11_334_413_166 | 8_934_355_266  | $0.0118797442 | $11_879.74        | <font color="red">+31_890</font>        |
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | 1 | 47_704_578 | 52_704_578 | $0.0000722053 | $72.20 | <font color="green">-48_782_239_209</font> |
+| 1 | 1 | 924_840_096 | 929_840_096 | $0.0012738809 | $1_273.88 | <font color="red">+870_020_566</font> |
+| 2 | 1 | 5_219_566_601 | 5_224_566_601 | $0.0071576562 | $7_157.65 | <font color="red">+4_282_953_070</font> |
+| 3 | 1 | 5_067_380_619 | 5_072_380_619 | $0.0069491614 | $6_949.16 | <font color="green">-1_744_606_507</font> |
+| 4 | 1 | 8_209_388_029 | 8_214_388_029 | $0.0112537116 | $11_253.71 | <font color="red">+1_550_333_165</font> |
+| 5 | 1 | 924_615_767 | 929_615_767 | $0.0012735736 | $1_273.57 | <font color="green">-11_466_328_949</font> |
+| 6 | 1 | 1_770_622_339 | 1_775_622_339 | $0.0024326026 | $2_432.60 | <font color="red">+833_981_163</font> |
+| 7 | 1 | 7_336_017_860 | 7_341_017_860 | $0.0100571945 | $10_057.19 | <font color="red">+3_994_880_845</font> |
+| 8 | 1 | 7_342_169_846 | 7_347_169_846 | $0.0100656227 | $10_065.62 | <font color="green">-3_985_792_730</font> |
 
 ## Baseline benchmarks Azle version: 0.30.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | init | 48_829_943_787 | 48_834_943_787 | $0.0669038730 | $66_903.87 |
+| 1 | http_request_update | 54_819_530 | 59_819_530 | $0.0000819528 | $81.95 |
+| 2 | http_request_update | 936_613_531 | 941_613_531 | $0.0012900105 | $1_290.01 |
+| 3 | http_request_update | 6_811_987_126 | 6_816_987_126 | $0.0093392724 | $9_339.27 |
+| 4 | http_request_update | 6_659_054_864 | 6_664_054_864 | $0.0091297552 | $9_129.75 |
+| 5 | http_request_update | 12_390_944_716 | 12_395_944_716 | $0.0169824443 | $16_982.44 |
+| 6 | http_request_update | 936_641_176 | 941_641_176 | $0.0012900484 | $1_290.04 |
+| 7 | http_request_update | 3_341_137_015 | 3_346_137_015 | $0.0045842077 | $4_584.20 |
+| 8 | http_request_update | 11_327_962_576 | 11_332_962_576 | $0.0155261587 | $15_526.15 |
+| 9 | http_request_update | 11_334_381_276 | 11_339_381_276 | $0.0155349523 | $15_534.95 |
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- |
-| 0   | init                | 48_829_943_787 | 38_732_567_514 | $0.0515015330 | $51_501.53        |
-| 1   | http_request_update | 54_819_530     | 22_517_812     | $0.0000299413 | $29.94            |
-| 2   | http_request_update | 936_613_531    | 375_235_412    | $0.0004989393 | $498.93           |
-| 3   | http_request_update | 6_811_987_126  | 5_125_384_850  | $0.0068150705 | $6_815.07         |
-| 4   | http_request_update | 6_659_054_864  | 5_064_211_945  | $0.0067337307 | $6_733.73         |
-| 5   | http_request_update | 12_390_944_716 | 9_756_967_886  | $0.0129735475 | $12_973.54        |
-| 6   | http_request_update | 936_641_176    | 375_246_470    | $0.0004989540 | $498.95           |
-| 7   | http_request_update | 3_341_137_015  | 2_537_044_806  | $0.0033734324 | $3_373.43         |
-| 8   | http_request_update | 11_327_962_576 | 8_931_775_030  | $0.0118763133 | $11_876.31        |
-| 9   | http_request_update | 11_334_381_276 | 8_934_342_510  | $0.0118797272 | $11_879.72        |
+
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).
