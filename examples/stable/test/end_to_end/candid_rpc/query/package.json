@@ -4,6 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.32.0"
+        "azle": "0.32.0",
+        "zwitterion": "^0.47.0"
     }
 }
