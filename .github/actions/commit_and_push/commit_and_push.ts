@@ -21,15 +21,6 @@ type CreateCommitInput = {
     expectedHeadOid: string;
 };
 
-type CommitResponse = {
-    createCommitOnBranch: {
-        commit: {
-            oid: string;
-            url: string;
-        };
-    };
-};
-
 function verifyEnvironmentVariables(): void {
     // Validate required environment variables
     const requiredEnvVars = [
@@ -115,14 +106,12 @@ async function commitAndPush(): Promise<void> {
         expectedHeadOid
     };
 
-    const response = await createCommitWithRetry(input);
+    await createCommitWithRetry(input);
 
     console.log('✅ Commit created successfully!');
-    console.log(`🔗 Commit URL: ${response.createCommitOnBranch.commit.url}`);
-    console.log(`🆔 Commit SHA: ${response.createCommitOnBranch.commit.oid}`);
 }
 
-function createCommit(input: CreateCommitInput): CommitResponse {
+function createCommit(input: CreateCommitInput): void {
     // Build GraphQL payload
     const payload = {
         query: `
@@ -152,8 +141,8 @@ function createCommit(input: CreateCommitInput): CommitResponse {
             }
         });
 
-        const response: CommitResponse = JSON.parse(responseJson);
-        return response;
+        const response = JSON.parse(responseJson);
+        console.log(response);
     } finally {
         // Cleanup temp file
         try {
@@ -167,9 +156,9 @@ function createCommit(input: CreateCommitInput): CommitResponse {
 async function createCommitWithRetry(
     input: CreateCommitInput,
     retries = 1
-): Promise<CommitResponse> {
+): Promise<void> {
     try {
-        return createCommit(input);
+        createCommit(input);
     } catch (error: any) {
         // Handle rate limit errors specifically
         const errorMessage = error.message || error.toString();
@@ -182,7 +171,7 @@ async function createCommitWithRetry(
             await new Promise((resolve) => setTimeout(resolve, 60000));
 
             console.log('🔄 Retrying commit after rate limit wait...');
-            return createCommitWithRetry(input, retries - 1);
+            createCommitWithRetry(input, retries - 1);
         }
 
         console.error('GraphQL operation failed:', errorMessage);
