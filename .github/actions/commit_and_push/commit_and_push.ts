@@ -151,7 +151,6 @@ async function createCommit(input: CreateCommitInput): Promise<void> {
                     createCommitOnBranch(input: $input) {
                         commit {
                             oid
-                            url
                         }
                     }
                 }
