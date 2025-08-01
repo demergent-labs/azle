@@ -4,17 +4,12 @@ inputs:
     branch-name:
         description: 'Name of the branch to create'
         required: true
-    token:
-        description: 'GITHUB_TOKEN for git operations (branch creation)'
-        required: true
 
 runs:
     using: composite
     steps:
         - name: Create and push branch
           shell: bash
-          env:
-              GITHUB_TOKEN: ${{ inputs.github-token }}
           run: |
               git fetch origin
               git checkout -b ${{ inputs.branch-name }}
