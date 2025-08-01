@@ -53,6 +53,7 @@ async function commitAndPush(): Promise<void> {
 function verifyEnvironmentVariables(): void {
     // Validate required environment variables
     const requiredEnvVars = [
+        'GH_TOKEN',
         'BRANCH_NAME',
         'COMMIT_MESSAGE',
         'GITHUB_REPOSITORY'
@@ -164,7 +165,11 @@ function createCommit(input: CreateCommitInput): void {
     try {
         // Execute GraphQL via gh CLI
         const responseJson = execSync(`gh api graphql --input="${tempFile}"`, {
-            encoding: 'utf8'
+            encoding: 'utf8',
+            env: {
+                ...process.env,
+                GH_TOKEN: process.env.GH_TOKEN
+            }
         });
 
         const response = JSON.parse(responseJson);
