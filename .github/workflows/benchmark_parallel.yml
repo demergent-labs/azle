@@ -15,18 +15,6 @@ on:
                 required: false
                 type: string
                 default: ''
-            signing-key-id:
-                required: true
-                type: string
-                description: 'Signing key ID to use for signing commits'
-
-        secrets:
-            GPG_SIGNING_KEY:
-                required: true
-            GH_TOKEN:
-                required: true
-            LASTMJS_GITHUB_TOKEN:
-                required: true
 
 permissions:
     contents: read
@@ -55,12 +43,11 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-benchmarks:
-        needs: prepare-benchmark
         name: Run benchmarks for ${{ matrix.test.name }}
+        permissions:
+            contents: write
+        needs: prepare-benchmark
         runs-on: ubuntu-latest
-        env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
@@ -69,7 +56,6 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
@@ -127,10 +113,11 @@ jobs:
                   prefix: ${{ inputs.branch-prefix }}
                   path: ${{ matrix.test.displayPath }}
 
+            - uses: ./.github/actions/create_branch
+              with:
+                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
+
             - uses: ./.github/actions/commit_and_push
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  create-branch: 'true'
-                  signing-key-id: ${{ inputs.signing-key-id }}

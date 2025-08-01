@@ -1,0 +1,16 @@
+name: Create Branch
+description: 'Creates a new git branch and pushes it to origin'
+inputs:
+    branch-name:
+        description: 'Name of the branch to create'
+        required: true
+
+runs:
+    using: composite
+    steps:
+        - name: Create and push branch
+          shell: bash
+          run: |
+              git fetch origin
+              git checkout -b ${{ inputs.branch-name }}
+              git push origin ${{ inputs.branch-name }}

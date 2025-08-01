@@ -1,13 +1,9 @@
 name: Commit and Push Changes
-description: 'Configures git, commits changes, and pushes to a new branch'
+description: 'Commits and pushes to an existing branch'
 inputs:
     branch-name:
         description: 'Name of the branch to push to'
         required: true
-    create-branch:
-        description: 'Whether to create the branch specified by branch-name'
-        required: false
-        default: 'false'
     commit-message:
         description: 'Commit message'
         required: true
@@ -15,42 +11,20 @@ inputs:
         description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
         required: false
         default: '--all'
-    gpg-signing-key:
-        description: 'The GPG signing key to use for signing commits'
-        required: true
-    signing-key-id:
-        description: 'The GPG signing key ID to configure for git'
-        required: true
+
 runs:
     using: composite
     steps:
-        - uses: ./.github/actions/configure_git
-          with:
-              gpg-signing-key: ${{ inputs.gpg-signing-key }}
-              signing-key-id: ${{ inputs.signing-key-id }}
+        - uses: ./.github/actions/setup_node
 
-        - name: Commit and push changes
+        - run: npm install uuid
           shell: bash
-          run: |
-              # Create new branch if requested
-              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
-                  git switch -c "${{ inputs.branch-name }}"
-              else
-                  git switch "${{ inputs.branch-name }}"
-              fi
 
-              # Show status of working directory
-              echo "Current git status:"
-              git status
-
-              # Add and commit changes if there are any
-              echo "Adding files: ${{ inputs.add-files }}"
-              git add "${{ inputs.add-files }}"
-
-              if ! git diff --cached --quiet; then
-                git commit -m "${{ inputs.commit-message }}"
-                git push origin "${{ inputs.branch-name }}"
-              else
-                # The above commands exit with 1 if there are no changes to commit
-                echo "No changes to commit. Skipping commit and push."
-              fi
+        - name: Commit via GraphQL Script
+          shell: bash
+          env:
+              GH_TOKEN: ${{ github.token }}
+              BRANCH_NAME: ${{ inputs.branch-name }}
+              COMMIT_MESSAGE: ${{ inputs.commit-message }}
+              ADD_FILES: ${{ inputs.add-files }}
+          run: npx tsx ./.github/actions/commit_and_push/commit_and_push.ts

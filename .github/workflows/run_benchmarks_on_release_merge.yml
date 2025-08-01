@@ -21,9 +21,9 @@ jobs:
 
     run-benchmarks:
         name: Run Benchmarks
-        needs: determine-context
         permissions:
             contents: write
+        needs: determine-context
         if: needs.determine-context.outputs.should-run == 'true'
         uses: ./.github/workflows/benchmark.yml
         with:
@@ -31,6 +31,4 @@ jobs:
             exclude-unstable-benchmarks: false
             exclude-release-only-benchmarks: false
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+            AZLE_BOT_PRIVATE_KEY: ${{ secrets.AZLE_BOT_PRIVATE_KEY }}

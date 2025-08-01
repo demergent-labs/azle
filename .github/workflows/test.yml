@@ -269,8 +269,8 @@ jobs:
         needs:
             - run-tests
             - top-level-checks
-        runs-on: ubuntu-latest
         if: success()
+        runs-on: ubuntu-latest
         steps:
             - run: exit 0
 
@@ -279,7 +279,7 @@ jobs:
         needs:
             - run-tests
             - top-level-checks
-        runs-on: ubuntu-latest
         if: failure()
+        runs-on: ubuntu-latest
         steps:
             - run: exit 1

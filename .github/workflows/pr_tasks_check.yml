@@ -15,8 +15,10 @@ permissions:
 jobs:
     pr_tasks_check:
         name: All PR checkboxes marked completed
-        runs-on: ubuntu-latest
         if: github.event.pull_request.draft == false
+        runs-on: ubuntu-latest
+        env:
+            GH_TOKEN: ${{ github.token }}
         steps:
             - uses: actions/checkout@v4
 
@@ -36,5 +38,3 @@ jobs:
                   fi
 
                   echo "All tasks completed"
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

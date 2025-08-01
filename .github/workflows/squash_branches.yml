@@ -11,16 +11,6 @@ on:
             commit-message:
                 required: true
                 type: string
-            signing-key-id:
-                required: true
-                type: string
-        secrets:
-            GPG_SIGNING_KEY:
-                required: true
-            GH_TOKEN:
-                required: true
-            LASTMJS_GITHUB_TOKEN:
-                required: true
 
 permissions:
     contents: read
@@ -28,21 +18,15 @@ permissions:
 jobs:
     squash:
         name: Squash Branches
+        permissions:
+            contents: write
         runs-on: ubuntu-latest
-        env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
                   fetch-depth: 0
 
-            - uses: ./.github/actions/configure_git
-              with:
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: ${{ inputs.signing-key-id }}
             - name: Collect branches
               id: collect-branches
               run: |
@@ -68,8 +52,6 @@ jobs:
                   git fetch origin $BRANCHES_TO_FETCH
 
             - name: Squash changes
-              env:
-                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
 
@@ -78,14 +60,11 @@ jobs:
                     git merge --squash $branch
                   done
 
-                  # Check if there are any changes to commit
-                  if git diff --staged --quiet; then
-                    echo "No changes to commit"
-                  else
-                    # Create a merge commit with a descriptive message
-                    git commit -am "${{ inputs.commit-message }}"
-                    git push origin HEAD:$CURRENT_BRANCH
-                  fi
+            - name: Commit squashed changes
+              uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: ${{ inputs.base-branch }}
+                  commit-message: ${{ inputs.commit-message }}
 
             - name: Delete branches
               run: |
