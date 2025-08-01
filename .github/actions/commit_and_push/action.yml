@@ -11,10 +11,6 @@ inputs:
         description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
         required: false
         default: '--all'
-    token:
-        description: 'GitHub App token with repo access'
-        required: false
-        default: ${{ github.token }}
 
 runs:
     using: composite
