@@ -56,17 +56,11 @@ async function commitAndPush(): Promise<void> {
 }
 
 function extractEnvironmentVariables(): {
-    githubRepository: string;
+    addFiles: string;
     branchName: string;
     commitMessage: string;
-    addFiles: string;
+    githubRepository: string;
 } {
-    if (process.env.GITHUB_REPOSITORY === undefined) {
-        throw new Error(
-            'Missing required environment variable: GITHUB_REPOSITORY'
-        );
-    }
-
     if (process.env.BRANCH_NAME === undefined) {
         throw new Error('Missing required environment variable: BRANCH_NAME');
     }
@@ -77,11 +71,17 @@ function extractEnvironmentVariables(): {
         );
     }
 
+    if (process.env.GITHUB_REPOSITORY === undefined) {
+        throw new Error(
+            'Missing required environment variable: GITHUB_REPOSITORY'
+        );
+    }
+
     return {
-        githubRepository: process.env.GITHUB_REPOSITORY.trim(),
+        addFiles: process.env.ADD_FILES?.trim() ?? '--all',
         branchName: process.env.BRANCH_NAME.trim(),
         commitMessage: process.env.COMMIT_MESSAGE.trim(),
-        addFiles: process.env.ADD_FILES?.trim() ?? '--all'
+        githubRepository: process.env.GITHUB_REPOSITORY.trim()
     };
 }
 
