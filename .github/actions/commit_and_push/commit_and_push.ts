@@ -137,7 +137,7 @@ function createCommit(input: CreateCommitInput): void {
             encoding: 'utf8',
             env: {
                 ...process.env,
-                GITHUB_TOKEN: process.env.GITHUB_TOKEN
+                GH_TOKEN: process.env.GH_TOKEN
             }
         });
 

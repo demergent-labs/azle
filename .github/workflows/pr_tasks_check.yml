@@ -36,5 +36,3 @@ jobs:
                   fi
 
                   echo "All tasks completed"
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
