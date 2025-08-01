@@ -4,7 +4,7 @@
         "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
-        "azle": "0.32.0",
+        "azle": "0.33.0-rc.25",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d1ccd00dc75e49609949ed7910a4e610c49027b7",
         "drizzle-orm": "^0.39.1",
         "express": "^4.18.2",
