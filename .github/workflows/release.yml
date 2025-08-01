@@ -25,8 +25,6 @@ jobs:
         needs:
             - create-branch-prefix
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ github.token }}
         outputs:
             release-version: ${{ inputs.release-version }}
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
@@ -96,8 +94,6 @@ jobs:
             - prepare-release
             - create-branch-prefix
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ github.token }}
         strategy:
             fail-fast: false
             matrix:
@@ -178,8 +174,6 @@ jobs:
                   ref: ${{ github.ref }}
 
             - name: Create release
-              env:
-                  GH_TOKEN: ${{ github.token }}
               run: |
                   VERSION=${{ inputs.release-version }}
                   git tag $VERSION

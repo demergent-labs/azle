@@ -88,8 +88,6 @@ jobs:
             - prepare-maintenance
             - create-branch-prefix
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ github.token }}
         strategy:
             fail-fast: false
             matrix:
