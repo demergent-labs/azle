@@ -61,19 +61,21 @@ jobs:
                   echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
 
     perform-auto-merge:
-        permissions:
-            contents: read
-            pull-requests: write
         needs: evaluate-auto-merge-conditions
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ github.token }}
         steps:
+            - id: github-app-auth
+              uses: actions/create-github-app-token@v2
+              with:
+                  app-id: ${{ vars.AZLE_PR_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_PR_BOT_PRIVATE_KEY }}
+
             - name: Approve dependency update PR
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
 
             - name: Merge dependency update PR
               run: |
@@ -82,3 +84,4 @@ jobs:
                       --auto
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
