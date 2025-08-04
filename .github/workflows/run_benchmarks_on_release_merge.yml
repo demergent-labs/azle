@@ -31,4 +31,4 @@ jobs:
             exclude-unstable-benchmarks: false
             exclude-release-only-benchmarks: false
         secrets:
-            AZLE_BOT_PRIVATE_KEY: ${{ secrets.AZLE_BOT_PRIVATE_KEY }}
+            AZLE_PR_BOT_PRIVATE_KEY: ${{ secrets.AZLE_PR_BOT_PRIVATE_KEY }}

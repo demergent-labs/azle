@@ -23,7 +23,7 @@ jobs:
               id: determine-eligibility
               run: |
                   IS_DEPENDABOT_ACTOR="${{ github.actor == 'dependabot[bot]' }}"
-                  IS_LASTMJS_ACTOR="${{ github.actor == 'lastmjs' }}"
+                  IS_AZLE_CONTENT_BOT_ACTOR="${{ github.actor == 'azle-content-bot[bot]' }}"
                   HAS_DEPENDENCIES_LABEL="${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}"
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
 
@@ -38,7 +38,7 @@ jobs:
                   fi
 
                   HAS_TEMPLATE_UPDATE="false"
-                  if [[ "$HAS_DEPENDENCIES_LABEL" == "true" && "$IS_LASTMJS_ACTOR" == "true" && "$IS_TEMPLATE_UPDATE_COMMIT" == "true" ]]; then
+                  if [[ "$HAS_DEPENDENCIES_LABEL" == "true" && "$IS_AZLE_CONTENT_BOT_ACTOR" == "true" && "$IS_TEMPLATE_UPDATE_COMMIT" == "true" ]]; then
                       HAS_TEMPLATE_UPDATE="true"
                   fi
 
@@ -52,7 +52,7 @@ jobs:
                   echo "Actor: ${{ github.actor }}"
                   echo "Is template update commit: $IS_TEMPLATE_UPDATE_COMMIT"
                   echo "Has dependencies label: $HAS_DEPENDENCIES_LABEL"
-                  echo "Is lastmjs actor: $IS_LASTMJS_ACTOR"
+                  echo "Is azle-content-bot actor: $IS_AZLE_CONTENT_BOT_ACTOR"
                   echo "Is dependabot actor: $IS_DEPENDABOT_ACTOR"
                   echo "Is standard dependabot PR: $IS_STANDARD_DEPENDABOT_PR"
                   echo "Has template update: $HAS_TEMPLATE_UPDATE"
@@ -61,19 +61,21 @@ jobs:
                   echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
 
     perform-auto-merge:
-        permissions:
-            contents: read
-            pull-requests: write
         needs: evaluate-auto-merge-conditions
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ github.token }}
         steps:
+            - id: azle-pr-bot-token
+              uses: actions/create-github-app-token@v2
+              with:
+                  app-id: ${{ vars.AZLE_PR_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_PR_BOT_PRIVATE_KEY }}
+
             - name: Approve dependency update PR
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
+                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}
 
             - name: Merge dependency update PR
               run: |
@@ -82,3 +84,4 @@ jobs:
                       --auto
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
+                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}

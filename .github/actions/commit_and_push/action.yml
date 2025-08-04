@@ -11,6 +11,10 @@ inputs:
         description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
         required: false
         default: '--all'
+    token:
+        description: 'GitHub token'
+        required: false
+        default: ${{ github.token }}
 
 runs:
     using: composite
@@ -23,7 +27,7 @@ runs:
         - name: Commit via GraphQL Script
           shell: bash
           env:
-              GH_TOKEN: ${{ github.token }}
+              GH_TOKEN: ${{ inputs.token }}
               BRANCH_NAME: ${{ inputs.branch-name }}
               COMMIT_MESSAGE: ${{ inputs.commit-message }}
               ADD_FILES: ${{ inputs.add-files }}
