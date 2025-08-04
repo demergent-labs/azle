@@ -4,13 +4,14 @@ Here is a simple flow chart:
 graph TD;
     build.build-->stable.index.build;
     stable.index.build-->handleExtensionCommand;
-    handleExtensionCommand-->handleExtensionInstallCommand;
-    handleExtensionInstallCommand-->runExtensionInstallCommand;
-    runExtensionInstallCommand-->execSync.azle.src.stable.build.dfx_extension.install.sh;
+    handleExtensionCommand-->handleExtensionInstallCommand-->runExtensionInstallCommand
     stable.index.build-->handleDevCommand;
-    stable.index.build-->handleBuildCommand;
+    handleDevCommand-->runDevAuditCommand;
+    handleDevCommand-->handleDevSetupCommand-->runDevSetupCommand;
+    handleDevCommand-->handleDevTemplateCommand-->runDevTemplateCommand;
+    stable.index.build-->handleBuildCommand-->runBuildCommand-->getContext-->compileJavascript-->getCandidAndMethodMeta-->getWasmBinary;
     stable.index.build-->runVersionCommand;
     stable.index.build-->runCleanCommand;
-    stable.index.build-->handleNewCommand;
-    stable.index.build-->handleGenerateCommand;
+    stable.index.build-->handleNewCommand-->runNewCommand;
+    stable.index.build-->handleGenerateCommand-->runGenerateCommand;
 ```
