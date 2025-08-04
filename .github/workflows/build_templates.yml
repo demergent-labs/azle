@@ -42,8 +42,8 @@ jobs:
               id: github-app-auth
               uses: actions/create-github-app-token@v2
               with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_PRIVATE_KEY }}
+                  app-id: ${{ vars.AZLE_CONTENT_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_CONTENT_BOT_PRIVATE_KEY }}
 
             - uses: actions/checkout@v4
               with:
@@ -74,18 +74,4 @@ jobs:
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
-
-            # Cycle through ready -> draft -> ready to test to trigger workflows
-            - name: Mark PR as draft
-              if: ${{ github.event_name == 'pull_request' }}
-              env:
-                  GH_TOKEN: ${{ github.token }}
-              run: |
-                  gh pr ready --undo
-
-            - name: Mark PR as ready
-              if: ${{ github.event_name == 'pull_request' }}
-              env:
-                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
-              run: |
-                  gh pr ready
+                  token: ${{ steps.github-app-auth.outputs.token }}

@@ -30,7 +30,7 @@ on:
                 required: true
                 type: boolean
         secrets:
-            AZLE_BOT_PRIVATE_KEY:
+            AZLE_PR_BOT_PRIVATE_KEY:
                 required: true
 
 permissions:
@@ -150,8 +150,8 @@ jobs:
             - id: github-app-auth
               uses: actions/create-github-app-token@v2
               with:
-                  app-id: ${{ vars.AZLE_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_BOT_PRIVATE_KEY }}
+                  app-id: ${{ vars.AZLE_PR_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_PR_BOT_PRIVATE_KEY }}
 
             - uses: actions/checkout@v4
               with:
