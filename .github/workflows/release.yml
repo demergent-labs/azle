@@ -194,8 +194,7 @@ jobs:
             - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
-            - name: Generate GitHub App Token
-              id: github-app-auth
+            - id: azle-pr-bot-token
               uses: actions/create-github-app-token@v2
               with:
                   app-id: ${{ vars.AZLE_PR_BOT_ID }}
@@ -207,7 +206,7 @@ jobs:
 
             - name: Create Pull Request
               env:
-                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
+                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}
               run: |
                   gh pr create \
                     --base main \

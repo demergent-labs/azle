@@ -65,7 +65,7 @@ jobs:
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
         steps:
-            - id: github-app-auth
+            - id: azle-pr-bot-token
               uses: actions/create-github-app-token@v2
               with:
                   app-id: ${{ vars.AZLE_PR_BOT_ID }}
@@ -75,7 +75,7 @@ jobs:
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
+                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}
 
             - name: Merge dependency update PR
               run: |
@@ -84,4 +84,4 @@ jobs:
                       --auto
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
+                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}
