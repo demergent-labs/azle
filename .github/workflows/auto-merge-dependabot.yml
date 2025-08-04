@@ -71,6 +71,10 @@ jobs:
                   app-id: ${{ vars.AZLE_PR_BOT_ID }}
                   private-key: ${{ secrets.AZLE_PR_BOT_PRIVATE_KEY }}
 
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
+
             - name: Approve dependency update PR
               run: gh pr review --approve "$PR_NUMBER"
               env:
