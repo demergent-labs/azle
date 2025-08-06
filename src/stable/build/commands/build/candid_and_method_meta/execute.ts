@@ -3,7 +3,11 @@ import { CandidAndMethodMeta } from '#utils/types';
 export async function execute(
     wasmBinary: Uint8Array
 ): Promise<CandidAndMethodMeta> {
-    const wasmModule = new WebAssembly.Module(new Uint8Array(wasmBinary));
+    const wasmBinaryBuffer =
+        wasmBinary.buffer instanceof ArrayBuffer
+            ? wasmBinary.buffer
+            : new Uint8Array(wasmBinary);
+    const wasmModule = new WebAssembly.Module(wasmBinaryBuffer);
     const wasmInstance = new WebAssembly.Instance(wasmModule, {
         ic0: {
             accept_message: (): void => {},
