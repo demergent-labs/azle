@@ -11,5 +11,5 @@ export async function fetchFile(input: RequestInfo | URL): Promise<Response> {
     const path = `${url.hostname}${url.pathname}`;
     const contents = await readFile(path);
 
-    return new AzleFetchResponse(contents);
+    return new AzleFetchResponse(new Uint8Array(contents));
 }

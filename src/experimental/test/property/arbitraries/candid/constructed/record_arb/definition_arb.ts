@@ -169,6 +169,9 @@ function generateTypeObject(
 function generateRuntimeTypeObject(fields: Field[]): IDL.Type {
     const azleRecordConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeRecord => {
+            if (fieldDefinition.candidMeta.runtimeTypeObject === undefined) {
+                return acc;
+            }
             return {
                 ...acc,
                 [fieldName]: fieldDefinition.candidMeta.runtimeTypeObject
