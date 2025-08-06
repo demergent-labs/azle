@@ -64,8 +64,8 @@
         "@eslint/js": "^9.32.0",
         "@types/semver": "^7.7.0",
         "@types/uuid": "^10.0.0",
-        "@typescript-eslint/eslint-plugin": "^8.38.0",
-        "@typescript-eslint/parser": "^8.38.0",
+        "@typescript-eslint/eslint-plugin": "^8.39.0",
+        "@typescript-eslint/parser": "^8.39.0",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d1ccd00dc75e49609949ed7910a4e610c49027b7",
         "cuzz": "0.0.19",
         "eslint": "^9.32.0",
@@ -80,7 +80,7 @@
         "puppeteer": "^24.15.0",
         "semver": "^7.7.2",
         "ts-jest": "^29.4.1",
-        "typescript-eslint": "^8.38.0"
+        "typescript-eslint": "^8.39.0"
     },
     "lint-staged": {
         "*.{js,ts}": "eslint --cache --fix",
