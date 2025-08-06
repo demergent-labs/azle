@@ -65,11 +65,11 @@ jobs:
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
         steps:
-            - id: azle-pr-bot-token
+            - id: azle-auto-merge-bot-token
               uses: actions/create-github-app-token@v2
               with:
-                  app-id: ${{ vars.AZLE_PR_BOT_ID }}
-                  private-key: ${{ secrets.AZLE_PR_BOT_PRIVATE_KEY }}
+                  app-id: ${{ vars.AZLE_AUTO_MERGE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_AUTO_MERGE_BOT_PRIVATE_KEY }}
 
             - uses: actions/checkout@v4
               with:
@@ -79,7 +79,7 @@ jobs:
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}
+                  GH_TOKEN: ${{ steps.azle-auto-merge-bot-token.outputs.token }}
 
             - name: Merge dependency update PR
               run: |
@@ -88,4 +88,4 @@ jobs:
                       --auto
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
-                  GH_TOKEN: ${{ steps.azle-pr-bot-token.outputs.token }}
+                  GH_TOKEN: ${{ steps.azle-auto-merge-bot-token.outputs.token }}
