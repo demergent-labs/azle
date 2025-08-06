@@ -16,7 +16,7 @@ export async function ethersGetUrl(
     const response = await fetch(fetchRequest.url, {
         method: fetchRequest.method,
         headers: fetchRequest.headers,
-        body: fetchRequest.body
+        body: fetchRequest.body ? new Uint8Array(fetchRequest.body) : null
     });
 
     const fetchResponse = new ethers.FetchResponse(

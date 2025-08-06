@@ -76,7 +76,7 @@ export async function fetchHttp(
     //         );
     //     }) !== undefined;
 
-    const finalBody = unGZippedBody;
+    const finalBody = new Uint8Array(unGZippedBody);
 
     const responseHeaders = responseJson.headers.reduce(
         (acc, { name, value }) => {

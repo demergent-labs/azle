@@ -242,6 +242,9 @@ function generateTypeObject(
 function generateRuntimeTypeObject(fields: Field[]): IDL.Type {
     const azleVariantConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeVariant => {
+            if (fieldDefinition.candidMeta.runtimeTypeObject === undefined) {
+                return acc;
+            }
             return {
                 ...acc,
                 [fieldName]: fieldDefinition.candidMeta.runtimeTypeObject

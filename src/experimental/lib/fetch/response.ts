@@ -44,7 +44,7 @@ export class AzleFetchResponse {
             : new Uint8Array(result).buffer;
     }
 
-    async bytes(): Promise<Uint8Array> {
+    async bytes(): Promise<Uint8Array<ArrayBuffer>> {
         this.bodyUsed = true;
 
         if (this.body === null) {
