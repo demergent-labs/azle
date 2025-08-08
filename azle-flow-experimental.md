@@ -19,4 +19,7 @@ flowchart TD
     X1["AZLE_EXPERIMENTAL === 'true' -> true"]
     X2["Or command in {build, post-install, upload-assets} and dfx.json custom.experimental === true -> true"]
   end
+
+  %% Navigation links
+  click H "azle-flow-stable.md" "Open stable flow"
 ```

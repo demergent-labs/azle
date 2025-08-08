@@ -58,4 +58,7 @@ flowchart TD
     X4["Else -> false"]
   end
   C -. "references" .-> EXPLOGIC
+  %% Navigation links
+  click E "azle-flow-experimental.md" "Open experimental flow"
+  click F "azle-flow-stable.md" "Open stable flow"
 ```

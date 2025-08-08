@@ -36,4 +36,7 @@ flowchart TD
       K1 -->|"invalid"| N
     end
   end
+
+  %% Navigation links
+  click C "azle-flow-experimental.md" "Open experimental flow"
 ```
