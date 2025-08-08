@@ -20,8 +20,10 @@ jobs:
 
     prepare-release:
         name: Prepare Release
+        environment: azle-release
         permissions:
             contents: write
+            id-token: write
         needs:
             - create-branch-prefix
         runs-on: ubuntu-latest
@@ -37,6 +39,10 @@ jobs:
               with:
                   registry-url: https://registry.npmjs.org
                   node-auth-token: ${{ secrets.NPM_TOKEN }}
+
+            # TODO Trusted publishing (OIDC) requires npm CLI version 11.5.1 or later.
+            # TODO Until the version of node found in azle/package.json.azle.globalDependencies.node comes with npm 11.5.1 or later, we need to update npm here.
+            - run: npm install -g npm@latest
 
             - uses: ./.github/actions/setup_dfx
 
