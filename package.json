@@ -50,7 +50,7 @@
     },
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
-        "@dfinity/agent": "^3.1.0",
+        "@dfinity/agent": "^3.2.0",
         "@sinonjs/text-encoding": "0.7.3",
         "binaryen": "^116.0.0",
         "esbuild": "^0.25.8",
@@ -60,7 +60,7 @@
         "uuid": "^11.1.0"
     },
     "devDependencies": {
-        "@dfinity/identity": "^3.1.0",
+        "@dfinity/identity": "^3.2.0",
         "@eslint/js": "^9.32.0",
         "@types/semver": "^7.7.0",
         "@types/uuid": "^10.0.0",
