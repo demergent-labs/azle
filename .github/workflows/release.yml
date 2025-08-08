@@ -20,6 +20,7 @@ jobs:
 
     prepare-release:
         name: Prepare Release
+        environment: azle-release
         permissions:
             contents: write
             id-token: write
