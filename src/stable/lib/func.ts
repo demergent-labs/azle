@@ -7,5 +7,5 @@ export type GenericFuncArgs = [IDL.Type, ...IDL.Type[]] | [];
 export function toFuncArgs(types?: IDL.Type[]): GenericFuncArgs {
     if (types === undefined) return [];
     if (Array.isArray(types)) return types as GenericFuncArgs;
-    throw new Error('toArgsTuple expected an array of IDL.Type or undefined');
+    throw new Error('toFuncArgs expected IDL.Type[] or undefined');
 }
