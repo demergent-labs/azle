@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { GenericFuncArgs, toArgsTuple } from '#lib/func';
+import { GenericFuncArgs, toFuncArgs } from '#lib/func';
 import { MethodMeta } from '#utils/types';
 
 import { idlToString } from '../did_file';
@@ -86,7 +86,7 @@ export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
             context
         );
     } else {
-        const paramIdlTypes = toArgsTuple(
+        const paramIdlTypes = toFuncArgs(
             canisterMethodMode === 'query' ||
                 canisterMethodMode === 'update' ||
                 canisterMethodMode === 'init' ||

@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { toArgsTuple } from '#lib/func';
+import { toFuncArgs } from '#lib/func';
 import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
@@ -106,5 +106,5 @@ function generateRuntimeTypeObject(
     const returnTypeObject =
         returnType.candidMeta.runtimeTypeObject ?? IDL.Empty;
 
-    return IDL.Func(toArgsTuple(paramTypeObjects), [returnTypeObject], [mode]);
+    return IDL.Func(toFuncArgs(paramTypeObjects), [returnTypeObject], [mode]);
 }
