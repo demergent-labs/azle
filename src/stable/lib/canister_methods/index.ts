@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
+import { GenericFuncArgs, toFuncArgs } from '#lib/func';
 import { MethodMeta } from '#utils/types';
 
 import { idlToString } from '../did_file';
@@ -26,7 +27,7 @@ export type CanisterClassMeta = {
     };
     canisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
     canisterMethodsIndex: number;
-    initAndPostUpgradeIdlTypes: IDL.Type[];
+    initAndPostUpgradeIdlTypes: GenericFuncArgs;
     methodMeta: MethodMeta;
 };
 
@@ -85,14 +86,14 @@ export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
             context
         );
     } else {
-        const paramIdlTypes = (
+        const paramIdlTypes = toFuncArgs(
             canisterMethodMode === 'query' ||
-            canisterMethodMode === 'update' ||
-            canisterMethodMode === 'init' ||
-            canisterMethodMode === 'postUpgrade'
-                ? param1
+                canisterMethodMode === 'update' ||
+                canisterMethodMode === 'init' ||
+                canisterMethodMode === 'postUpgrade'
+                ? (param1 as IDL.Type[])
                 : undefined
-        ) as IDL.Type[] | undefined;
+        );
         const returnIdlType = (
             canisterMethodMode === 'query' || canisterMethodMode === 'update'
                 ? param2
@@ -138,7 +139,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
     originalMethod: OriginalMethod<This, Args, Return>,
     context: Context<This, Args, Return>,
-    paramIdlTypes?: IDL.Type[],
+    paramIdlTypes?: GenericFuncArgs,
     returnIdlType?: IDL.Type,
     options?: QueryOptions | UpdateOptions | InitOptions | PostUpgradeOptions
 ): void {
@@ -370,8 +371,8 @@ function isDecoratorOverloadedWithoutParams<
  * @throws {Error} If methods have mismatched parameters or if invalid number of methods
  */
 function verifyInitAndPostUpgradeHaveTheSameParams(
-    a: IDL.Type[],
-    b: IDL.Type[]
+    a: GenericFuncArgs,
+    b: GenericFuncArgs
 ): void {
     const aSignature = idlToString(IDL.Func(a, []));
     const bSignature = idlToString(IDL.Func(b, []));

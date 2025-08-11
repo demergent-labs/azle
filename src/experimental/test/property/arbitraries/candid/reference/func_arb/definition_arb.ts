@@ -2,6 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
+import { toFuncArgs } from '#lib/func';
 import { IDL } from '#lib/index';
 
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -190,7 +191,7 @@ function generateRuntimeTypeObject(
 
     // TODO IDL.Empty is a placeholder for void...not quite correct
     return IDL.Func(
-        params,
+        toFuncArgs(params),
         [returnCandid.candidMeta.runtimeTypeObject ?? IDL.Empty],
         [mode]
     );
