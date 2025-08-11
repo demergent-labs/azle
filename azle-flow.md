@@ -61,4 +61,5 @@ flowchart TD
   %% Navigation links
   click E "azle-flow-experimental.md" "Open experimental flow"
   click F "azle-flow-stable.md" "Open stable flow"
+  click P "azle-build-flow.md" "Open build command overview"
 ```
