@@ -61,7 +61,6 @@ jobs:
         needs: get-test-infos
         runs-on: ${{ matrix.os }}
         env:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
             AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ''
