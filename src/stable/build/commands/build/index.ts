@@ -17,6 +17,7 @@ export async function runCommand(
     const { candidPath, canisterPath, main, wasmBinaryPath, wasmData } =
         await getContext(canisterName, canisterConfig);
 
+    // Clear out any old build artifacts for this canister
     await rm(canisterPath, { recursive: true, force: true });
 
     const javaScript = await compileJavaScript(main);
