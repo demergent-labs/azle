@@ -5,6 +5,25 @@ import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
 import { version } from '../../../../../package.json';
 
+/**
+ * Collects build context for a canister using `dfx.json` and the environment.
+ *
+ * Returned fields:
+ * - `canisterPath`: Directory under the dfx root at `.azle/<canisterName>` where
+ *   most build artifacts are stored.
+ * - `candidPath`: Path to the canister's Candid `.did` file. Sourced from the
+ *   `CANISTER_CANDID_PATH` environment variable.
+ * - `main`: Entrypoint file for the canister, taken from `dfx.json` (`canisterConfig.main`).
+ * - `wasmBinaryPath`: Full path to the compiled Wasm binary `${canisterPath}/${canisterName}.wasm`
+ * - `wasmData`: Small data bundle embedded into the Wasm that the runtime reads at startup.
+ *
+ * @param canisterName - The canister's name as declared in dfx.json.
+ * @param canisterConfig - The canister configuration from dfx.json.
+ * @returns A `Context` with paths and metadata that guide later build steps; no side effects.
+ * @throws If the canister `main` entrypoint is missing in the provided config.
+ * @throws If the `CANISTER_CANDID_PATH` environment variable is not defined.
+ * @throws If required environment variables are missing (as validated by `getEnvVars`).
+ */
 export async function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
