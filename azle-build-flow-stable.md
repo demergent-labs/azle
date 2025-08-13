@@ -4,7 +4,7 @@
 flowchart TD
   A["runBuildCommand(canisterName, canisterConfig, ioType)"] --> B["getContext(canisterName, canisterConfig)"]
   B -->|returns| C["{candidPath, canisterPath, main, wasmBinaryPath, wasmData}"]
-  C --> D["rm(canisterPath) recursive"]
+  C --> D["remove old build artifacts from canisterPath"]
   D --> E["compileJavaScript(main)"]
   E --> F["write main.js to canisterPath"]
   F --> G["getCandidAndMethodMeta(candid_gen, candidPath, javaScript, ioType, wasmData)"]
