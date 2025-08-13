@@ -1,6 +1,4 @@
-import { IDL } from '@dfinity/candid';
-
-import { GenericFuncArgs } from '#lib/func';
+import { GenericIdlFuncArgs, IDL } from '@dfinity/candid';
 
 import { visitFunc } from './visit/func';
 import { visitOpt } from './visit/opt';
@@ -24,7 +22,7 @@ export type VisitorData = {
     /** Indicates if this is the first/primary service being processed */
     isFirstService: boolean;
     /** Collection of IDL func argument types for \@init and \@postUpgrade methods */
-    initAndPostUpgradeParamIdlTypes: GenericFuncArgs;
+    initAndPostUpgradeParamIdlTypes: GenericIdlFuncArgs;
 };
 
 /**
