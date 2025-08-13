@@ -6,6 +6,6 @@
         "azle": "0.32.0"
     },
     "devDependencies": {
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#e43744c9d425d9e1dfc9dbc0def0d332519df6e5"
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#570f2341e4008956d0be385dfffac046f5af922d"
     }
 }
