@@ -7,7 +7,7 @@
         "azle": "0.32.0"
     },
     "devDependencies": {
-        "cuzz": "^0.0.14",
+        "cuzz": "^0.0.22",
         "jest": "^30.0.4",
         "ts-jest": "^29.4.0"
     }

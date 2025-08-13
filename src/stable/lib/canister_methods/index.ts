@@ -1,6 +1,6 @@
-import { IDL } from '@dfinity/candid';
+import { GenericIdlFuncArgs, IDL } from '@dfinity/candid';
 
-import { GenericFuncArgs, toFuncArgs } from '#lib/func';
+import { toFuncArgs } from '#lib/func';
 import { MethodMeta } from '#utils/types';
 
 import { idlToString } from '../did_file';
@@ -27,7 +27,7 @@ export type CanisterClassMeta = {
     };
     canisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
     canisterMethodsIndex: number;
-    initAndPostUpgradeIdlTypes: GenericFuncArgs;
+    initAndPostUpgradeIdlTypes: GenericIdlFuncArgs;
     methodMeta: MethodMeta;
 };
 
@@ -139,7 +139,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
     originalMethod: OriginalMethod<This, Args, Return>,
     context: Context<This, Args, Return>,
-    paramIdlTypes?: GenericFuncArgs,
+    paramIdlTypes?: GenericIdlFuncArgs,
     returnIdlType?: IDL.Type,
     options?: QueryOptions | UpdateOptions | InitOptions | PostUpgradeOptions
 ): void {
@@ -371,8 +371,8 @@ function isDecoratorOverloadedWithoutParams<
  * @throws {Error} If methods have mismatched parameters or if invalid number of methods
  */
 function verifyInitAndPostUpgradeHaveTheSameParams(
-    a: GenericFuncArgs,
-    b: GenericFuncArgs
+    a: GenericIdlFuncArgs,
+    b: GenericIdlFuncArgs
 ): void {
     const aSignature = idlToString(IDL.Func(a, []));
     const bSignature = idlToString(IDL.Func(b, []));
