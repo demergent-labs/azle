@@ -12,9 +12,13 @@ flowchart TD
   subgraph EXP ["Experimental Router (src/experimental/build/index.ts)"]
     direction TB
     E --> G{"command?"}
-    G -->|"post-install"| H["handlePostInstallCommand -> runUploadAssetsCommand()"]
-    G -->|"upload-assets"| I["handleUploadAssetsCommand -> runUploadAssetsCommand()"]
-    G -->|"build"| J["handleBuildCommand -> getCanisterConfig -> runBuildCommand(canisterName, config, ioType)"]
+    G -->|"post-install"| H1["handlePostInstallCommand"]
+    H1 --> H2["runUploadAssetsCommand()"]
+    G -->|"upload-assets"| I1["handleUploadAssetsCommand"]
+    I1 --> I2["runUploadAssetsCommand()"]
+    G -->|"build"| J1["handleBuildCommand"]
+    J1 --> J2["getCanisterConfig"]
+    J2 --> J3["runBuildCommand(canisterName, config, ioType)"]
     G -->|"other"| F
   end
 
@@ -24,9 +28,16 @@ flowchart TD
 
     K -->|"--version"| L["runVersionCommand()"]
     K -->|"clean"| M["runCleanCommand()"]
-    K -->|"generate"| N["handleGenerateCommand -> runGenerateCommand(candidPath)"]
-    K -->|"new"| O["handleNewCommand -> validate flags (--experimental, --http-server) -> select template -> runNewCommand(...)"]
-    K -->|"build"| P["handleBuildCommand -> getCanisterConfig -> checkForExperimentalDfxJsonFields -> runBuildCommand(canisterName, config, ioType)"]
+    K -->|"generate"| N1["handleGenerateCommand"]
+    N1 --> N2["runGenerateCommand(candidPath)"]
+    K -->|"new"| O1["handleNewCommand"]
+    O1 --> O2["validate flags (--experimental, --http-server)"]
+    O2 --> O3["select template"]
+    O3 --> O4["runNewCommand(...)"]
+    K -->|"build"| P1["handleBuildCommand"]
+    P1 --> P2["getCanisterConfig"]
+    P2 --> P3["checkForExperimentalDfxJsonFields"]
+    P3 --> P4["runBuildCommand(canisterName, config, ioType)"]
     K -->|"dev"| Q["handleDevCommand"]
     K -->|"extension"| R["handleExtensionCommand"]
     K -->|"post-install"| S["no-op (reserved)"]
@@ -37,8 +48,12 @@ flowchart TD
       direction TB
       Q --> Q1{"dev subcommand?"}
       Q1 -->|"audit"| Q2["runDevAuditCommand(ioType)"]
-      Q1 -->|"setup"| Q3["handleDevSetupCommand -> parse flags [dfx,node,rust,cargo-*,wasi2ic] -> runDevSetupCommand(flags)"]
-      Q1 -->|"template"| Q4["handleDevTemplateCommand -> runDevTemplateCommand('inherit') and/or runExperimentalDevTemplateCommand('inherit') -> generateLicenses(ioType)"]
+      Q1 -->|"setup"| Q3a["handleDevSetupCommand"]
+      Q3a --> Q3b["parse flags [dfx,node,rust,cargo-*,wasi2ic]"]
+      Q3b --> Q3c["runDevSetupCommand(flags)"]
+      Q1 -->|"template"| Q4a["handleDevTemplateCommand"]
+      Q4a --> Q4b["runDevTemplateCommand('inherit') and/or runExperimentalDevTemplateCommand('inherit')"]
+      Q4b --> Q4c["generateLicenses(ioType)"]
       Q1 -->|"invalid"| U
     end
 
@@ -61,5 +76,5 @@ flowchart TD
   %% Navigation links
   click E "azle-flow-experimental.md" "Open experimental flow"
   click F "azle-flow-stable.md" "Open stable flow"
-  click P "azle-build-flow.md" "Open build command overview"
+  click P4 "azle-build-flow.md" "Open build command overview"
 ```

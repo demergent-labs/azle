@@ -11,9 +11,16 @@ flowchart TD
 
     D -->|"--version"| E["runVersionCommand()"]
     D -->|"clean"| F["runCleanCommand()"]
-    D -->|"generate"| G["handleGenerateCommand -> runGenerateCommand(candidPath)"]
-    D -->|"new"| H["handleNewCommand -> validate flags (--experimental, --http-server) -> select template -> runNewCommand(...)"]
-    D -->|"build"| I["handleBuildCommand -> getCanisterConfig -> checkForExperimentalDfxJsonFields -> runBuildCommand(canisterName, config, ioType)"]
+    D -->|"generate"| G1["handleGenerateCommand"]
+    G1 --> G2["runGenerateCommand(candidPath)"]
+    D -->|"new"| H1["handleNewCommand"]
+    H1 --> H2["validate flags (--experimental, --http-server)"]
+    H2 --> H3["select template"]
+    H3 --> H4["runNewCommand(...)"]
+    D -->|"build"| I1["handleBuildCommand"]
+    I1 --> I2["getCanisterConfig"]
+    I2 --> I3["checkForExperimentalDfxJsonFields"]
+    I3 --> I4["runBuildCommand(canisterName, config, ioType)"]
     D -->|"dev"| J["handleDevCommand"]
     D -->|"extension"| K["handleExtensionCommand"]
     D -->|"post-install"| L["no-op (reserved)"]
@@ -24,8 +31,12 @@ flowchart TD
       direction TB
       J --> J1{"dev subcommand?"}
       J1 -->|"audit"| J2["runDevAuditCommand(ioType)"]
-      J1 -->|"setup"| J3["handleDevSetupCommand -> parse flags [dfx,node,rust,cargo-*,wasi2ic] -> runDevSetupCommand(flags)"]
-      J1 -->|"template"| J4["handleDevTemplateCommand -> runDevTemplateCommand('inherit') and/or runExperimentalDevTemplateCommand('inherit') -> generateLicenses(ioType)"]
+      J1 -->|"setup"| J3a["handleDevSetupCommand"]
+      J3a --> J3b["parse flags [dfx,node,rust,cargo-*,wasi2ic]"]
+      J3b --> J3c["runDevSetupCommand(flags)"]
+      J1 -->|"template"| J4a["handleDevTemplateCommand"]
+      J4a --> J4b["runDevTemplateCommand('inherit') and/or runExperimentalDevTemplateCommand('inherit')"]
+      J4b --> J4c["generateLicenses(ioType)"]
       J1 -->|"invalid"| N
     end
 

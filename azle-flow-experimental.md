@@ -8,9 +8,13 @@ flowchart TD
   subgraph EXP ["Experimental Router (src/experimental/build/index.ts)"]
     direction TB
     C --> D{"command?"}
-    D -->|"post-install"| E["handlePostInstallCommand -> runUploadAssetsCommand()"]
-    D -->|"upload-assets"| F["handleUploadAssetsCommand -> runUploadAssetsCommand()"]
-    D -->|"build"| G["handleBuildCommand -> getCanisterConfig -> runBuildCommand(canisterName, config, ioType)"]
+    D -->|"post-install"| E1["handlePostInstallCommand"]
+    E1 --> E2["runUploadAssetsCommand()"]
+    D -->|"upload-assets"| F1["handleUploadAssetsCommand"]
+    F1 --> F2["runUploadAssetsCommand()"]
+    D -->|"build"| G1["handleBuildCommand"]
+    G1 --> G2["getCanisterConfig"]
+    G2 --> G3["runBuildCommand(canisterName, config, ioType)"]
     D -->|"other"| H["Defer to stable router"]
   end
 
