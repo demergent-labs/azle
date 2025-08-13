@@ -1,23 +1,16 @@
 import { CandidAndMethodMeta } from '#utils/types';
 
 /**
- * Executes an instrumented Wasm in a local WebAssembly environment to extract
- * the canister's generated Candid and method metadata.
+ * Executes an instrumented Wasm locally to extract Candid and method metadata.
  *
- * Behavior:
- * - Instantiates the provided Wasm binary with stubbed `ic0` imports so it can
- *   run outside the IC. `debug_print` forwards messages to `console.info`, and
- *   `trap` throws a JavaScript error.
- * - Calls the exported `get_candid_and_method_meta_pointer` function, which
- *   returns a pointer in linear memory to a null-terminated UTF-8 JSON string.
- * - Reads the bytes starting at that pointer until the first zero byte, parses
- *   the JSON, and returns the `{ candid, methodMeta }` object.
- *
- * Notes:
- * - This function has no filesystem side effects; it only computes values.
- * - Error handling respects `AZLE_CANISTER_BACKTRACES`: when set to `true`, the
- *   original error (including Wasm backtrace) is rethrown; otherwise only the
- *   error message is preserved to keep output concise.
+ * @remarks
+ * - Instantiates the binary with stubbed `ic0` imports so it can run outside the IC.
+ *   `debug_print` forwards messages to `console.info`; `trap` throws a JavaScript error.
+ * - Calls `get_candid_and_method_meta_pointer` to obtain a pointer to a null-terminated UTF-8 JSON string,
+ *   reads it from linear memory, parses, and returns `{ candid, methodMeta }`.
+ * - Side effects: none on the filesystem; only computes values.
+ * - Error handling: respects `AZLE_CANISTER_BACKTRACES`. When `true`, rethrows the original error (with Wasm backtrace);
+ *   otherwise throws a new Error with only the message for concise output.
  *
  * @param wasmBinary - A Uint8Array of the instrumented Wasm to execute.
  * @returns The parsed Candid string and method metadata.
