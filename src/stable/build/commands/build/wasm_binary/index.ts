@@ -8,21 +8,14 @@ import { MethodMeta, WasmData } from '#utils/types';
 import { manipulateWasmBinary } from './manipulate';
 
 /**
- * Produces a Wasm binary by injecting the bundled JavaScript and `wasmData`
- * into the static canister template, optionally wiring in method proxies.
+ * Produces a Wasm binary by embedding the bundled JavaScript and `wasmData` into the static template.
  *
- * Behavior:
- * - Ensures the stable static canister template exists; if not (or when
- *   `AZLE_DEV_TEMPLATE === 'true'`), regenerates it via the dev template command.
- * - Calls the Wasm manipulation step which embeds:
- *   - The bundled JavaScript as a passive data segment.
- *   - The serialized `wasmData` (env vars and `mainJsPath`) as a passive segment.
- * - If `methodMeta` is provided, injects canister method proxies into the module
- *   so the resulting binary is suitable for deployment; otherwise, the binary is
- *   suitable for local introspection (e.g., to derive Candid/method metadata).
- *
- * Side effects:
- * - May regenerate the template on disk; otherwise returns a binary in-memory.
+ * @remarks
+ * - Validates/regenerates the static template when missing or when `AZLE_DEV_TEMPLATE === 'true'`.
+ * - Embeds two passive data segments: the bundled JS and serialized `wasmData` (env vars and `mainJsPath`).
+ * - When `methodMeta` is provided, injects canister method proxies to produce a deployable binary; when omitted,
+ *   the binary is suitable for local introspection (e.g., to derive Candid/method metadata).
+ * - Side effects: may regenerate the template on disk; the produced Wasm is returned in-memory.
  *
  * @param ioType - Controls the I/O mode when running the dev template command.
  * @param js - The bundled JavaScript source string to embed into the Wasm.

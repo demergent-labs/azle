@@ -4,13 +4,11 @@ import { dirname, join } from 'path';
 import { getDfxRoot } from '#utils/dfx_root';
 
 /**
- * Builds the canister's JavaScript bundle from the `main` entrypoint.
+ * Builds the canister's bundled JavaScript from the `main` entrypoint.
  *
- * This does more than simply bundle existing source:
- * - Generates a small prelude that initializes Azle globals and registers
- *   Candid/method metadata wiring needed later in the build.
- * - Invokes esbuild to compile TypeScript and its dependencies and to
- *   tree-shake and bundle everything into a single ESM module.
+ * @remarks
+ * - Generates a small prelude that initializes Azle globals and registers Candid/method metadata wiring needed later.
+ * - Uses esbuild to compile TypeScript, tree-shake, and bundle into a single ESM module.
  * - Returns the bundled JavaScript as a string; it does not write to disk.
  *
  * @param main - The entry file path from `dfx.json` (relative to the dfx root).
