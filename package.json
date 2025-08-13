@@ -53,7 +53,7 @@
         "@dfinity/agent": "^3.2.0",
         "@sinonjs/text-encoding": "0.7.3",
         "binaryen": "^116.0.0",
-        "esbuild": "^0.25.8",
+        "esbuild": "^0.25.9",
         "jssha": "^3.3.1",
         "tsx": "^4.20.4",
         "typescript": "^5.9.2",
@@ -77,7 +77,7 @@
         "licensee": "^11.1.1",
         "lint-staged": "16.1.5",
         "prettier": "^3.6.2",
-        "puppeteer": "^24.16.0",
+        "puppeteer": "^24.16.1",
         "semver": "^7.7.2",
         "ts-jest": "^29.4.1",
         "typescript-eslint": "^8.39.1"
