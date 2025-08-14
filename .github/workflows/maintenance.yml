@@ -178,12 +178,20 @@ jobs:
             - name: Check for differences
               id: check-diff
               run: |
+                  set -e
+                  BASE_BRANCH="${{ needs.create-branch-prefix.outputs.base-branch }}"
+                  echo "Checking for differences between main and $BASE_BRANCH"
+
+                  # Fetch both branches
                   git fetch origin main
-                  if git diff --quiet origin/main ${{ needs.create-branch-prefix.outputs.base-branch }}; then
+                  git fetch origin "$BASE_BRANCH"
+
+                  # Compare the branches using proper remote refs
+                  if git diff --quiet origin/main "origin/$BASE_BRANCH"; then
                     echo "No differences found between branches"
                     echo "has_changes=false" >> $GITHUB_OUTPUT
                   else
-                    echo "Changes detected"
+                    echo "Changes detected between branches"
                     echo "has_changes=true" >> $GITHUB_OUTPUT
                   fi
 
