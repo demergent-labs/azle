@@ -1,0 +1,11 @@
+- [ ] Discover major categories of vulnerabilities
+- [ ] ICP-specific items
+- [ ] JavaScript-specific items
+- [ ] Rust-specific items
+- [ ] All conceivable user inputs are sanitized
+- [ ] Rust unsafe code, memory issues
+- [ ] OWASP web security
+- [ ] Make this list actionable for all production-ready PRs and for LLMs
+- [ ] Review this list
+- [ ] Internal security reviews personal human
+- [ ] Internal security reviews council of LLMs
