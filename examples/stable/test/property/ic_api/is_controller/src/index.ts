@@ -1,8 +1,5 @@
 import { IDL, isController, Principal, query, update } from 'azle';
-import {
-    AssertType,
-    NotAnyAndExact
-} from 'azle/_internal/type_tests/assert_type';
+import { AssertType, NotAnyAndExact } from 'azle/_internal/test/assert_type';
 
 export default class {
     @query([IDL.Principal], IDL.Bool)
