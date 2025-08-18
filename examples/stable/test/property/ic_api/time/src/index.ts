@@ -12,10 +12,7 @@ import {
     trap,
     update
 } from 'azle';
-import {
-    AssertType,
-    NotAnyAndExact
-} from 'azle/_internal/type_tests/assert_type';
+import { AssertType, NotAnyAndExact } from 'azle/_internal/test/assert_type';
 
 export default class {
     // @init

@@ -1,6 +1,3 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
 import { describe, expect, test } from '@jest/globals';
 import { DEFAULT_EXPECTED_ERRORS } from 'cuzz';
 

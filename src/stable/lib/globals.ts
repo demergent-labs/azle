@@ -51,7 +51,7 @@ if (
         type: 'SET_TEXT_DECODER',
         payload: TextDecoder,
         location: {
-            filepath: 'azle/src/stable/lib/global.ts',
+            filepath: 'azle/src/stable/lib/globals.ts',
             functionName: ''
         }
     });
@@ -60,7 +60,7 @@ if (
         type: 'SET_TEXT_ENCODER',
         payload: TextEncoder,
         location: {
-            filepath: 'azle/src/stable/lib/global.ts',
+            filepath: 'azle/src/stable/lib/globals.ts',
             functionName: ''
         }
     });
@@ -125,7 +125,7 @@ if (
             }
         },
         location: {
-            filepath: 'azle/src/stable/lib/global.ts',
+            filepath: 'azle/src/stable/lib/globals.ts',
             functionName: ''
         }
     });
@@ -140,7 +140,7 @@ if (
             info: log
         },
         location: {
-            filepath: 'azle/src/stable/lib/global.ts',
+            filepath: 'azle/src/stable/lib/globals.ts',
             functionName: ''
         }
     });
@@ -150,7 +150,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'fetch',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -159,7 +159,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'Buffer',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -168,7 +168,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'window',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -177,7 +177,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'global',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -186,7 +186,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'self',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -195,7 +195,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'URL',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -204,7 +204,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'WebAssembly',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -213,7 +213,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'setTimeout',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
@@ -222,7 +222,7 @@ if (
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'clearTimeout',
             location: {
-                filepath: 'azle/src/stable/lib/global.ts',
+                filepath: 'azle/src/stable/lib/globals.ts',
                 functionName: ''
             }
         });
