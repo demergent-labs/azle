@@ -1,34 +1,33 @@
 # Benchmarks for factorial
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | fac | 1_306_321 | 6_306_321 | $0.0000086397 | $8.63 | <font color="green">-26_493</font> |
+| 1 | fac | 1_283_253 | 6_283_253 | $0.0000086081 | $8.60 | <font color="green">-32_583</font> |
+| 2 | fac | 1_735_543 | 6_735_543 | $0.0000092277 | $9.22 | <font color="green">-62_792</font> |
+| 3 | fac | 2_952_103 | 7_952_103 | $0.0000108944 | $10.89 | <font color="green">-140_944</font> |
+| 4 | fac | 5_431_166 | 10_431_166 | $0.0000142907 | $14.29 | <font color="green">-277_293</font> |
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | fac         | 1_332_814    | 1_123_125 | $0.0000014934 | $1.49             | <font color="red">+9</font>       |
-| 1   | fac         | 1_315_836    | 1_116_334 | $0.0000014844 | $1.48             | <font color="red">+2_526</font>   |
-| 2   | fac         | 1_798_335    | 1_309_334 | $0.0000017410 | $1.74             | <font color="red">+6_928</font>   |
-| 3   | fac         | 3_093_047    | 1_827_218 | $0.0000024296 | $2.42             | <font color="red">+15_167</font>  |
-| 4   | fac         | 5_708_459    | 2_873_383 | $0.0000038207 | $3.82             | <font color="green">-8_747</font> |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | fac | 1_332_814 | 6_332_814 | $0.0000086760 | $8.67 |
+| 1 | fac | 1_315_836 | 6_315_836 | $0.0000086527 | $8.65 |
+| 2 | fac | 1_798_335 | 6_798_335 | $0.0000093137 | $9.31 |
+| 3 | fac | 3_093_047 | 8_093_047 | $0.0000110875 | $11.08 |
+| 4 | fac | 5_708_459 | 10_708_459 | $0.0000146706 | $14.67 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | fac         | 1_332_805    | 1_123_122 | $0.0000014934 | $1.49             |
-| 1   | fac         | 1_313_310    | 1_115_324 | $0.0000014830 | $1.48             |
-| 2   | fac         | 1_791_407    | 1_306_562 | $0.0000017373 | $1.73             |
-| 3   | fac         | 3_077_880    | 1_821_152 | $0.0000024215 | $2.42             |
-| 4   | fac         | 5_717_206    | 2_876_882 | $0.0000038253 | $3.82             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

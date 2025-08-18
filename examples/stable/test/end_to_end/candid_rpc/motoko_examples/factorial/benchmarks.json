@@ -1,56 +1,6 @@
 {
     "factorial": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1332805"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977065151170134"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1313310"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977065412198411"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1791407"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977065874967174"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3077880"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977066117107775"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5717206"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977066358718458"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -77,6 +27,36 @@
                     "instructions": "5708459",
                     "method_name": "fac",
                     "timestamp": "1750853908191766604"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1306321",
+                    "method_name": "fac",
+                    "timestamp": "1755550259694965533"
+                },
+                {
+                    "instructions": "1283253",
+                    "method_name": "fac",
+                    "timestamp": "1755550260181952300"
+                },
+                {
+                    "instructions": "1735543",
+                    "method_name": "fac",
+                    "timestamp": "1755550260422028331"
+                },
+                {
+                    "instructions": "2952103",
+                    "method_name": "fac",
+                    "timestamp": "1755550260663500406"
+                },
+                {
+                    "instructions": "5431166",
+                    "method_name": "fac",
+                    "timestamp": "1755550260904059888"
                 }
             ]
         }

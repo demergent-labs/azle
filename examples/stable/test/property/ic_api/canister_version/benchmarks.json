@@ -1,38 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "997411727"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977017449438720"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "961465"
-                    },
-                    "method_name": "setInspectMessageCanisterVersion",
-                    "timestamp": {
-                        "__bigint__": "1741977021334171768"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1575880"
-                    },
-                    "method_name": "getUpdateCanisterVersion",
-                    "timestamp": {
-                        "__bigint__": "1741977021855292328"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -49,6 +17,26 @@
                     "instructions": "1580202",
                     "method_name": "getUpdateCanisterVersion",
                     "timestamp": "1750853922659344878"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1014931993",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1755550302498023810"
+                },
+                {
+                    "instructions": "937709",
+                    "method_name": "setInspectMessageCanisterVersion",
+                    "timestamp": "1755550304421879241"
+                },
+                {
+                    "instructions": "1539408",
+                    "method_name": "getUpdateCanisterVersion",
+                    "timestamp": "1755550304677900322"
                 }
             ]
         }

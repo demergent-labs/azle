@@ -1,47 +1,6 @@
 {
     "caller": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1430900"
-                    },
-                    "method_name": "getRejectCodeCanisterThrowError",
-                    "timestamp": {
-                        "__bigint__": "1741977030515031815"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1362386"
-                    },
-                    "method_name": "getRejectCodeCanisterReject",
-                    "timestamp": {
-                        "__bigint__": "1741977030756184990"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1357068"
-                    },
-                    "method_name": "getRejectNoError",
-                    "timestamp": {
-                        "__bigint__": "1741977030997444604"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1347306"
-                    },
-                    "method_name": "assertTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977031482891175"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -65,15 +24,40 @@
                     "timestamp": "1750853919434077226"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1360163",
+                    "method_name": "getRejectCodeCanisterThrowError",
+                    "timestamp": "1755550257198200668"
+                },
+                {
+                    "instructions": "1281810",
+                    "method_name": "getRejectCodeCanisterReject",
+                    "timestamp": "1755550257693353823"
+                },
+                {
+                    "instructions": "1275107",
+                    "method_name": "getRejectNoError",
+                    "timestamp": "1755550257939985645"
+                },
+                {
+                    "instructions": "1268213",
+                    "method_name": "assertTypes",
+                    "timestamp": "1755550258188700013"
+                }
+            ]
         }
     },
     "rejector": {
         "previous": {
-            "version": "0.30.0",
+            "version": "0.32.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.32.0",
+            "version": "0.33.0",
             "benchmarks": []
         }
     }

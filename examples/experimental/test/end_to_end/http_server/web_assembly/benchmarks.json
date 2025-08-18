@@ -1,20 +1,6 @@
 {
     "web_assembly": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7593699696"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741976997736887656"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -23,6 +9,10 @@
                     "timestamp": "1750853911396819514"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": []
         }
     }
 }

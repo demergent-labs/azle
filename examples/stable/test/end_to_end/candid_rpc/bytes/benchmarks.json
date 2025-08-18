@@ -1,56 +1,6 @@
 {
     "bytes_canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "2021637"
-                    },
-                    "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977076933700225"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2616661"
-                    },
-                    "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977077180555949"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "9255623"
-                    },
-                    "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977077447059357"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "74949145"
-                    },
-                    "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977079466589365"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "147941940"
-                    },
-                    "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977085900359124"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -77,6 +27,36 @@
                     "instructions": "149946233",
                     "method_name": "getBytes",
                     "timestamp": "1750853915013254659"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1966136",
+                    "method_name": "getBytes",
+                    "timestamp": "1755550256282384054"
+                },
+                {
+                    "instructions": "2585082",
+                    "method_name": "getBytes",
+                    "timestamp": "1755550256764484845"
+                },
+                {
+                    "instructions": "9484935",
+                    "method_name": "getBytes",
+                    "timestamp": "1755550257237834297"
+                },
+                {
+                    "instructions": "77888839",
+                    "method_name": "getBytes",
+                    "timestamp": "1755550259258254880"
+                },
+                {
+                    "instructions": "153880149",
+                    "method_name": "getBytes",
+                    "timestamp": "1755550267899760473"
                 }
             ]
         }

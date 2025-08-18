@@ -1,20 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1401556"
-                    },
-                    "method_name": "simpleUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977074005979096"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -23,25 +9,35 @@
                     "timestamp": "1750853917705523969"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1331261",
+                    "method_name": "simpleUpdate",
+                    "timestamp": "1755550270655974828"
+                }
+            ]
         }
     },
     "canister2": {
         "previous": {
-            "version": "0.30.0",
+            "version": "0.32.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.32.0",
+            "version": "0.33.0",
             "benchmarks": []
         }
     },
     "canister3": {
         "previous": {
-            "version": "0.30.0",
+            "version": "0.32.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.32.0",
+            "version": "0.33.0",
             "benchmarks": []
         }
     }

@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -136,6 +132,146 @@
                     "instructions": "1700172",
                     "method_name": "cryptoGetRandomValues",
                     "timestamp": "1750853915658982261"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1718876",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550253675927454"
+                },
+                {
+                    "instructions": "1644054",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550254153342667"
+                },
+                {
+                    "instructions": "1641345",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550254392258054"
+                },
+                {
+                    "instructions": "1643157",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550254630064976"
+                },
+                {
+                    "instructions": "1643133",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550254869782154"
+                },
+                {
+                    "instructions": "1641124",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550255107388400"
+                },
+                {
+                    "instructions": "1645945",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550255344316935"
+                },
+                {
+                    "instructions": "1644414",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550255583739282"
+                },
+                {
+                    "instructions": "1657616",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550255820342236"
+                },
+                {
+                    "instructions": "1221952",
+                    "method_name": "seed",
+                    "timestamp": "1755550256058841424"
+                },
+                {
+                    "instructions": "1657386",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550256298765329"
+                },
+                {
+                    "instructions": "1643538",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550256538956085"
+                },
+                {
+                    "instructions": "1217882",
+                    "method_name": "seed",
+                    "timestamp": "1755550256775849139"
+                },
+                {
+                    "instructions": "1659462",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550257013811357"
+                },
+                {
+                    "instructions": "1645868",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550257251767481"
+                },
+                {
+                    "instructions": "1220461",
+                    "method_name": "seed",
+                    "timestamp": "1755550257492796797"
+                },
+                {
+                    "instructions": "1662394",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550257729378598"
+                },
+                {
+                    "instructions": "1646009",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550257967042175"
+                },
+                {
+                    "instructions": "1653130",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550258205578577"
+                },
+                {
+                    "instructions": "1658273",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550258443868738"
+                },
+                {
+                    "instructions": "1649537",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550258682814553"
+                },
+                {
+                    "instructions": "1220332",
+                    "method_name": "seed",
+                    "timestamp": "1755550258920587537"
+                },
+                {
+                    "instructions": "1665710",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550259159681934"
+                },
+                {
+                    "instructions": "1648734",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550259399696385"
+                },
+                {
+                    "instructions": "1649024",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550259638879813"
+                },
+                {
+                    "instructions": "1662253",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550259876271269"
+                },
+                {
+                    "instructions": "1649129",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550260115872667"
                 }
             ]
         }

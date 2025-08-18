@@ -1,38 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1317794"
-                    },
-                    "method_name": "updateIsController",
-                    "timestamp": {
-                        "__bigint__": "1741977018045497442"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1268716"
-                    },
-                    "method_name": "updateIsController",
-                    "timestamp": {
-                        "__bigint__": "1741977018788225478"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1271892"
-                    },
-                    "method_name": "updateIsController",
-                    "timestamp": {
-                        "__bigint__": "1741977019510076997"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -49,6 +17,26 @@
                     "instructions": "1276418",
                     "method_name": "updateIsController",
                     "timestamp": "1750853909574873014"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1289742",
+                    "method_name": "updateIsController",
+                    "timestamp": "1755550251403912709"
+                },
+                {
+                    "instructions": "1245284",
+                    "method_name": "updateIsController",
+                    "timestamp": "1755550252342598917"
+                },
+                {
+                    "instructions": "1245298",
+                    "method_name": "updateIsController",
+                    "timestamp": "1755550253042074701"
                 }
             ]
         }

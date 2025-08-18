@@ -1,110 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1114786498"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977099931929404"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2022926"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977109249936398"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1992359"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977109740617430"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1971823"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977109986772244"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1989938"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977110230561152"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1991610"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977110475786094"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1963870"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977110971121150"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1991211"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977111217329978"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1990287"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977111462468908"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1990662"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977111707523328"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1993453"
-                    },
-                    "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977112227048402"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -161,6 +57,66 @@
                     "instructions": "1830936",
                     "method_name": "getUpdateMsgArgData",
                     "timestamp": "1750854015530243430"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1008957624",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1755550335424473008"
+                },
+                {
+                    "instructions": "1800191",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550349362015253"
+                },
+                {
+                    "instructions": "1776206",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550349605115556"
+                },
+                {
+                    "instructions": "1768306",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550349847146978"
+                },
+                {
+                    "instructions": "1770106",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550350091492744"
+                },
+                {
+                    "instructions": "1769739",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550350334249011"
+                },
+                {
+                    "instructions": "1769218",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550350576094716"
+                },
+                {
+                    "instructions": "1773052",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550350819002874"
+                },
+                {
+                    "instructions": "1779284",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550351061069114"
+                },
+                {
+                    "instructions": "1768726",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550351304810032"
+                },
+                {
+                    "instructions": "1773738",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1755550351547421838"
                 }
             ]
         }

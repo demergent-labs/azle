@@ -1,65 +1,6 @@
 {
     "randomness": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "988556415"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977077165853086"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1125578"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1741977081007459173"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1102137"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1741977081251403107"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1101821"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1741977081495987280"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1100865"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1741977081738804768"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1104787"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1741977082002839950"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -221,6 +162,171 @@
                     "instructions": "1546855",
                     "method_name": "cryptoGetRandomValues",
                     "timestamp": "1750853923132380586"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1132957",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550276859291382"
+                },
+                {
+                    "instructions": "1081892",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550276859291382"
+                },
+                {
+                    "instructions": "1082701",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550276859291382"
+                },
+                {
+                    "instructions": "1080723",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550276859291382"
+                },
+                {
+                    "instructions": "1083496",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550276859291382"
+                },
+                {
+                    "instructions": "1513466",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550277360626025"
+                },
+                {
+                    "instructions": "1494310",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550277360626025"
+                },
+                {
+                    "instructions": "1487946",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550277360626025"
+                },
+                {
+                    "instructions": "1492564",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550277360626025"
+                },
+                {
+                    "instructions": "1488932",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550277360626025"
+                },
+                {
+                    "instructions": "937681",
+                    "method_name": "seedWith0",
+                    "timestamp": "1755550277864034394"
+                },
+                {
+                    "instructions": "1081515",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550278107758621"
+                },
+                {
+                    "instructions": "1081862",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550278107758621"
+                },
+                {
+                    "instructions": "1086162",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550278107758621"
+                },
+                {
+                    "instructions": "1083743",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550278107758621"
+                },
+                {
+                    "instructions": "1081576",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550278107758621"
+                },
+                {
+                    "instructions": "1502748",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550278607510968"
+                },
+                {
+                    "instructions": "1488122",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550278607510968"
+                },
+                {
+                    "instructions": "1492837",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550278607510968"
+                },
+                {
+                    "instructions": "1492577",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550278607510968"
+                },
+                {
+                    "instructions": "1485685",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550278607510968"
+                },
+                {
+                    "instructions": "934425",
+                    "method_name": "seedWith0",
+                    "timestamp": "1755550279111480732"
+                },
+                {
+                    "instructions": "1084417",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550279354249214"
+                },
+                {
+                    "instructions": "1082381",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550279354249214"
+                },
+                {
+                    "instructions": "1084146",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550279354249214"
+                },
+                {
+                    "instructions": "1084178",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550279354249214"
+                },
+                {
+                    "instructions": "1082718",
+                    "method_name": "mathRandom",
+                    "timestamp": "1755550279354249214"
+                },
+                {
+                    "instructions": "1501738",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550279858753115"
+                },
+                {
+                    "instructions": "1487331",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550279858753115"
+                },
+                {
+                    "instructions": "1485901",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550279858753115"
+                },
+                {
+                    "instructions": "1489344",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550279858753115"
+                },
+                {
+                    "instructions": "1488944",
+                    "method_name": "cryptoGetRandomValues",
+                    "timestamp": "1755550279858753115"
                 }
             ]
         }

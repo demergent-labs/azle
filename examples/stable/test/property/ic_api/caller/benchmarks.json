@@ -1,47 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "998348106"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977016818550674"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1283849"
-                    },
-                    "method_name": "getUpdateCaller",
-                    "timestamp": {
-                        "__bigint__": "1741977019505307295"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "954701"
-                    },
-                    "method_name": "setInspectMessageCaller",
-                    "timestamp": {
-                        "__bigint__": "1741977019749762676"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1259188"
-                    },
-                    "method_name": "getUpdateCaller",
-                    "timestamp": {
-                        "__bigint__": "1741977020019124266"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -63,6 +22,31 @@
                     "instructions": "1261233",
                     "method_name": "getUpdateCaller",
                     "timestamp": "1750853915604913173"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1014479941",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1755550252921766147"
+                },
+                {
+                    "instructions": "1239611",
+                    "method_name": "getUpdateCaller",
+                    "timestamp": "1755550255094439284"
+                },
+                {
+                    "instructions": "935045",
+                    "method_name": "setInspectMessageCaller",
+                    "timestamp": "1755550255693797994"
+                },
+                {
+                    "instructions": "1212748",
+                    "method_name": "getUpdateCaller",
+                    "timestamp": "1755550256170170410"
                 }
             ]
         }

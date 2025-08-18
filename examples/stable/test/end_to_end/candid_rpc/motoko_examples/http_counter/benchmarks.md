@@ -1,32 +1,31 @@
 # Benchmarks for http_counter
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | init | 1_028_325_515 | 1_033_325_515 | $0.0014156560 | $1_415.65 | <font color="red">+12_754_801</font> |
+| 1 | http_request_update | 29_378_726 | 34_378_726 | $0.0000470989 | $47.09 | <font color="green">-704_503</font> |
+| 2 | http_request_update | 29_340_647 | 34_340_647 | $0.0000470467 | $47.04 | <font color="green">-697_795</font> |
+| 3 | http_request_update | 29_380_417 | 34_380_417 | $0.0000471012 | $47.10 | <font color="green">-734_124</font> |
 
-| Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 1_015_570_714 | 806_818_285 | $0.0010728021 | $1_072.80         | <font color="red">+5_397_715</font> |
-| 1   | http_request_update | 30_083_229    | 12_623_291  | $0.0000167848 | $16.78            | <font color="red">+37_156</font>    |
-| 2   | http_request_update | 30_038_442    | 12_605_376  | $0.0000167610 | $16.76            | <font color="red">+21_272</font>    |
-| 3   | http_request_update | 30_114_541    | 12_635_816  | $0.0000168015 | $16.80            | <font color="red">+33_416</font>    |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | init | 1_015_570_714 | 1_020_570_714 | $0.0013981819 | $1_398.18 |
+| 1 | http_request_update | 30_083_229 | 35_083_229 | $0.0000480640 | $48.06 |
+| 2 | http_request_update | 30_038_442 | 35_038_442 | $0.0000480027 | $48.00 |
+| 3 | http_request_update | 30_114_541 | 35_114_541 | $0.0000481069 | $48.10 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls |
-| --- | ------------------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init                | 1_010_172_999 | 804_659_199 | $0.0010699312 | $1_069.93         |
-| 1   | http_request_update | 30_046_073    | 12_608_429  | $0.0000167650 | $16.76            |
-| 2   | http_request_update | 30_017_170    | 12_596_868  | $0.0000167497 | $16.74            |
-| 3   | http_request_update | 30_081_125    | 12_622_450  | $0.0000167837 | $16.78            |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).
