@@ -699,3 +699,9 @@
 ---
 
 _Report generated automatically by Azle_
+## Version `0.33.0`
+
+⚠️ **WARNING: Benchmark analysis failed for version 0.33.0**
+
+**Error:** Cannot read properties of undefined (reading 'map')
+
