@@ -699,3 +699,9 @@
 ---
 
 _Report generated automatically by Azle_
+## Version `0.33.0`
+
+⚠️ **WARNING: Benchmark analysis failed for version 0.33.0**
+
+**Error:** No valid instructions after filtering (all values > 40 billion)
+
