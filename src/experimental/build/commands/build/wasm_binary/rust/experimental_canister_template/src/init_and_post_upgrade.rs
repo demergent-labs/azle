@@ -10,10 +10,10 @@ use wasmedge_quickjs::AsObject;
 use crate::{
     MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL, execute_method_js, ic,
     ic::{drain_microtasks, rand_seed::rand_seed},
+    seed_internal_csprng, upload_file,
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
+    web_assembly,
 };
-
-use crate::{upload_file, web_assembly};
 
 #[inline(never)]
 #[unsafe(no_mangle)]
@@ -195,6 +195,13 @@ fn seed_from_raw_rand() {
                         .candid()?;
 
                 rand_seed(
+                    randomness
+                        .clone()
+                        .try_into()
+                        .map_err(|_| "seed must be exactly 32 bytes in length")?,
+                );
+
+                seed_internal_csprng(
                     randomness
                         .try_into()
                         .map_err(|_| "seed must be exactly 32 bytes in length")?,

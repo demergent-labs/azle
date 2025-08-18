@@ -11,6 +11,7 @@ use crate::{
     execute_method_js::execute_method_js,
     ic::rand_seed,
     initialize_context::{WasmEnvironment, initialize_context},
+    seed_internal_csprng,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
@@ -81,6 +82,14 @@ fn seed_from_raw_rand() {
                         .candid()?;
 
                 rand_seed(
+                    randomness
+                        .clone()
+                        .try_into()
+                        .map_err(|_| "seed must be exactly 32 bytes in length")?,
+                );
+
+                // Seed the internal Azle CSPRNG used for UUID generation. We intentionally do not expose this seed.
+                seed_internal_csprng(
                     randomness
                         .try_into()
                         .map_err(|_| "seed must be exactly 32 bytes in length")?,
