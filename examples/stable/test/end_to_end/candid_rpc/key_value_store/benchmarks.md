@@ -1,3 +1,5 @@
+⚠️ **WARNING: Benchmark process failed for version 0.33.0**
+
 # Benchmarks for key_value_store
 
 ## Current benchmarks Azle version: 0.32.0

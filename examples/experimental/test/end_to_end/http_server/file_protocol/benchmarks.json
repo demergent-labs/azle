@@ -1,38 +1,6 @@
 {
     "backend": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7522732774"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741976998393169764"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "57103023"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977014856024149"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "50682911"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977015350193197"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -49,6 +17,21 @@
                     "instructions": "50719924",
                     "method_name": "http_request_update",
                     "timestamp": "1750853930199380862"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "50034351",
+                    "method_name": "1",
+                    "timestamp": "1755533882984022722"
+                },
+                {
+                    "instructions": "43634250",
+                    "method_name": "1",
+                    "timestamp": "1755533883269831114"
                 }
             ]
         }

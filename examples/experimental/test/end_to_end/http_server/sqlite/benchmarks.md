@@ -1,34 +1,33 @@
 # Benchmarks for sqlite
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | 4 | 12_412_981_699 | 12_417_981_699 | $0.0170126349 | $17_012.63 | <font color="red">+686_280_558</font> |
+| 1 | 1 | 143_924_051 | 148_924_051 | $0.0002040259 | $204.02 | <font color="green">-7_515_345</font> |
+| 2 | 1 | 67_730_290 | 72_730_290 | $0.0000996405 | $99.64 | <font color="green">-7_438_015</font> |
+| 3 | 1 | 136_514_966 | 141_514_966 | $0.0001938755 | $193.87 | <font color="green">-7_650_538</font> |
+| 4 | 1 | 75_962_950 | 80_962_950 | $0.0001109192 | $110.91 | <font color="green">-7_325_465</font> |
 
-| Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls | Change                                  |
-| --- | ------------------- | -------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | postUpgrade         | 11_726_701_141 | 9_091_270_456 | $0.0120883896 | $12_088.38        | <font color="green">-191_844_805</font> |
-| 1   | http_request_update | 151_439_396    | 61_165_758    | $0.0000813303 | $81.33            | <font color="red">+3_836_645</font>     |
-| 2   | http_request_update | 75_168_305     | 30_657_322    | $0.0000407641 | $40.76            | <font color="red">+438_810</font>       |
-| 3   | http_request_update | 144_165_504    | 58_256_201    | $0.0000774615 | $77.46            | <font color="red">+463_722</font>       |
-| 4   | http_request_update | 83_288_415     | 33_905_366    | $0.0000450829 | $45.08            | <font color="red">+262_038</font>       |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | postUpgrade | 11_726_701_141 | 11_731_701_141 | $0.0160724306 | $16_072.43 |
+| 1 | http_request_update | 151_439_396 | 156_439_396 | $0.0002143220 | $214.32 |
+| 2 | http_request_update | 75_168_305 | 80_168_305 | $0.0001098306 | $109.83 |
+| 3 | http_request_update | 144_165_504 | 149_165_504 | $0.0002043567 | $204.35 |
+| 4 | http_request_update | 83_288_415 | 88_288_415 | $0.0001209551 | $120.95 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls |
-| --- | ------------------- | -------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade         | 11_918_545_946 | 9_168_008_378 | $0.0121904257 | $12_190.42        |
-| 1   | http_request_update | 147_602_751    | 59_631_100    | $0.0000792897 | $79.28            |
-| 2   | http_request_update | 74_729_495     | 30_481_798    | $0.0000405307 | $40.53            |
-| 3   | http_request_update | 143_701_782    | 58_070_712    | $0.0000772149 | $77.21            |
-| 4   | http_request_update | 83_026_377     | 33_800_550    | $0.0000449436 | $44.94            |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).
