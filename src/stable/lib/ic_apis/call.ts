@@ -1,6 +1,5 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_and_reply_with_candid_serde';
 
@@ -284,7 +283,16 @@ function handleTwoWay<Return>(
     returnIdlType?: IDL.Type
 ): Promise<Return> {
     return new Promise((resolve, reject) => {
-        const promiseId = v4();
+        const promiseId =
+            globalThis._azleIc !== undefined
+                ? globalThis._azleIc.uuid()
+                : globalThis._azleIcExperimental !== undefined
+                  ? globalThis._azleIcExperimental.uuid()
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
         const globalResolveId = `_resolve_${promiseId}`;
         const globalRejectId = `_reject_${promiseId}`;
 

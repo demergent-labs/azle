@@ -19,9 +19,12 @@ mod init_and_post_upgrade;
 mod initialize_context;
 mod internal_canister_methods;
 mod rquickjs_utils;
+mod seed_internal_csprng;
 mod stable_b_tree_map;
 mod state;
 mod wasm_binary_manipulation;
+
+pub use seed_internal_csprng::seed_internal_csprng;
 
 #[global_allocator]
 static PEAK_ALLOC: PeakAlloc = PeakAlloc;
@@ -34,6 +37,8 @@ type InterCanisterCallFuture = Pin<Box<dyn Future<Output = ()> + 'static>>;
 thread_local! {
     static CONTEXT_REF_CELL: RefCell<Option<Context>> = RefCell::new(None);
     static CSPRNG: RefCell<StdRng> = RefCell::new(StdRng::from_seed([0;32]));
+    // Internal CSPRNG used exclusively for Azle internal UUID generation. It cannot be reseeded by user code.
+    static INTERNAL_CSPRNG: RefCell<StdRng> = RefCell::new(StdRng::from_seed([0;32]));
     static INTER_CANISTER_CALL_FUTURES: RefCell<Vec<InterCanisterCallFuture>> = RefCell::new(Vec::new());
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }

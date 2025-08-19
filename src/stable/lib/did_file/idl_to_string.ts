@@ -68,11 +68,11 @@ export function toDidString(result: VisitorResult): string {
 
 function namedTypeToCandidString(newTypes: CandidTypesDefs): string {
     return Object.entries(newTypes).length > 0
-        ? `${namedTypesToStingArr(newTypes).join('\n')}\n`
+        ? `${namedTypesToStringArr(newTypes).join('\n')}\n`
         : '';
 }
 
-function namedTypesToStingArr(newTypes: CandidTypesDefs): string[] {
+function namedTypesToStringArr(newTypes: CandidTypesDefs): string[] {
     return Object.entries(newTypes).map(
         ([name, candid]) => `type ${name} = ${candid};`
     );

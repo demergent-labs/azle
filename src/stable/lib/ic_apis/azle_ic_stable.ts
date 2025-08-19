@@ -83,4 +83,5 @@ export type AzleIc = {
     ) => Uint8Array[];
     time: () => bigint;
     trap: (message: string) => never;
+    uuid: () => string;
 };
