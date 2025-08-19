@@ -1,20 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1788346"
-                    },
-                    "method_name": "sendNotification",
-                    "timestamp": {
-                        "__bigint__": "1741977080021656451"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -23,30 +9,36 @@
                     "timestamp": "1750853914370697461"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1695880",
+                    "method_name": "sendNotification",
+                    "timestamp": "1755635549628422363"
+                }
+            ]
         }
     },
     "canister2": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "983291"
-                    },
-                    "method_name": "receiveNotification",
-                    "timestamp": {
-                        "__bigint__": "1741977080021656451"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "981732",
                     "method_name": "receiveNotification",
                     "timestamp": "1750853914370697461"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "964739",
+                    "method_name": "receiveNotification",
+                    "timestamp": "1755635549628422363"
                 }
             ]
         }

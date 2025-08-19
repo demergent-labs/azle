@@ -1,26 +1,22 @@
 {
     "phone_book": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "3151577"
-                    },
-                    "method_name": "insert",
-                    "timestamp": {
-                        "__bigint__": "1741977067999308675"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "3145850",
                     "method_name": "insert",
                     "timestamp": "1750853907805864229"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "3154742",
+                    "method_name": "insert",
+                    "timestamp": "1755635543090081312"
                 }
             ]
         }

@@ -1,29 +1,6 @@
 {
     "ic_api": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1745288"
-                    },
-                    "method_name": "dataCertificateNull",
-                    "timestamp": {
-                        "__bigint__": "1741977141597466466"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1241894"
-                    },
-                    "method_name": "setCertifiedData",
-                    "timestamp": {
-                        "__bigint__": "1741977142103010351"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -35,6 +12,21 @@
                     "instructions": "1241425",
                     "method_name": "certifiedDataSet",
                     "timestamp": "1750853980101852052"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1683976",
+                    "method_name": "dataCertificateNull",
+                    "timestamp": "1755635639499686667"
+                },
+                {
+                    "instructions": "1224467",
+                    "method_name": "certifiedDataSet",
+                    "timestamp": "1755635639857529887"
                 }
             ]
         }

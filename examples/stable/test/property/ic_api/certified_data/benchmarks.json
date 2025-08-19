@@ -1,74 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1000477124"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977060864362739"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1709705"
-                    },
-                    "method_name": "getDataCertificateInUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977063649148629"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1238515"
-                    },
-                    "method_name": "setData",
-                    "timestamp": {
-                        "__bigint__": "1741977063888590402"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1689371"
-                    },
-                    "method_name": "getDataCertificateInUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977064132053960"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1235167"
-                    },
-                    "method_name": "setData",
-                    "timestamp": {
-                        "__bigint__": "1741977064610881256"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1116748"
-                    },
-                    "method_name": "assertDataCertificateTypesInUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977065816944028"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1409218"
-                    },
-                    "method_name": "assertSetCertifiedDataTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977066302008659"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -105,6 +37,46 @@
                     "instructions": "1413096",
                     "method_name": "assertSetCertifiedDataTypes",
                     "timestamp": "1750853956977921054"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1016868232",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1755635586924224572"
+                },
+                {
+                    "instructions": "1652282",
+                    "method_name": "getDataCertificateInUpdate",
+                    "timestamp": "1755635588928229763"
+                },
+                {
+                    "instructions": "1214389",
+                    "method_name": "setData",
+                    "timestamp": "1755635589179656407"
+                },
+                {
+                    "instructions": "1625239",
+                    "method_name": "getDataCertificateInUpdate",
+                    "timestamp": "1755635589431259909"
+                },
+                {
+                    "instructions": "1212916",
+                    "method_name": "setData",
+                    "timestamp": "1755635589930756675"
+                },
+                {
+                    "instructions": "1091696",
+                    "method_name": "assertDataCertificateTypesInUpdate",
+                    "timestamp": "1755635590803370411"
+                },
+                {
+                    "instructions": "1380697",
+                    "method_name": "assertSetCertifiedDataTypes",
+                    "timestamp": "1755635591053344209"
                 }
             ]
         }

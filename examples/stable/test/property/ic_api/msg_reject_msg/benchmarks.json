@@ -1,29 +1,6 @@
 {
     "caller": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "2565049"
-                    },
-                    "method_name": "echoThroughReject",
-                    "timestamp": {
-                        "__bigint__": "1741977017926973516"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2412286"
-                    },
-                    "method_name": "assertTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977018172124887"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -37,15 +14,30 @@
                     "timestamp": "1750853919892174184"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "2512868",
+                    "method_name": "echoThroughReject",
+                    "timestamp": "1755635549333818699"
+                },
+                {
+                    "instructions": "2263695",
+                    "method_name": "assertTypes",
+                    "timestamp": "1755635549822908998"
+                }
+            ]
         }
     },
     "rejector": {
         "previous": {
-            "version": "0.30.0",
+            "version": "0.32.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.32.0",
+            "version": "0.33.0",
             "benchmarks": []
         }
     }

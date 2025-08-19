@@ -1,10 +1,6 @@
 {
     "event_loop": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -81,6 +77,86 @@
                     "instructions": "672489",
                     "method_name": "testOrdering20",
                     "timestamp": "1750853908433293247"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "3716772",
+                    "method_name": "testOrdering0",
+                    "timestamp": "1755635542252953403"
+                },
+                {
+                    "instructions": "3640866",
+                    "method_name": "testOrdering2",
+                    "timestamp": "1755635542852867487"
+                },
+                {
+                    "instructions": "3696465",
+                    "method_name": "testOrdering4",
+                    "timestamp": "1755635543093738369"
+                },
+                {
+                    "instructions": "738499",
+                    "method_name": "testOrdering6",
+                    "timestamp": "1755635543335345043"
+                },
+                {
+                    "instructions": "3558019",
+                    "method_name": "testOrdering8",
+                    "timestamp": "1755635543583252079"
+                },
+                {
+                    "instructions": "787098",
+                    "method_name": "testOrdering10",
+                    "timestamp": "1755635543823414041"
+                },
+                {
+                    "instructions": "3640276",
+                    "method_name": "testOrdering12",
+                    "timestamp": "1755635544070684866"
+                },
+                {
+                    "instructions": "651238",
+                    "method_name": "testOrdering13",
+                    "timestamp": "1755635544312785793"
+                },
+                {
+                    "instructions": "651263",
+                    "method_name": "testOrdering14",
+                    "timestamp": "1755635544566054497"
+                },
+                {
+                    "instructions": "653452",
+                    "method_name": "testOrdering15",
+                    "timestamp": "1755635544828227962"
+                },
+                {
+                    "instructions": "649922",
+                    "method_name": "testOrdering16",
+                    "timestamp": "1755635545080873837"
+                },
+                {
+                    "instructions": "681061",
+                    "method_name": "testOrdering17",
+                    "timestamp": "1755635545335436066"
+                },
+                {
+                    "instructions": "652480",
+                    "method_name": "testOrdering18",
+                    "timestamp": "1755635545588875776"
+                },
+                {
+                    "instructions": "762328",
+                    "method_name": "testOrdering19",
+                    "timestamp": "1755635545836208222"
+                },
+                {
+                    "instructions": "696566",
+                    "method_name": "testOrdering20",
+                    "timestamp": "1755635546079961632"
                 }
             ]
         }

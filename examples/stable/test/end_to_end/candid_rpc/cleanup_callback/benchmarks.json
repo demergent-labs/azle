@@ -1,10 +1,6 @@
 {
     "cleanup_callback": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -51,6 +47,71 @@
                     "instructions": "582737",
                     "method_name": "getRandomnessMsgRejectInRejectCallback",
                     "timestamp": "1750853909734148743"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "979561",
+                    "method_name": "getRandomness",
+                    "timestamp": "1755635547694937879"
+                },
+                {
+                    "instructions": "902987",
+                    "method_name": "getRandomnessWithTrapUncaught",
+                    "timestamp": "1755635548173132409"
+                },
+                {
+                    "instructions": "902962",
+                    "method_name": "getRandomnessWithTrapCaught",
+                    "timestamp": "1755635549231213630"
+                },
+                {
+                    "instructions": "905692",
+                    "method_name": "getRandomnessWithTrapCaughtRejectCallback",
+                    "timestamp": "1755635550291839369"
+                },
+                {
+                    "instructions": "923973",
+                    "method_name": "getRandomnessWithTrapCaughtPromise",
+                    "timestamp": "1755635551004789019"
+                },
+                {
+                    "instructions": "903936",
+                    "method_name": "getRandomnessWithTrapCaughtAndTrapAgain",
+                    "timestamp": "1755635551948285728"
+                },
+                {
+                    "instructions": "964980",
+                    "method_name": "deleteAzleGlobalSettleCallbacks",
+                    "timestamp": "1755635552895321619"
+                },
+                {
+                    "instructions": "566096",
+                    "method_name": "getRandomnessMsgRejectInReplyCallback",
+                    "timestamp": "1755635553132352347"
+                },
+                {
+                    "instructions": "567384",
+                    "method_name": "getRandomnessMsgRejectInRejectCallback",
+                    "timestamp": "1755635553605876090"
+                },
+                {
+                    "instructions": "1138260",
+                    "method_name": "setTimerWithTrap",
+                    "timestamp": "1755635553846751014"
+                },
+                {
+                    "instructions": "1133319",
+                    "method_name": "setTimerWithTrapAndInterCanisterCall",
+                    "timestamp": "1755635554089997447"
+                },
+                {
+                    "instructions": "1134239",
+                    "method_name": "setTimerWithTrapAndInterCanisterCalls",
+                    "timestamp": "1755635554341467965"
                 }
             ]
         }

@@ -1,26 +1,22 @@
 {
     "update": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1423897"
-                    },
-                    "method_name": "simpleUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977075298570816"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "1418056",
                     "method_name": "simpleUpdate",
                     "timestamp": "1750853907595383542"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1407528",
+                    "method_name": "simpleUpdate",
+                    "timestamp": "1755635546077226632"
                 }
             ]
         }

@@ -1,52 +1,51 @@
 # Benchmarks for manual_reply
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | manualUpdate | 933_675 | 5_933_675 | $0.0000081291 | $8.12 | <font color="red">+174_621</font> |
+| 1 | manualUpdate | 1_662_608 | 6_662_608 | $0.0000091278 | $9.12 | <font color="green">-42_547</font> |
+| 2 | updateBlob | 1_173_579 | 6_173_579 | $0.0000084578 | $8.45 | <font color="green">-72_017</font> |
+| 3 | updateFloat32 | 740_796 | 5_740_796 | $0.0000078649 | $7.86 | <font color="green">-50_705</font> |
+| 4 | updateInt8 | 834_821 | 5_834_821 | $0.0000079937 | $7.99 | <font color="green">-60_281</font> |
+| 5 | updateNat | 1_220_916 | 6_220_916 | $0.0000085227 | $8.52 | <font color="green">-85_692</font> |
+| 6 | updateNull | 728_297 | 5_728_297 | $0.0000078478 | $7.84 | <font color="green">-46_065</font> |
+| 7 | updateVoid | 582_107 | 5_582_107 | $0.0000076475 | $7.64 | <font color="green">-42_694</font> |
+| 8 | updateRecord | 12_818_707 | 17_818_707 | $0.0000244116 | $24.41 | <font color="green">-678_358</font> |
+| 9 | updateReserved | 729_782 | 5_729_782 | $0.0000078498 | $7.84 | <font color="green">-47_174</font> |
+| 10 | updateString | 982_710 | 5_982_710 | $0.0000081963 | $8.19 | <font color="green">-64_617</font> |
+| 11 | updateVariant | 3_165_670 | 8_165_670 | $0.0000111870 | $11.18 | <font color="green">-176_424</font> |
+| 12 | updateFloat32 | 739_932 | 5_739_932 | $0.0000078637 | $7.86 | <font color="green">-45_949</font> |
+| 13 | replyRaw | 213_579 | 5_213_579 | $0.0000071426 | $7.14 | <font color="green">-538</font> |
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | manualUpdate   | 759_054      | 893_621   | $0.0000011882 | $1.18             | <font color="red">+7_711</font>   |
-| 1   | manualUpdate   | 1_705_155    | 1_272_062 | $0.0000016914 | $1.69             | <font color="red">+2_594</font>   |
-| 2   | updateBlob     | 1_245_596    | 1_088_238 | $0.0000014470 | $1.44             | <font color="green">-1_916</font> |
-| 3   | updateFloat32  | 791_501      | 906_600   | $0.0000012055 | $1.20             | <font color="red">+3_518</font>   |
-| 4   | updateInt8     | 895_102      | 948_040   | $0.0000012606 | $1.26             | <font color="red">+1_065</font>   |
-| 5   | updateNat      | 1_306_608    | 1_112_643 | $0.0000014794 | $1.47             | <font color="red">+6_167</font>   |
-| 6   | updateNull     | 774_362      | 899_744   | $0.0000011964 | $1.19             | <font color="red">+793</font>     |
-| 7   | updateVoid     | 624_801      | 839_920   | $0.0000011168 | $1.11             | <font color="red">+2_955</font>   |
-| 8   | updateRecord   | 13_497_065   | 5_988_826 | $0.0000079632 | $7.96             | <font color="red">+3_068</font>   |
-| 9   | updateReserved | 776_956      | 900_782   | $0.0000011977 | $1.19             | <font color="red">+4_180</font>   |
-| 10  | updateString   | 1_047_327    | 1_008_930 | $0.0000013415 | $1.34             | <font color="green">-2_264</font> |
-| 11  | updateVariant  | 3_342_094    | 1_926_837 | $0.0000025621 | $2.56             | <font color="green">-4_877</font> |
-| 12  | updateFloat32  | 785_881      | 904_352   | $0.0000012025 | $1.20             | <font color="red">+1_085</font>   |
-| 13  | replyRaw       | 214_117      | 675_646   | $0.0000008984 | $0.89             | <font color="red">+5_027</font>   |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | manualUpdate | 759_054 | 5_759_054 | $0.0000078899 | $7.88 |
+| 1 | manualUpdate | 1_705_155 | 6_705_155 | $0.0000091861 | $9.18 |
+| 2 | updateBlob | 1_245_596 | 6_245_596 | $0.0000085565 | $8.55 |
+| 3 | updateFloat32 | 791_501 | 5_791_501 | $0.0000079344 | $7.93 |
+| 4 | updateInt8 | 895_102 | 5_895_102 | $0.0000080763 | $8.07 |
+| 5 | updateNat | 1_306_608 | 6_306_608 | $0.0000086401 | $8.64 |
+| 6 | updateNull | 774_362 | 5_774_362 | $0.0000079109 | $7.91 |
+| 7 | updateVoid | 624_801 | 5_624_801 | $0.0000077060 | $7.70 |
+| 8 | updateRecord | 13_497_065 | 18_497_065 | $0.0000253410 | $25.34 |
+| 9 | updateReserved | 776_956 | 5_776_956 | $0.0000079144 | $7.91 |
+| 10 | updateString | 1_047_327 | 6_047_327 | $0.0000082848 | $8.28 |
+| 11 | updateVariant | 3_342_094 | 8_342_094 | $0.0000114287 | $11.42 |
+| 12 | updateFloat32 | 785_881 | 5_785_881 | $0.0000079267 | $7.92 |
+| 13 | replyRaw | 214_117 | 5_214_117 | $0.0000071433 | $7.14 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | manualUpdate   | 751_343      | 890_537   | $0.0000011841 | $1.18             |
-| 1   | manualUpdate   | 1_702_561    | 1_271_024 | $0.0000016900 | $1.69             |
-| 2   | updateBlob     | 1_247_512    | 1_089_004 | $0.0000014480 | $1.44             |
-| 3   | updateFloat32  | 787_983      | 905_193   | $0.0000012036 | $1.20             |
-| 4   | updateInt8     | 894_037      | 947_614   | $0.0000012600 | $1.26             |
-| 5   | updateNat      | 1_300_441    | 1_110_176 | $0.0000014762 | $1.47             |
-| 6   | updateNull     | 773_569      | 899_427   | $0.0000011959 | $1.19             |
-| 7   | updateVoid     | 621_846      | 838_738   | $0.0000011152 | $1.11             |
-| 8   | updateRecord   | 13_493_997   | 5_987_598 | $0.0000079615 | $7.96             |
-| 9   | updateReserved | 772_776      | 899_110   | $0.0000011955 | $1.19             |
-| 10  | updateString   | 1_049_591    | 1_009_836 | $0.0000013427 | $1.34             |
-| 11  | updateVariant  | 3_346_971    | 1_928_788 | $0.0000025647 | $2.56             |
-| 12  | updateFloat32  | 784_796      | 903_918   | $0.0000012019 | $1.20             |
-| 13  | replyRaw       | 209_090      | 673_636   | $0.0000008957 | $0.89             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

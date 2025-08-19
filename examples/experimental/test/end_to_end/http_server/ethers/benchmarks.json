@@ -1,20 +1,6 @@
 {
     "ethers": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7521869435"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977014129421429"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -23,6 +9,10 @@
                     "timestamp": "1750853912225492792"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": []
         }
     }
 }

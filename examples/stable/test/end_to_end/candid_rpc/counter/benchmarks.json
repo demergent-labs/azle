@@ -1,38 +1,6 @@
 {
     "counter": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1602943"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741977055995272290"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1549473"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741977056236084646"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1551611"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741977056477697950"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -49,6 +17,26 @@
                     "instructions": "1553753",
                     "method_name": "incrementCount",
                     "timestamp": "1750853909185236065"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1569913",
+                    "method_name": "incrementCount",
+                    "timestamp": "1755635542411734446"
+                },
+                {
+                    "instructions": "1517943",
+                    "method_name": "incrementCount",
+                    "timestamp": "1755635542649694896"
+                },
+                {
+                    "instructions": "1515517",
+                    "method_name": "incrementCount",
+                    "timestamp": "1755635542888600749"
                 }
             ]
         }
