@@ -23,11 +23,13 @@ const BASELINE_EFFICIENCY_WEIGHTS = {
  * @returns Statistical analysis of the benchmark data
  */
 export function calculateVersionStatistics(
-    entries: BenchmarkEntry[]
+    entries: BenchmarkEntry[] | undefined
 ): Statistics {
-    const instructions = entries.map((entry) =>
-        Number(entry.instructions.__bigint__)
-    );
+    if (entries === undefined || entries.length === 0) {
+        throw new Error('No benchmark entries found for this version');
+    }
+
+    const instructions = entries.map((entry) => Number(entry.instructions));
 
     return calculateStatistics(instructions);
 }
