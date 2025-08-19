@@ -6,7 +6,6 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { Buffer } from 'buffer';
 import * as process from 'process';
 import { URL } from 'url';
-import { v4 } from 'uuid';
 
 import { azleFetch } from './fetch';
 
@@ -85,7 +84,16 @@ if (
                 throw new Error('globalThis._azleWebAssembly is undefined');
             }
 
-            const uuid = v4();
+            const uuid =
+                globalThis._azleIc !== undefined
+                    ? globalThis._azleIc.uuid()
+                    : globalThis._azleIcExperimental !== undefined
+                      ? globalThis._azleIcExperimental.uuid()
+                      : ((): never => {
+                            throw new Error(
+                                'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
+                            );
+                        })();
 
             const instantiatedSource = globalThis._azleWebAssembly.instantiate(
                 uuid,

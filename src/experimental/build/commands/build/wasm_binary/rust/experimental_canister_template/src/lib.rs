@@ -16,10 +16,13 @@ mod guards;
 mod ic;
 mod init_and_post_upgrade;
 mod internal_canister_methods;
+mod seed_internal_csprng;
 mod stable_b_tree_map;
 mod upload_file;
 mod wasm_binary_manipulation;
 mod web_assembly;
+
+pub use seed_internal_csprng::seed_internal_csprng;
 
 #[global_allocator]
 static PEAK_ALLOC: PeakAlloc = PeakAlloc;
@@ -29,6 +32,8 @@ type Memory = VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
     static CSPRNG: RefCell<StdRng> = RefCell::new(StdRng::from_seed([0;32]));
+    // Internal CSPRNG used exclusively for Azle internal UUID generation. It cannot be reseeded by user code.
+    static INTERNAL_CSPRNG: RefCell<StdRng> = RefCell::new(StdRng::from_seed([0;32]));
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
     static WASM_DATA_REF_CELL: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);

@@ -37,6 +37,7 @@ export type AzleIcExperimental = {
     msgRejectCode: () => number;
     msgReply: (bytes: ArrayBuffer) => void;
     randBytes: (byteLength: number) => ArrayBuffer;
+    uuid: () => string;
     randSeed: (seed: ArrayBuffer) => void;
     certifiedDataSet: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string) => string;

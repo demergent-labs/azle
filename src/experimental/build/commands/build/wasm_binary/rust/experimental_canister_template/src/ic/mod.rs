@@ -42,6 +42,7 @@ mod stable_b_tree_map_remove;
 mod stable_b_tree_map_values;
 mod time;
 mod trap;
+mod uuid;
 
 use wasmedge_quickjs::AsObject;
 
@@ -345,6 +346,11 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     ic.set(
         "trap",
         context.new_function::<trap::NativeFunction>("").into(),
+    );
+
+    ic.set(
+        "uuid",
+        context.new_function::<uuid::NativeFunction>("").into(),
     );
 
     context.get_global().set("_azleIcExperimental", ic.into());

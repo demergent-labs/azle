@@ -49,6 +49,7 @@ mod stable_b_tree_map_remove;
 mod stable_b_tree_map_values;
 mod time;
 mod trap;
+mod uuid;
 
 #[allow(unused)]
 pub fn register(ctx: Ctx) -> Result<()> {
@@ -202,6 +203,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("time", time::get_function(ctx.clone()))?;
 
     ic.set("trap", trap::get_function(ctx.clone()))?;
+
+    ic.set("uuid", uuid::get_function(ctx.clone()))?;
 
     ctx.globals().set("_azleIc", ic)?;
 
