@@ -1,5 +1,92 @@
 # Benchmarks
 
+## Version `0.33.0`
+
+<table>
+    <tr>
+        <th></th>
+        <th colspan="2">Stable</th>
+        <th colspan="2">Experimental</th>
+    </tr>
+    <tr>
+        <th>Metric</th>
+        <th>Score</th>
+        <th>Change</th>
+        <th>Score</th>
+        <th>Change</th>
+    </tr>
+    <tr>
+        <td>Baseline Weighted Efficiency</td>
+        <td>32_985_945</td>
+        <td><span style="color: red">163.73%</span></td>
+        <td>263_239_451</td>
+        <td><span style="color: red">126.83%</span></td>
+    </tr>
+    <tr>
+        <td colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+        <th></th>
+        <th>Count</th>
+        <th></th>
+        <th>Count</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>Method Executions</td>
+        <td>1056</td>
+        <td><span style="color: red">59.04%</span></td>
+        <td>38</td>
+        <td><span style="color: green">-95.44%</span></td>
+    </tr>
+    <tr>
+        <td colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+        <th></th>
+        <th>Number of Instructions</th>
+        <th></th>
+        <th>Number of Instructions</th>
+        <th></th>
+    </tr>
+    	<tr>
+        <td>Mean</td>
+        <td>325_495_477</td>
+        <td><span style="color: red">167.13%</span></td>
+        <td>2_446_892_980</td>
+        <td><span style="color: red">113.71%</span></td>
+    </tr>
+	<tr>
+        <td>Median</td>
+        <td>1_252_190</td>
+        <td><span style="color: red">43.00%</span></td>
+        <td>58_998_432</td>
+        <td><span style="color: red">1075.21%</span></td>
+    </tr>
+	<tr>
+        <td>Standard Deviation</td>
+        <td>1_839_650_374</td>
+        <td><span style="color: red">39.71%</span></td>
+        <td>4_054_097_162</td>
+        <td><span style="color: red">32.78%</span></td>
+    </tr>
+	<tr>
+        <td>Min</td>
+        <td>101_234</td>
+        <td><span style="color: red">1.74%</span></td>
+        <td>1_417_707</td>
+        <td><span style="color: red">1750.29%</span></td>
+    </tr>
+	<tr>
+        <td>Max</td>
+        <td>28_094_874_159</td>
+        <td><span style="color: red">34.65%</span></td>
+        <td>13_791_359_812</td>
+        <td><span style="color: green">-24.77%</span></td>
+    </tr>
+
+</table>
+
 ## Version `0.30.0`
 
 <table>
@@ -696,6 +783,7 @@
 
 </table>
 
----
 
-_Report generated automatically by Azle_
+
+---
+*Report generated automatically by Azle*
