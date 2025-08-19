@@ -201,6 +201,7 @@ fn seed_from_raw_rand() {
                         .map_err(|_| "seed must be exactly 32 bytes in length")?,
                 );
 
+                // Seed the internal Azle CSPRNG used for UUID generation. We intentionally do not expose this seed.
                 seed_internal_csprng(
                     randomness
                         .try_into()
