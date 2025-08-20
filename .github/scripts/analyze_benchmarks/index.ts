@@ -49,19 +49,34 @@ async function analyzeBenchmarksForVersion(
 /**
  * Runs the benchmark analysis for a specified version or current version
  * @param specifiedVersion Optional version to analyze. If not provided, uses current package version
+ * @param debugMode If true, throws errors instead of writing them to markdown
  */
-async function runBenchmarkAnalysis(specifiedVersion?: string): Promise<void> {
+async function runBenchmarkAnalysis(
+    specifiedVersion?: string,
+    debugMode: boolean = false
+): Promise<void> {
     const versionToAnalyze = specifiedVersion ?? currentAzleVersion;
     console.info('Analyzing benchmarks...');
     try {
         const statistics = await analyzeBenchmarksForVersion(versionToAnalyze);
         await reportResults(statistics, versionToAnalyze);
     } catch (error) {
-        const errorMessage =
-            error instanceof Error ? error.message : String(error);
-        await reportErrorResult(errorMessage, versionToAnalyze);
+        if (debugMode) {
+            // In debug mode, throw the error to get stack traces and immediate feedback
+            throw error;
+        } else {
+            // In normal mode, write error to markdown for PR visibility
+            const errorMessage =
+                error instanceof Error ? error.message : String(error);
+            await reportErrorResult(errorMessage, versionToAnalyze);
+        }
     }
     console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
-runBenchmarkAnalysis(process.argv[2]);
+// Parse command line arguments
+const args = process.argv.slice(2);
+const debugMode = args.includes('--debug') === true;
+const versionArg = args.find((arg) => arg.startsWith('--') === false);
+
+runBenchmarkAnalysis(versionArg, debugMode);
