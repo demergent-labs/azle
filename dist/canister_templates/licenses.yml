@@ -1315,7 +1315,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: candid
-  package_version: 0.10.14
+  package_version: 0.10.17
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
@@ -1731,7 +1731,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: candid_derive
-  package_version: 0.6.6
+  package_version: 0.10.17
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
@@ -1925,7 +1925,7 @@ third_party_libraries:
             same "printed page" as the copyright notice for easier
             identification within third-party archives.
 
-         Copyright 2020 DFINITY LLC.
+         Copyright 2020 DFINITY Stiftung.
 
          Licensed under the Apache License, Version 2.0 (the "License");
          you may not use this file except in compliance with the License.
@@ -6823,7 +6823,7 @@ third_party_libraries:
          limitations under the License.
 
 - package_name: ic-cdk
-  package_version: 0.18.5
+  package_version: 0.18.6
   repository: https://github.com/dfinity/cdk-rs
   license: Apache-2.0
   licenses:
@@ -7031,14 +7031,14 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: ic-cdk-executor
-  package_version: 1.0.1
+  package_version: 1.0.2
   repository: https://github.com/dfinity/cdk-rs
   license: Apache-2.0
   licenses:
   - license: Apache-2.0
     text: NOT FOUND
 - package_name: ic-cdk-macros
-  package_version: 0.18.5
+  package_version: 0.18.6
   repository: https://github.com/dfinity/cdk-rs
   license: Apache-2.0
   licenses:
@@ -7654,7 +7654,7 @@ third_party_libraries:
 
       END OF TERMS AND CONDITIONS
 - package_name: ic-management-canister-types
-  package_version: 0.3.1
+  package_version: 0.3.2
   repository: https://github.com/dfinity/cdk-rs
   license: Apache-2.0
   licenses:
