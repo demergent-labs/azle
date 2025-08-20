@@ -1,9 +1,9 @@
 import { readFile } from 'fs/promises';
 
 export type BenchmarkEntry = {
-    instructions: { __bigint__: string };
+    instructions: string;
     method_name: string;
-    timestamp: { __bigint__: string };
+    timestamp: string;
 };
 
 type VersionBenchmarks = {
