@@ -1,5 +1,11 @@
 # Benchmarks
 
+## Purpose and Usage
+
+This document tracks high-level performance changes across Azle versions for comparison between releases.
+
+**For detailed benchmarks showing how different Candid data types perform, see the [benchmarks example](examples/stable/test/end_to_end/candid_rpc/benchmarks/benchmarks.md).** This is the best resource for understanding day-to-day performance in your Azle applications.
+
 ## Version `0.30.0`
 
 <table>

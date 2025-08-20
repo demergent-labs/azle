@@ -12,7 +12,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
 
                 let mut bytes = vec![0; byte_length];
 
-                rng.fill_bytes(bytes.as_mut_slice());
+                rng.fill_bytes(&mut bytes);
 
                 TypedArray::<u8>::new(ctx.clone(), bytes)
             })
