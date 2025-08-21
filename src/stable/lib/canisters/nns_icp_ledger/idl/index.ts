@@ -1012,9 +1012,3 @@ export const init: init = ({ IDL }) => {
     });
     return [LedgerCanisterPayload];
 };
-
-export {
-    binaryAddressFromAddress,
-    binaryAddressFromPrincipal,
-    hexAddressFromPrincipal
-} from './address';

@@ -1,9 +1,9 @@
 use std::{borrow::Cow, cell::RefCell, collections::BTreeMap};
 
-use ic_stable_structures::{storable::Bound, StableBTreeMap, Storable};
+use ic_stable_structures::{StableBTreeMap, Storable, storable::Bound};
 use rquickjs::{Ctx, Result};
 
-use crate::{ic::throw_error, Memory};
+use crate::{Memory, ic::throw_error};
 
 #[allow(unused)]
 pub type AzleStableBTreeMap =
@@ -19,7 +19,7 @@ pub struct AzleStableBTreeMapKey {
 }
 
 impl Storable for AzleStableBTreeMapKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         Cow::Borrowed(&self.bytes)
     }
 
@@ -38,7 +38,7 @@ pub struct AzleStableBTreeMapValue {
 }
 
 impl Storable for AzleStableBTreeMapValue {
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         Cow::Borrowed(&self.bytes)
     }
 
