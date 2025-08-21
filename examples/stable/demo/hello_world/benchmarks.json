@@ -1,26 +1,22 @@
 {
     "hello_world": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1410904"
-                    },
-                    "method_name": "setMessage",
-                    "timestamp": {
-                        "__bigint__": "1741977005837069511"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "1404869",
                     "method_name": "setMessage",
                     "timestamp": "1750853910287607017"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1395312",
+                    "method_name": "setMessage",
+                    "timestamp": "1755791038735454227"
                 }
             ]
         }

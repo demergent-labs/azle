@@ -1,38 +1,6 @@
 {
     "timers": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "9929640"
-                    },
-                    "method_name": "setTimers",
-                    "timestamp": {
-                        "__bigint__": "1741977077685581220"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1259807"
-                    },
-                    "method_name": "clearTimer",
-                    "timestamp": {
-                        "__bigint__": "1741977090104076890"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1259982"
-                    },
-                    "method_name": "clearTimer",
-                    "timestamp": {
-                        "__bigint__": "1741977090104076890"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -49,6 +17,26 @@
                     "instructions": "1262844",
                     "method_name": "clearTimer",
                     "timestamp": "1750853915789529868"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "9581567",
+                    "method_name": "setTimers",
+                    "timestamp": "1755791018556637984"
+                },
+                {
+                    "instructions": "1246413",
+                    "method_name": "clearTimer",
+                    "timestamp": "1755791030837121765"
+                },
+                {
+                    "instructions": "1247701",
+                    "method_name": "clearTimer",
+                    "timestamp": "1755791030837121765"
                 }
             ]
         }

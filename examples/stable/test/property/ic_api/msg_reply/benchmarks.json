@@ -1,26 +1,22 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1435450"
-                    },
-                    "method_name": "alwaysReplyUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977013153117334"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "1263573",
                     "method_name": "alwaysReplyUpdate",
                     "timestamp": "1750853910060473970"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "17979106",
+                    "method_name": "alwaysReplyUpdate",
+                    "timestamp": "1755791047847716120"
                 }
             ]
         }

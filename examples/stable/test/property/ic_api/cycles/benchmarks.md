@@ -1,64 +1,61 @@
 # Benchmarks for cycles
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | receiveAllCycles | 8_270_704 | 13_270_704 | $0.0000181809 | $18.18 | <font color="green">-362_150</font> |
+| 1 | receiveVariableCycles | 8_129_828 | 13_129_828 | $0.0000179879 | $17.98 | <font color="green">-451_651</font> |
+| 2 | receiveNoCycles | 8_136_259 | 13_136_259 | $0.0000179967 | $17.99 | <font color="green">-434_296</font> |
+| 3 | receiveCyclesByChunk | 8_637_440 | 13_637_440 | $0.0000186833 | $18.68 | <font color="green">-346_136</font> |
+| 4 | assertMsgCyclesAcceptTypes | 1_226_993 | 6_226_993 | $0.0000085310 | $8.53 | <font color="green">-27_986</font> |
+| 5 | assertMsgCyclesAvailableTypes | 1_121_188 | 6_121_188 | $0.0000083860 | $8.38 | <font color="green">-24_990</font> |
+| 6 | assertMsgCyclesAcceptTypes | 1_229_442 | 6_229_442 | $0.0000085343 | $8.53 | <font color="green">-26_265</font> |
 
-| Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls | Change                                |
-| --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | receiveAllCycles              | 8_632_854    | 4_043_141 | $0.0000053760 | $5.37             | <font color="green">-1_526_254</font> |
-| 1   | receiveVariableCycles         | 8_581_479    | 4_022_591 | $0.0000053487 | $5.34             | <font color="green">-1_756_653</font> |
-| 2   | receiveNoCycles               | 8_570_555    | 4_018_222 | $0.0000053429 | $5.34             | <font color="green">-1_491_109</font> |
-| 3   | receiveCyclesByChunk          | 8_983_576    | 4_183_430 | $0.0000055626 | $5.56             | <font color="green">-1_401_626</font> |
-| 4   | assertMsgCyclesAcceptTypes    | 1_254_979    | 1_091_991 | $0.0000014520 | $1.45             | <font color="green">-90_963</font>    |
-| 5   | assertMsgCyclesAvailableTypes | 1_146_178    | 1_048_471 | $0.0000013941 | $1.39             | <font color="red">+27_399</font>      |
-| 6   | assertMsgCyclesAcceptTypes    | 1_255_707    | 1_092_282 | $0.0000014524 | $1.45             | <font color="green">-90_735</font>    |
-
-## Baseline benchmarks Azle version: 0.30.0
-
-| Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | receiveAllCycles              | 10_159_108   | 4_653_643 | $0.0000061878 | $6.18             |
-| 1   | receiveVariableCycles         | 10_338_132   | 4_725_252 | $0.0000062830 | $6.28             |
-| 2   | receiveNoCycles               | 10_061_664   | 4_614_665 | $0.0000061360 | $6.13             |
-| 3   | receiveCyclesByChunk          | 10_385_202   | 4_744_080 | $0.0000063081 | $6.30             |
-| 4   | assertMsgCyclesAcceptTypes    | 1_345_942    | 1_128_376 | $0.0000015004 | $1.50             |
-| 5   | assertMsgCyclesAvailableTypes | 1_118_779    | 1_037_511 | $0.0000013795 | $1.37             |
-| 6   | assertMsgCyclesAcceptTypes    | 1_346_442    | 1_128_576 | $0.0000015006 | $1.50             |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | receiveAllCycles | 8_632_854 | 13_632_854 | $0.0000186770 | $18.67 |
+| 1 | receiveVariableCycles | 8_581_479 | 13_581_479 | $0.0000186066 | $18.60 |
+| 2 | receiveNoCycles | 8_570_555 | 13_570_555 | $0.0000185917 | $18.59 |
+| 3 | receiveCyclesByChunk | 8_983_576 | 13_983_576 | $0.0000191575 | $19.15 |
+| 4 | assertMsgCyclesAcceptTypes | 1_254_979 | 6_254_979 | $0.0000085693 | $8.56 |
+| 5 | assertMsgCyclesAvailableTypes | 1_146_178 | 6_146_178 | $0.0000084203 | $8.42 |
+| 6 | assertMsgCyclesAcceptTypes | 1_255_707 | 6_255_707 | $0.0000085703 | $8.57 |
 
 # Benchmarks for intermediary
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | sendAllCycles | 1_427_037 | 6_427_037 | $0.0000088050 | $8.80 | <font color="green">-74_525</font> |
+| 1 | sendVariableCycles | 2_276_494 | 7_276_494 | $0.0000099688 | $9.96 | <font color="red">+34_894</font> |
+| 2 | sendNoCycles | 1_340_765 | 6_340_765 | $0.0000086868 | $8.68 | <font color="green">-88_532</font> |
+| 3 | sendCyclesByChunk | 2_642_979 | 7_642_979 | $0.0000104709 | $10.47 | <font color="green">-55_070</font> |
+| 4 | assertMsgCyclesAcceptTypes | 1_975_762 | 6_975_762 | $0.0000095568 | $9.55 | <font color="green">-120_929</font> |
+| 5 | assertMsgCyclesAvailableTypes | 1_194_169 | 6_194_169 | $0.0000084860 | $8.48 | <font color="green">-65_140</font> |
+| 6 | assertMsgCyclesRefundedTypes | 1_974_762 | 6_974_762 | $0.0000095554 | $9.55 | <font color="green">-121_639</font> |
 
-| Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
-| --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | sendAllCycles                 | 1_501_562    | 1_190_624 | $0.0000015831 | $1.58             | <font color="green">-127_653</font> |
-| 1   | sendVariableCycles            | 2_241_600    | 1_486_640 | $0.0000019767 | $1.97             | <font color="green">-642_839</font> |
-| 2   | sendNoCycles                  | 1_429_297    | 1_161_718 | $0.0000015447 | $1.54             | <font color="green">-129_313</font> |
-| 3   | sendCyclesByChunk             | 2_698_049    | 1_669_219 | $0.0000022195 | $2.21             | <font color="green">-187_350</font> |
-| 4   | assertMsgCyclesAcceptTypes    | 2_096_691    | 1_428_676 | $0.0000018997 | $1.89             | <font color="green">-556_936</font> |
-| 5   | assertMsgCyclesAvailableTypes | 1_259_309    | 1_093_723 | $0.0000014543 | $1.45             | <font color="green">-74_987</font>  |
-| 6   | assertMsgCyclesRefundedTypes  | 2_096_401    | 1_428_560 | $0.0000018995 | $1.89             | <font color="green">-554_852</font> |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | sendAllCycles | 1_501_562 | 6_501_562 | $0.0000089071 | $8.90 |
+| 1 | sendVariableCycles | 2_241_600 | 7_241_600 | $0.0000099210 | $9.92 |
+| 2 | sendNoCycles | 1_429_297 | 6_429_297 | $0.0000088081 | $8.80 |
+| 3 | sendCyclesByChunk | 2_698_049 | 7_698_049 | $0.0000105463 | $10.54 |
+| 4 | assertMsgCyclesAcceptTypes | 2_096_691 | 7_096_691 | $0.0000097225 | $9.72 |
+| 5 | assertMsgCyclesAvailableTypes | 1_259_309 | 6_259_309 | $0.0000085753 | $8.57 |
+| 6 | assertMsgCyclesRefundedTypes | 2_096_401 | 7_096_401 | $0.0000097221 | $9.72 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | sendAllCycles                 | 1_629_215    | 1_241_686 | $0.0000016510 | $1.65             |
-| 1   | sendVariableCycles            | 2_884_439    | 1_743_775 | $0.0000023186 | $2.31             |
-| 2   | sendNoCycles                  | 1_558_610    | 1_213_444 | $0.0000016135 | $1.61             |
-| 3   | sendCyclesByChunk             | 2_885_399    | 1_744_159 | $0.0000023192 | $2.31             |
-| 4   | assertMsgCyclesAcceptTypes    | 2_653_627    | 1_651_450 | $0.0000021959 | $2.19             |
-| 5   | assertMsgCyclesAvailableTypes | 1_334_296    | 1_123_718 | $0.0000014942 | $1.49             |
-| 6   | assertMsgCyclesRefundedTypes  | 2_651_253    | 1_650_501 | $0.0000021946 | $2.19             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

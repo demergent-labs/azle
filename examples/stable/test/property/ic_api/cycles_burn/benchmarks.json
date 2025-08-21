@@ -1,29 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1848152"
-                    },
-                    "method_name": "updateCyclesBurn",
-                    "timestamp": {
-                        "__bigint__": "1741977013083083708"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1229693"
-                    },
-                    "method_name": "assertCyclesBurnTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977013354206179"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -35,6 +12,21 @@
                     "instructions": "1259324",
                     "method_name": "assertCyclesBurnTypes",
                     "timestamp": "1750853909174753720"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1816088",
+                    "method_name": "updateCyclesBurn",
+                    "timestamp": "1755791024274552177"
+                },
+                {
+                    "instructions": "1226239",
+                    "method_name": "assertCyclesBurnTypes",
+                    "timestamp": "1755791024513875440"
                 }
             ]
         }

@@ -1,30 +1,29 @@
 # Benchmarks for timers
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | setTimers | 9_581_567 | 14_581_567 | $0.0000199767 | $19.97 | <font color="green">-333_433</font> |
+| 1 | clearTimer | 1_246_413 | 6_246_413 | $0.0000085576 | $8.55 | <font color="green">-15_842</font> |
+| 2 | clearTimer | 1_247_701 | 6_247_701 | $0.0000085594 | $8.55 | <font color="green">-15_143</font> |
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setTimers   | 9_915_000    | 4_556_000 | $0.0000060580 | $6.05             | <font color="green">-14_640</font> |
-| 1   | clearTimer  | 1_262_255    | 1_094_902 | $0.0000014559 | $1.45             | <font color="red">+2_448</font>    |
-| 2   | clearTimer  | 1_262_844    | 1_095_137 | $0.0000014562 | $1.45             | <font color="red">+2_862</font>    |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | setTimers | 9_915_000 | 14_915_000 | $0.0000204336 | $20.43 |
+| 1 | clearTimer | 1_262_255 | 6_262_255 | $0.0000085793 | $8.57 |
+| 2 | clearTimer | 1_262_844 | 6_262_844 | $0.0000085801 | $8.58 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setTimers   | 9_929_640    | 4_561_856 | $0.0000060658 | $6.06             |
-| 1   | clearTimer  | 1_259_807    | 1_093_922 | $0.0000014546 | $1.45             |
-| 2   | clearTimer  | 1_259_982    | 1_093_992 | $0.0000014546 | $1.45             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

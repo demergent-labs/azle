@@ -1,101 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1797681"
-                    },
-                    "method_name": "updatePerformanceCounter0",
-                    "timestamp": {
-                        "__bigint__": "1741977014637318042"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "590052815"
-                    },
-                    "method_name": "updatePerformanceCounter0",
-                    "timestamp": {
-                        "__bigint__": "1741977014879943848"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "590054768"
-                    },
-                    "method_name": "updatePerformanceCounter0",
-                    "timestamp": {
-                        "__bigint__": "1741977015347659250"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "590054885"
-                    },
-                    "method_name": "updatePerformanceCounter0",
-                    "timestamp": {
-                        "__bigint__": "1741977015613712978"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "590054526"
-                    },
-                    "method_name": "updatePerformanceCounter0",
-                    "timestamp": {
-                        "__bigint__": "1741977016078166845"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1750230"
-                    },
-                    "method_name": "updatePerformanceCounter1",
-                    "timestamp": {
-                        "__bigint__": "1741977016785771940"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "882111"
-                    },
-                    "method_name": "updatePerformanceCounter1",
-                    "timestamp": {
-                        "__bigint__": "1741977017066756898"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "865475"
-                    },
-                    "method_name": "updatePerformanceCounter1",
-                    "timestamp": {
-                        "__bigint__": "1741977017530514296"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "867312"
-                    },
-                    "method_name": "updatePerformanceCounter1",
-                    "timestamp": {
-                        "__bigint__": "1741977017773294613"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "869215"
-                    },
-                    "method_name": "updatePerformanceCounter1",
-                    "timestamp": {
-                        "__bigint__": "1741977018015727118"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -147,6 +52,61 @@
                     "instructions": "804029",
                     "method_name": "updatePerformanceCounter1",
                     "timestamp": "1750853916016161628"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1764958",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1755791039028702614"
+                },
+                {
+                    "instructions": "1745275",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1755791039270624202"
+                },
+                {
+                    "instructions": "1747356",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1755791039512842777"
+                },
+                {
+                    "instructions": "3603702",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1755791039754336996"
+                },
+                {
+                    "instructions": "3601701",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1755791039995871150"
+                },
+                {
+                    "instructions": "1716156",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1755791040354622849"
+                },
+                {
+                    "instructions": "779865",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1755791040593247218"
+                },
+                {
+                    "instructions": "765132",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1755791041450332518"
+                },
+                {
+                    "instructions": "765742",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1755791042312228643"
+                },
+                {
+                    "instructions": "763403",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1755791043174160368"
                 }
             ]
         }
