@@ -1,6 +1,6 @@
 use std::{cell::RefCell, collections::BTreeMap};
 
-use ic_stable_structures::{storable::Bound, StableBTreeMap, Storable};
+use ic_stable_structures::{StableBTreeMap, Storable, storable::Bound};
 
 use crate::Memory;
 
@@ -17,7 +17,7 @@ pub struct AzleStableBTreeMapKey {
 }
 
 impl Storable for AzleStableBTreeMapKey {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+    fn to_bytes(&self) -> std::borrow::Cow<'_, [u8]> {
         std::borrow::Cow::Borrowed(&self.bytes)
     }
 
@@ -36,7 +36,7 @@ pub struct AzleStableBTreeMapValue {
 }
 
 impl Storable for AzleStableBTreeMapValue {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+    fn to_bytes(&self) -> std::borrow::Cow<'_, [u8]> {
         std::borrow::Cow::Borrowed(&self.bytes)
     }
 
