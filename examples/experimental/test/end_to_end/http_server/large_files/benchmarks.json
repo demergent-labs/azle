@@ -1,20 +1,6 @@
 {
     "backend": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7532516799"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741979091825716936"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -23,6 +9,10 @@
                     "timestamp": "1750854685019405050"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": []
         }
     }
 }

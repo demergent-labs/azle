@@ -1,38 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "6499983"
-                    },
-                    "method_name": "canisterNestedReturnType",
-                    "timestamp": {
-                        "__bigint__": "1741977088455690537"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "6959568"
-                    },
-                    "method_name": "canisterList",
-                    "timestamp": {
-                        "__bigint__": "1741977088699543959"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2188149"
-                    },
-                    "method_name": "canisterCrossCanisterCall",
-                    "timestamp": {
-                        "__bigint__": "1741977088941737054"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -51,30 +19,46 @@
                     "timestamp": "1750853914650018174"
                 }
             ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "6192542",
+                    "method_name": "canisterNestedReturnType",
+                    "timestamp": "1755791026516175324"
+                },
+                {
+                    "instructions": "7566154",
+                    "method_name": "canisterList",
+                    "timestamp": "1755791026758601780"
+                },
+                {
+                    "instructions": "2499621",
+                    "method_name": "canisterCrossCanisterCall",
+                    "timestamp": "1755791027001085580"
+                }
+            ]
         }
     },
     "some_canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1632436"
-                    },
-                    "method_name": "update1",
-                    "timestamp": {
-                        "__bigint__": "1741977088941737054"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "1626168",
                     "method_name": "update1",
                     "timestamp": "1750853914650018174"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1586178",
+                    "method_name": "update1",
+                    "timestamp": "1755791027001085580"
                 }
             ]
         }

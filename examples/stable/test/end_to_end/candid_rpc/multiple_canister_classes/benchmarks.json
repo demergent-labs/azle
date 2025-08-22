@@ -1,10 +1,6 @@
 {
     "multiple_canister_classes": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -36,6 +32,41 @@
                     "instructions": "1179704",
                     "method_name": "methods5Nat",
                     "timestamp": "1750853909350368747"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1473303",
+                    "method_name": "methods2Text",
+                    "timestamp": "1755791015368268831"
+                },
+                {
+                    "instructions": "1428045",
+                    "method_name": "methods3Text",
+                    "timestamp": "1755791015859558334"
+                },
+                {
+                    "instructions": "1426319",
+                    "method_name": "methods5Text",
+                    "timestamp": "1755791016101286031"
+                },
+                {
+                    "instructions": "1153223",
+                    "method_name": "methods2Nat",
+                    "timestamp": "1755791016342907530"
+                },
+                {
+                    "instructions": "1149493",
+                    "method_name": "methods3Nat",
+                    "timestamp": "1755791016588115155"
+                },
+                {
+                    "instructions": "1150427",
+                    "method_name": "methods5Nat",
+                    "timestamp": "1755791016830444364"
                 }
             ]
         }

@@ -1,1441 +1,6 @@
 {
     "benchmarks": {
         "previous": {
-            "version": "0.31.0",
-            "benchmarks": [
-                {
-                    "instructions": "1161699",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777211664199911"
-                },
-                {
-                    "instructions": "1346795",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777212117399217"
-                },
-                {
-                    "instructions": "3548331",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777212575198776"
-                },
-                {
-                    "instructions": "25861918",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777213021365931"
-                },
-                {
-                    "instructions": "245344661",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777213341326787"
-                },
-                {
-                    "instructions": "2412606942",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777213706904750"
-                },
-                {
-                    "instructions": "24517123989",
-                    "method_name": "blobInitStack",
-                    "timestamp": "1749777214842856417"
-                },
-                {
-                    "instructions": "1137732",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777222848697601"
-                },
-                {
-                    "instructions": "1364002",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777223165168967"
-                },
-                {
-                    "instructions": "3719430",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777223450473886"
-                },
-                {
-                    "instructions": "27169504",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777223746580053"
-                },
-                {
-                    "instructions": "294772026",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777224048527374"
-                },
-                {
-                    "instructions": "2809054070",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777224417771880"
-                },
-                {
-                    "instructions": "28105270289",
-                    "method_name": "blobInitHeap",
-                    "timestamp": "1749777225593387304"
-                },
-                {
-                    "instructions": "1096624",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777237835746502"
-                },
-                {
-                    "instructions": "1106051",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777238105120661"
-                },
-                {
-                    "instructions": "1234313",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777238391477531"
-                },
-                {
-                    "instructions": "2518558",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777238686846816"
-                },
-                {
-                    "instructions": "15302293",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777238978325440"
-                },
-                {
-                    "instructions": "143149609",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777239412090925"
-                },
-                {
-                    "instructions": "1421608447",
-                    "method_name": "boolInitStack",
-                    "timestamp": "1749777239878309369"
-                },
-                {
-                    "instructions": "1100687",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777240601537081"
-                },
-                {
-                    "instructions": "1158817",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777240869457107"
-                },
-                {
-                    "instructions": "1695283",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777241163959432"
-                },
-                {
-                    "instructions": "7145077",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777241442580656"
-                },
-                {
-                    "instructions": "61616371",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777241713661581"
-                },
-                {
-                    "instructions": "614952907",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777242026223731"
-                },
-                {
-                    "instructions": "6281415276",
-                    "method_name": "boolInitHeap",
-                    "timestamp": "1749777242661585625"
-                },
-                {
-                    "instructions": "1096910",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777244987763481"
-                },
-                {
-                    "instructions": "1113084",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777245282092785"
-                },
-                {
-                    "instructions": "1277843",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777245569746223"
-                },
-                {
-                    "instructions": "2929197",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777245980074050"
-                },
-                {
-                    "instructions": "19402167",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777246276466052"
-                },
-                {
-                    "instructions": "184151623",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777246698437582"
-                },
-                {
-                    "instructions": "1831608172",
-                    "method_name": "float32InitStack",
-                    "timestamp": "1749777246998668221"
-                },
-                {
-                    "instructions": "1104959",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777247609974353"
-                },
-                {
-                    "instructions": "1165331",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777247897004768"
-                },
-                {
-                    "instructions": "1741004",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777248173380836"
-                },
-                {
-                    "instructions": "7540444",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777248444728343"
-                },
-                {
-                    "instructions": "66156147",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777248725668322"
-                },
-                {
-                    "instructions": "660579604",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777249113471557"
-                },
-                {
-                    "instructions": "6738006389",
-                    "method_name": "float32InitHeap",
-                    "timestamp": "1749777250090776231"
-                },
-                {
-                    "instructions": "1097282",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777253179918247"
-                },
-                {
-                    "instructions": "1111208",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777253471698198"
-                },
-                {
-                    "instructions": "1277268",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777253760927800"
-                },
-                {
-                    "instructions": "2930523",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777254049952597"
-                },
-                {
-                    "instructions": "19399897",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777254313769602"
-                },
-                {
-                    "instructions": "184150459",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777254610294848"
-                },
-                {
-                    "instructions": "1831608388",
-                    "method_name": "float64InitStack",
-                    "timestamp": "1749777254940459178"
-                },
-                {
-                    "instructions": "1103522",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777255651199355"
-                },
-                {
-                    "instructions": "1162378",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777255938592800"
-                },
-                {
-                    "instructions": "1739802",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777256224640161"
-                },
-                {
-                    "instructions": "7446178",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777256514392760"
-                },
-                {
-                    "instructions": "66207105",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777256816950451"
-                },
-                {
-                    "instructions": "659582413",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777257175296019"
-                },
-                {
-                    "instructions": "6689928327",
-                    "method_name": "float64InitHeap",
-                    "timestamp": "1749777257963667210"
-                },
-                {
-                    "instructions": "1096254",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777260811678764"
-                },
-                {
-                    "instructions": "1113925",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777261103799291"
-                },
-                {
-                    "instructions": "1241312",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777261379460364"
-                },
-                {
-                    "instructions": "2567052",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777261649990648"
-                },
-                {
-                    "instructions": "15752176",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777261918648311"
-                },
-                {
-                    "instructions": "147654562",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777262191953841"
-                },
-                {
-                    "instructions": "1466607494",
-                    "method_name": "intInitStack",
-                    "timestamp": "1749777262513785790"
-                },
-                {
-                    "instructions": "1105481",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777263131668642"
-                },
-                {
-                    "instructions": "1158205",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777263422498791"
-                },
-                {
-                    "instructions": "1707552",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777263703017367"
-                },
-                {
-                    "instructions": "7166520",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777263992892111"
-                },
-                {
-                    "instructions": "62441909",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777264288833527"
-                },
-                {
-                    "instructions": "622570399",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777264604910685"
-                },
-                {
-                    "instructions": "6309827037",
-                    "method_name": "intInitHeap",
-                    "timestamp": "1749777265112932972"
-                },
-                {
-                    "instructions": "1097071",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777267489842193"
-                },
-                {
-                    "instructions": "1110332",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777267806802158"
-                },
-                {
-                    "instructions": "1239738",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777268099401488"
-                },
-                {
-                    "instructions": "2524980",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777268384810799"
-                },
-                {
-                    "instructions": "15352725",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777268672766436"
-                },
-                {
-                    "instructions": "143651936",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777268962830027"
-                },
-                {
-                    "instructions": "1426608596",
-                    "method_name": "int8InitStack",
-                    "timestamp": "1749777269271679016"
-                },
-                {
-                    "instructions": "1102526",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777269829649062"
-                },
-                {
-                    "instructions": "1162273",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777270119695202"
-                },
-                {
-                    "instructions": "1702691",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777270409012239"
-                },
-                {
-                    "instructions": "7041417",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777270722424113"
-                },
-                {
-                    "instructions": "61069039",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777271014859507"
-                },
-                {
-                    "instructions": "609180306",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777271326145634"
-                },
-                {
-                    "instructions": "6229927689",
-                    "method_name": "int8InitHeap",
-                    "timestamp": "1749777271824632563"
-                },
-                {
-                    "instructions": "1097304",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777274382792330"
-                },
-                {
-                    "instructions": "1110556",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777274661985856"
-                },
-                {
-                    "instructions": "1235706",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777274951653800"
-                },
-                {
-                    "instructions": "2524108",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777275228189143"
-                },
-                {
-                    "instructions": "15353185",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777275525054058"
-                },
-                {
-                    "instructions": "143652567",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777275810025147"
-                },
-                {
-                    "instructions": "1426609948",
-                    "method_name": "int16InitStack",
-                    "timestamp": "1749777276107252300"
-                },
-                {
-                    "instructions": "1101041",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777276703665437"
-                },
-                {
-                    "instructions": "1159804",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777276965517426"
-                },
-                {
-                    "instructions": "1698113",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777277257729723"
-                },
-                {
-                    "instructions": "7140559",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777277545180624"
-                },
-                {
-                    "instructions": "62158479",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777277835514992"
-                },
-                {
-                    "instructions": "619079431",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777278152304364"
-                },
-                {
-                    "instructions": "6229929860",
-                    "method_name": "int16InitHeap",
-                    "timestamp": "1749777278668425623"
-                },
-                {
-                    "instructions": "1096550",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777281102284416"
-                },
-                {
-                    "instructions": "1112426",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777281400882204"
-                },
-                {
-                    "instructions": "1237074",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777281720532939"
-                },
-                {
-                    "instructions": "2520597",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777282007838379"
-                },
-                {
-                    "instructions": "15343220",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777282333031903"
-                },
-                {
-                    "instructions": "143551693",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777282628163605"
-                },
-                {
-                    "instructions": "1425607739",
-                    "method_name": "int32InitStack",
-                    "timestamp": "1749777282988692216"
-                },
-                {
-                    "instructions": "1102913",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777283531038291"
-                },
-                {
-                    "instructions": "1162465",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777283842128337"
-                },
-                {
-                    "instructions": "1704622",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777284128539279"
-                },
-                {
-                    "instructions": "7156853",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777284421336593"
-                },
-                {
-                    "instructions": "62046799",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777284712327367"
-                },
-                {
-                    "instructions": "614579570",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777285042897811"
-                },
-                {
-                    "instructions": "6327925821",
-                    "method_name": "int32InitHeap",
-                    "timestamp": "1749777285517282816"
-                },
-                {
-                    "instructions": "1097300",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777287901706056"
-                },
-                {
-                    "instructions": "1113866",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777288193234522"
-                },
-                {
-                    "instructions": "1247051",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777288480545413"
-                },
-                {
-                    "instructions": "2560757",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777288774675706"
-                },
-                {
-                    "instructions": "15754439",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777289064328220"
-                },
-                {
-                    "instructions": "147653115",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777289361620717"
-                },
-                {
-                    "instructions": "1466610709",
-                    "method_name": "int64InitStack",
-                    "timestamp": "1749777289705319060"
-                },
-                {
-                    "instructions": "1105003",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777290287684195"
-                },
-                {
-                    "instructions": "1159852",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777290577151079"
-                },
-                {
-                    "instructions": "1698195",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777290863439630"
-                },
-                {
-                    "instructions": "7160025",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777291152665222"
-                },
-                {
-                    "instructions": "62416909",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777291424961141"
-                },
-                {
-                    "instructions": "617074586",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777291728005453"
-                },
-                {
-                    "instructions": "6353829080",
-                    "method_name": "int64InitHeap",
-                    "timestamp": "1749777292230669840"
-                },
-                {
-                    "instructions": "1095877",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777294629379840"
-                },
-                {
-                    "instructions": "1111122",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777294918219844"
-                },
-                {
-                    "instructions": "1240912",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777295212084979"
-                },
-                {
-                    "instructions": "2564214",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777295504756544"
-                },
-                {
-                    "instructions": "15751710",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777295792763392"
-                },
-                {
-                    "instructions": "147651775",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777296087517421"
-                },
-                {
-                    "instructions": "1466609291",
-                    "method_name": "natInitStack",
-                    "timestamp": "1749777296397716975"
-                },
-                {
-                    "instructions": "1101552",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777296960447206"
-                },
-                {
-                    "instructions": "1159643",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777297260500220"
-                },
-                {
-                    "instructions": "1706021",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777297566114162"
-                },
-                {
-                    "instructions": "7182914",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777297859304134"
-                },
-                {
-                    "instructions": "62362962",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777298127841475"
-                },
-                {
-                    "instructions": "617908916",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777298455563107"
-                },
-                {
-                    "instructions": "6354684189",
-                    "method_name": "natInitHeap",
-                    "timestamp": "1749777298938098582"
-                },
-                {
-                    "instructions": "1097670",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777301509689381"
-                },
-                {
-                    "instructions": "1110712",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777301778104564"
-                },
-                {
-                    "instructions": "1239932",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777302040059414"
-                },
-                {
-                    "instructions": "2524746",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777302304310993"
-                },
-                {
-                    "instructions": "15352337",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777302602730960"
-                },
-                {
-                    "instructions": "143651568",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777302932494616"
-                },
-                {
-                    "instructions": "1426609589",
-                    "method_name": "nat8InitStack",
-                    "timestamp": "1749777303437040785"
-                },
-                {
-                    "instructions": "1102314",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777304119665342"
-                },
-                {
-                    "instructions": "1159610",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777304410318917"
-                },
-                {
-                    "instructions": "1701168",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777304686158334"
-                },
-                {
-                    "instructions": "7104800",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777304959746449"
-                },
-                {
-                    "instructions": "61621707",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777305400573216"
-                },
-                {
-                    "instructions": "609922967",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777305722234290"
-                },
-                {
-                    "instructions": "6280781997",
-                    "method_name": "nat8InitHeap",
-                    "timestamp": "1749777306222710654"
-                },
-                {
-                    "instructions": "1100657",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777308777390131"
-                },
-                {
-                    "instructions": "1110845",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777309091411251"
-                },
-                {
-                    "instructions": "1241711",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777309388026165"
-                },
-                {
-                    "instructions": "2522114",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777309678275639"
-                },
-                {
-                    "instructions": "15343838",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777309981686286"
-                },
-                {
-                    "instructions": "143550382",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777310274512738"
-                },
-                {
-                    "instructions": "1425608629",
-                    "method_name": "nat16InitStack",
-                    "timestamp": "1749777310579676383"
-                },
-                {
-                    "instructions": "1103834",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777311144043642"
-                },
-                {
-                    "instructions": "1158659",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777311436364812"
-                },
-                {
-                    "instructions": "1701990",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777311726249598"
-                },
-                {
-                    "instructions": "7100791",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777312021673917"
-                },
-                {
-                    "instructions": "62153114",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777312301384169"
-                },
-                {
-                    "instructions": "619717328",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777312656076315"
-                },
-                {
-                    "instructions": "6243779005",
-                    "method_name": "nat16InitHeap",
-                    "timestamp": "1749777313139691746"
-                },
-                {
-                    "instructions": "1097052",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777315643758870"
-                },
-                {
-                    "instructions": "1112559",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777315974421692"
-                },
-                {
-                    "instructions": "1238575",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777316255468533"
-                },
-                {
-                    "instructions": "2531051",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777316552256260"
-                },
-                {
-                    "instructions": "15419239",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777316868039734"
-                },
-                {
-                    "instructions": "144302535",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777317212633174"
-                },
-                {
-                    "instructions": "1433110318",
-                    "method_name": "nat32InitStack",
-                    "timestamp": "1749777317571144855"
-                },
-                {
-                    "instructions": "1106148",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777318130904594"
-                },
-                {
-                    "instructions": "1163144",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777318426788175"
-                },
-                {
-                    "instructions": "1705662",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777318716762992"
-                },
-                {
-                    "instructions": "7109251",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777319007972542"
-                },
-                {
-                    "instructions": "61686552",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777319280795698"
-                },
-                {
-                    "instructions": "616072407",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777319619759907"
-                },
-                {
-                    "instructions": "6341281330",
-                    "method_name": "nat32InitHeap",
-                    "timestamp": "1749777320097611119"
-                },
-                {
-                    "instructions": "1099099",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777322713590180"
-                },
-                {
-                    "instructions": "1113710",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777323004427933"
-                },
-                {
-                    "instructions": "1242662",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777323299089787"
-                },
-                {
-                    "instructions": "2563884",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777323597411350"
-                },
-                {
-                    "instructions": "15752417",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777323886791672"
-                },
-                {
-                    "instructions": "147652926",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777324183394943"
-                },
-                {
-                    "instructions": "1466612365",
-                    "method_name": "nat64InitStack",
-                    "timestamp": "1749777324507690220"
-                },
-                {
-                    "instructions": "1101058",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777325118812024"
-                },
-                {
-                    "instructions": "1159276",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777325408722917"
-                },
-                {
-                    "instructions": "1702628",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777325705768411"
-                },
-                {
-                    "instructions": "7128672",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777326001552126"
-                },
-                {
-                    "instructions": "62410321",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777326300417885"
-                },
-                {
-                    "instructions": "617910697",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777326622182289"
-                },
-                {
-                    "instructions": "6305680188",
-                    "method_name": "nat64InitHeap",
-                    "timestamp": "1749777327126637717"
-                },
-                {
-                    "instructions": "1099178",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777329530728361"
-                },
-                {
-                    "instructions": "1112195",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777329834630944"
-                },
-                {
-                    "instructions": "1236893",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777330134428938"
-                },
-                {
-                    "instructions": "2516390",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777330436503476"
-                },
-                {
-                    "instructions": "15303233",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777330732100013"
-                },
-                {
-                    "instructions": "143153324",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777331009878286"
-                },
-                {
-                    "instructions": "1421607106",
-                    "method_name": "nullInitStack",
-                    "timestamp": "1749777331377688247"
-                },
-                {
-                    "instructions": "1102428",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777331968113116"
-                },
-                {
-                    "instructions": "1161574",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777332254854790"
-                },
-                {
-                    "instructions": "1698040",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777332555239312"
-                },
-                {
-                    "instructions": "7146301",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777332848365255"
-                },
-                {
-                    "instructions": "62008938",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777333133848850"
-                },
-                {
-                    "instructions": "614917810",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777333428844012"
-                },
-                {
-                    "instructions": "6275778330",
-                    "method_name": "nullInitHeap",
-                    "timestamp": "1749777333939218574"
-                },
-                {
-                    "instructions": "1100391",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777336274594243"
-                },
-                {
-                    "instructions": "1125521",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777336549844445"
-                },
-                {
-                    "instructions": "1398507",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777336814218463"
-                },
-                {
-                    "instructions": "4105205",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777337082652594"
-                },
-                {
-                    "instructions": "31167488",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777337358156642"
-                },
-                {
-                    "instructions": "301800459",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777337668072985"
-                },
-                {
-                    "instructions": "3008107749",
-                    "method_name": "optInitStack",
-                    "timestamp": "1749777338048267350"
-                },
-                {
-                    "instructions": "1104462",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777339060124579"
-                },
-                {
-                    "instructions": "1171740",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777339354221429"
-                },
-                {
-                    "instructions": "1795197",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777339622909951"
-                },
-                {
-                    "instructions": "8050874",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777339928088107"
-                },
-                {
-                    "instructions": "71857716",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777340236953283"
-                },
-                {
-                    "instructions": "707926886",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777340611778483"
-                },
-                {
-                    "instructions": "9497255332",
-                    "method_name": "optInitHeap",
-                    "timestamp": "1749777341193818572"
-                },
-                {
-                    "instructions": "1789920",
-                    "method_name": "principalInitStack",
-                    "timestamp": "1749777344775019606"
-                },
-                {
-                    "instructions": "5882062",
-                    "method_name": "principalInitStack",
-                    "timestamp": "1749777345072705774"
-                },
-                {
-                    "instructions": "48898326",
-                    "method_name": "principalInitStack",
-                    "timestamp": "1749777345364966426"
-                },
-                {
-                    "instructions": "479041081",
-                    "method_name": "principalInitStack",
-                    "timestamp": "1749777345685517465"
-                },
-                {
-                    "instructions": "4780463576",
-                    "method_name": "principalInitStack",
-                    "timestamp": "1749777346094656299"
-                },
-                {
-                    "instructions": "1774159",
-                    "method_name": "principalInitHeap",
-                    "timestamp": "1749777347834338974"
-                },
-                {
-                    "instructions": "5926524",
-                    "method_name": "principalInitHeap",
-                    "timestamp": "1749777348127786922"
-                },
-                {
-                    "instructions": "49272607",
-                    "method_name": "principalInitHeap",
-                    "timestamp": "1749777348421824286"
-                },
-                {
-                    "instructions": "482833256",
-                    "method_name": "principalInitHeap",
-                    "timestamp": "1749777348729011842"
-                },
-                {
-                    "instructions": "4812332530",
-                    "method_name": "principalInitHeap",
-                    "timestamp": "1749777349157822810"
-                },
-                {
-                    "instructions": "1807390",
-                    "method_name": "recordInitStack",
-                    "timestamp": "1749777351037998382"
-                },
-                {
-                    "instructions": "6278845",
-                    "method_name": "recordInitStack",
-                    "timestamp": "1749777351322725449"
-                },
-                {
-                    "instructions": "52699830",
-                    "method_name": "recordInitStack",
-                    "timestamp": "1749777351609626674"
-                },
-                {
-                    "instructions": "517972308",
-                    "method_name": "recordInitStack",
-                    "timestamp": "1749777351928719157"
-                },
-                {
-                    "instructions": "5176851060",
-                    "method_name": "recordInitStack",
-                    "timestamp": "1749777352435732151"
-                },
-                {
-                    "instructions": "1804993",
-                    "method_name": "recordInitHeap",
-                    "timestamp": "1749777354313566512"
-                },
-                {
-                    "instructions": "6266692",
-                    "method_name": "recordInitHeap",
-                    "timestamp": "1749777354590176727"
-                },
-                {
-                    "instructions": "52783858",
-                    "method_name": "recordInitHeap",
-                    "timestamp": "1749777354866729500"
-                },
-                {
-                    "instructions": "517882944",
-                    "method_name": "recordInitHeap",
-                    "timestamp": "1749777355180308664"
-                },
-                {
-                    "instructions": "5170750130",
-                    "method_name": "recordInitHeap",
-                    "timestamp": "1749777355636453717"
-                },
-                {
-                    "instructions": "1097273",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777357849628723"
-                },
-                {
-                    "instructions": "1112683",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777358144690044"
-                },
-                {
-                    "instructions": "1243560",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777358577530724"
-                },
-                {
-                    "instructions": "2581785",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777359042764951"
-                },
-                {
-                    "instructions": "15925922",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777359499392019"
-                },
-                {
-                    "instructions": "149350998",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777359959455500"
-                },
-                {
-                    "instructions": "1483610294",
-                    "method_name": "textInitStack",
-                    "timestamp": "1749777360482763906"
-                },
-                {
-                    "instructions": "1106288",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777361396345941"
-                },
-                {
-                    "instructions": "1160404",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777361680803870"
-                },
-                {
-                    "instructions": "1701654",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777361952612860"
-                },
-                {
-                    "instructions": "7149778",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777362237781453"
-                },
-                {
-                    "instructions": "63320661",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777362523482939"
-                },
-                {
-                    "instructions": "616937355",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777362868654336"
-                },
-                {
-                    "instructions": "6329462269",
-                    "method_name": "textInitHeap",
-                    "timestamp": "1749777363445097795"
-                },
-                {
-                    "instructions": "1105028",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777366395056279"
-                },
-                {
-                    "instructions": "1141047",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777368204427093"
-                },
-                {
-                    "instructions": "1496719",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777368535585537"
-                },
-                {
-                    "instructions": "5058684",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777368829072601"
-                },
-                {
-                    "instructions": "40878117",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777369122273283"
-                },
-                {
-                    "instructions": "397955881",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777369439462672"
-                },
-                {
-                    "instructions": "3978612407",
-                    "method_name": "variantInitStack",
-                    "timestamp": "1749777369822655966"
-                },
-                {
-                    "instructions": "1107841",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777371011843114"
-                },
-                {
-                    "instructions": "1175188",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777371320119106"
-                },
-                {
-                    "instructions": "1808072",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777371612886391"
-                },
-                {
-                    "instructions": "8115871",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777371918215452"
-                },
-                {
-                    "instructions": "72426420",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777372227402490"
-                },
-                {
-                    "instructions": "721498081",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777372554368400"
-                },
-                {
-                    "instructions": "7353693532",
-                    "method_name": "variantInitHeap",
-                    "timestamp": "1749777373116500887"
-                },
-                {
-                    "instructions": "1107602",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777376008784354"
-                },
-                {
-                    "instructions": "1156913",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777376307442884"
-                },
-                {
-                    "instructions": "1682553",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777376617809441"
-                },
-                {
-                    "instructions": "6941266",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777376914803087"
-                },
-                {
-                    "instructions": "59505863",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777377227903915"
-                },
-                {
-                    "instructions": "585153834",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777377537669673"
-                },
-                {
-                    "instructions": "5841611098",
-                    "method_name": "vecInitStack",
-                    "timestamp": "1749777377937334244"
-                },
-                {
-                    "instructions": "1111176",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777379611299002"
-                },
-                {
-                    "instructions": "1200540",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777379930892121"
-                },
-                {
-                    "instructions": "2078511",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777380260772186"
-                },
-                {
-                    "instructions": "10791458",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777380554703502"
-                },
-                {
-                    "instructions": "99311918",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777380851277837"
-                },
-                {
-                    "instructions": "996740792",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777381198636708"
-                },
-                {
-                    "instructions": "13623293361",
-                    "method_name": "vecInitHeap",
-                    "timestamp": "1749777381932694205"
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -2972,6 +1537,1546 @@
                     "instructions": "2118425799",
                     "method_name": "vecClearHeapStorage",
                     "timestamp": "1751054720415785810"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1142986",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790991079654914"
+                },
+                {
+                    "instructions": "1321143",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790991562628281"
+                },
+                {
+                    "instructions": "3529905",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790991802583568"
+                },
+                {
+                    "instructions": "25283242",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790992042048554"
+                },
+                {
+                    "instructions": "243395027",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790992286410049"
+                },
+                {
+                    "instructions": "2422886133",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790992573092751"
+                },
+                {
+                    "instructions": "23973102230",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1755790993402780270"
+                },
+                {
+                    "instructions": "1117947",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755790999532472386"
+                },
+                {
+                    "instructions": "1350298",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755790999769949198"
+                },
+                {
+                    "instructions": "3694834",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755791000008625114"
+                },
+                {
+                    "instructions": "27125652",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755791000248167589"
+                },
+                {
+                    "instructions": "295409629",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755791000493456528"
+                },
+                {
+                    "instructions": "2807909284",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755791000804160835"
+                },
+                {
+                    "instructions": "28099594610",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1755791001855586420"
+                },
+                {
+                    "instructions": "1074806",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791010770930087"
+                },
+                {
+                    "instructions": "1086947",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791011011673403"
+                },
+                {
+                    "instructions": "1217403",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791011253123961"
+                },
+                {
+                    "instructions": "2499127",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791011492579924"
+                },
+                {
+                    "instructions": "15280577",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791011739210915"
+                },
+                {
+                    "instructions": "143132866",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791011985624186"
+                },
+                {
+                    "instructions": "1421589379",
+                    "method_name": "boolInitStack",
+                    "timestamp": "1755791012257497480"
+                },
+                {
+                    "instructions": "1082082",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791012776612314"
+                },
+                {
+                    "instructions": "1138477",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791013019326399"
+                },
+                {
+                    "instructions": "1680117",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791013260626574"
+                },
+                {
+                    "instructions": "7071475",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791013502923365"
+                },
+                {
+                    "instructions": "61640519",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791013750105950"
+                },
+                {
+                    "instructions": "615059637",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791014045008135"
+                },
+                {
+                    "instructions": "6282703965",
+                    "method_name": "boolInitHeap",
+                    "timestamp": "1755791014631153369"
+                },
+                {
+                    "instructions": "1077347",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791017080244053"
+                },
+                {
+                    "instructions": "1099623",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791017324426746"
+                },
+                {
+                    "instructions": "1266717",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791017565464960"
+                },
+                {
+                    "instructions": "2914472",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791017804840384"
+                },
+                {
+                    "instructions": "19388675",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791018044757662"
+                },
+                {
+                    "instructions": "184136629",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791018289391498"
+                },
+                {
+                    "instructions": "1831594312",
+                    "method_name": "float32InitStack",
+                    "timestamp": "1755791018567694666"
+                },
+                {
+                    "instructions": "1088435",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791019179848743"
+                },
+                {
+                    "instructions": "1149050",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791019420557784"
+                },
+                {
+                    "instructions": "1722486",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791019663696868"
+                },
+                {
+                    "instructions": "7501236",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791019904952238"
+                },
+                {
+                    "instructions": "65705668",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791020152359426"
+                },
+                {
+                    "instructions": "656158951",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791020447307519"
+                },
+                {
+                    "instructions": "6685964449",
+                    "method_name": "float32InitHeap",
+                    "timestamp": "1755791021033744119"
+                },
+                {
+                    "instructions": "1083626",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791023588205480"
+                },
+                {
+                    "instructions": "1100079",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791023832216401"
+                },
+                {
+                    "instructions": "1264819",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791024074869102"
+                },
+                {
+                    "instructions": "2914550",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791024316551167"
+                },
+                {
+                    "instructions": "19389087",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791024557033142"
+                },
+                {
+                    "instructions": "184137093",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791024801798681"
+                },
+                {
+                    "instructions": "1831594371",
+                    "method_name": "float64InitStack",
+                    "timestamp": "1755791025081416739"
+                },
+                {
+                    "instructions": "1088547",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791025695351133"
+                },
+                {
+                    "instructions": "1149136",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791025935633275"
+                },
+                {
+                    "instructions": "1722601",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791026176450356"
+                },
+                {
+                    "instructions": "7495808",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791026419187057"
+                },
+                {
+                    "instructions": "65689644",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791026666662998"
+                },
+                {
+                    "instructions": "656650866",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791026960840881"
+                },
+                {
+                    "instructions": "6685964546",
+                    "method_name": "float64InitHeap",
+                    "timestamp": "1755791027560306702"
+                },
+                {
+                    "instructions": "1083360",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791030120877774"
+                },
+                {
+                    "instructions": "1096683",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791030364068567"
+                },
+                {
+                    "instructions": "1228557",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791030604854897"
+                },
+                {
+                    "instructions": "2549921",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791030847098894"
+                },
+                {
+                    "instructions": "15739476",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791031089239710"
+                },
+                {
+                    "instructions": "147637280",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791031334131406"
+                },
+                {
+                    "instructions": "1466594571",
+                    "method_name": "intInitStack",
+                    "timestamp": "1755791031604632800"
+                },
+                {
+                    "instructions": "1088240",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791032132839951"
+                },
+                {
+                    "instructions": "1145461",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791032374176319"
+                },
+                {
+                    "instructions": "1686392",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791032615002480"
+                },
+                {
+                    "instructions": "7126457",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791032856925752"
+                },
+                {
+                    "instructions": "61933008",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791033106232971"
+                },
+                {
+                    "instructions": "618714465",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791033403628707"
+                },
+                {
+                    "instructions": "6304759368",
+                    "method_name": "intInitHeap",
+                    "timestamp": "1755791033999045085"
+                },
+                {
+                    "instructions": "1084705",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791036469098177"
+                },
+                {
+                    "instructions": "1096208",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791036712474203"
+                },
+                {
+                    "instructions": "1224341",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791036954768655"
+                },
+                {
+                    "instructions": "2509622",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791037198779356"
+                },
+                {
+                    "instructions": "15339160",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791037439488411"
+                },
+                {
+                    "instructions": "143637165",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791037683163471"
+                },
+                {
+                    "instructions": "1426594457",
+                    "method_name": "int8InitStack",
+                    "timestamp": "1755791037951698420"
+                },
+                {
+                    "instructions": "1088129",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791038468920350"
+                },
+                {
+                    "instructions": "1145212",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791038710931803"
+                },
+                {
+                    "instructions": "1683930",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791038951638838"
+                },
+                {
+                    "instructions": "7101494",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791039197418990"
+                },
+                {
+                    "instructions": "61684359",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791039444756448"
+                },
+                {
+                    "instructions": "616225045",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791039741020174"
+                },
+                {
+                    "instructions": "6279859499",
+                    "method_name": "int8InitHeap",
+                    "timestamp": "1755791040327175917"
+                },
+                {
+                    "instructions": "1084838",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791042814161045"
+                },
+                {
+                    "instructions": "1096349",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791043058100644"
+                },
+                {
+                    "instructions": "1224414",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791043301637838"
+                },
+                {
+                    "instructions": "2509615",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791043544420965"
+                },
+                {
+                    "instructions": "15339161",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791043788362213"
+                },
+                {
+                    "instructions": "143637159",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791044032507507"
+                },
+                {
+                    "instructions": "1426594473",
+                    "method_name": "int16InitStack",
+                    "timestamp": "1755791044302536226"
+                },
+                {
+                    "instructions": "1088108",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791044821789040"
+                },
+                {
+                    "instructions": "1145049",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791045065972255"
+                },
+                {
+                    "instructions": "1682590",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791045307793357"
+                },
+                {
+                    "instructions": "7100292",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791045552864859"
+                },
+                {
+                    "instructions": "61812463",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791045801934433"
+                },
+                {
+                    "instructions": "616369525",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791046099768908"
+                },
+                {
+                    "instructions": "6279857965",
+                    "method_name": "int16InitHeap",
+                    "timestamp": "1755791046700986943"
+                },
+                {
+                    "instructions": "1083292",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791049166347187"
+                },
+                {
+                    "instructions": "1096091",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791049415861679"
+                },
+                {
+                    "instructions": "1224290",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791049659299687"
+                },
+                {
+                    "instructions": "2508620",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791049903927277"
+                },
+                {
+                    "instructions": "15329163",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791050149179296"
+                },
+                {
+                    "instructions": "143537189",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791050394627964"
+                },
+                {
+                    "instructions": "1425594442",
+                    "method_name": "int32InitStack",
+                    "timestamp": "1755791050665546640"
+                },
+                {
+                    "instructions": "1088099",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791051184845864"
+                },
+                {
+                    "instructions": "1145045",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791051429995258"
+                },
+                {
+                    "instructions": "1682484",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791051673749447"
+                },
+                {
+                    "instructions": "7099336",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791051920382017"
+                },
+                {
+                    "instructions": "62014059",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791052174797286"
+                },
+                {
+                    "instructions": "621616484",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791052477610443"
+                },
+                {
+                    "instructions": "6332856187",
+                    "method_name": "int32InitHeap",
+                    "timestamp": "1755791053093929693"
+                },
+                {
+                    "instructions": "1079370",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791055570767727"
+                },
+                {
+                    "instructions": "1093779",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791055817688644"
+                },
+                {
+                    "instructions": "1224268",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791056061812651"
+                },
+                {
+                    "instructions": "2546698",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791056304583885"
+                },
+                {
+                    "instructions": "15730865",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791056548990600"
+                },
+                {
+                    "instructions": "147631289",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791056797046593"
+                },
+                {
+                    "instructions": "1466589101",
+                    "method_name": "int64InitStack",
+                    "timestamp": "1755791057070918845"
+                },
+                {
+                    "instructions": "1083006",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791057601364192"
+                },
+                {
+                    "instructions": "1139846",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791057847790631"
+                },
+                {
+                    "instructions": "1687647",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791058093068318"
+                },
+                {
+                    "instructions": "7159444",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791058339353479"
+                },
+                {
+                    "instructions": "61899902",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791058589250517"
+                },
+                {
+                    "instructions": "623206617",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791058888239080"
+                },
+                {
+                    "instructions": "6249753800",
+                    "method_name": "int64InitHeap",
+                    "timestamp": "1755791059485629390"
+                },
+                {
+                    "instructions": "1077697",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791061946227057"
+                },
+                {
+                    "instructions": "1090445",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791062193068588"
+                },
+                {
+                    "instructions": "1220236",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791062437431589"
+                },
+                {
+                    "instructions": "2543217",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791062680920864"
+                },
+                {
+                    "instructions": "15735138",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791062925086093"
+                },
+                {
+                    "instructions": "147631286",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791063173906986"
+                },
+                {
+                    "instructions": "1466590080",
+                    "method_name": "natInitStack",
+                    "timestamp": "1755791063447936913"
+                },
+                {
+                    "instructions": "1083339",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791063977670652"
+                },
+                {
+                    "instructions": "1142624",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791064226538442"
+                },
+                {
+                    "instructions": "1680393",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791064477351076"
+                },
+                {
+                    "instructions": "7157734",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791064724935760"
+                },
+                {
+                    "instructions": "62338343",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791064976275870"
+                },
+                {
+                    "instructions": "623201909",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791065274800565"
+                },
+                {
+                    "instructions": "6304753211",
+                    "method_name": "natInitHeap",
+                    "timestamp": "1755791065866400377"
+                },
+                {
+                    "instructions": "1078496",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791068326530089"
+                },
+                {
+                    "instructions": "1090898",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791068574138597"
+                },
+                {
+                    "instructions": "1216752",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791068820982021"
+                },
+                {
+                    "instructions": "2501238",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791069064088359"
+                },
+                {
+                    "instructions": "15331279",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791069307567124"
+                },
+                {
+                    "instructions": "143629914",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791069553861284"
+                },
+                {
+                    "instructions": "1426590371",
+                    "method_name": "nat8InitStack",
+                    "timestamp": "1755791069827513125"
+                },
+                {
+                    "instructions": "1082781",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791070351286501"
+                },
+                {
+                    "instructions": "1139553",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791070595563144"
+                },
+                {
+                    "instructions": "1677998",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791070840834326"
+                },
+                {
+                    "instructions": "7135825",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791071086286923"
+                },
+                {
+                    "instructions": "62194230",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791071338745564"
+                },
+                {
+                    "instructions": "620716965",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791071636479969"
+                },
+                {
+                    "instructions": "6323851120",
+                    "method_name": "nat8InitHeap",
+                    "timestamp": "1755791072235536256"
+                },
+                {
+                    "instructions": "1075780",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791074751873388"
+                },
+                {
+                    "instructions": "1091362",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791075006027711"
+                },
+                {
+                    "instructions": "1217004",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791075364504882"
+                },
+                {
+                    "instructions": "2501403",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791075622784124"
+                },
+                {
+                    "instructions": "15320892",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791075875998828"
+                },
+                {
+                    "instructions": "143530991",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791076120752840"
+                },
+                {
+                    "instructions": "1425590084",
+                    "method_name": "nat16InitStack",
+                    "timestamp": "1755791076391745043"
+                },
+                {
+                    "instructions": "1080204",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791076911995319"
+                },
+                {
+                    "instructions": "1139026",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791077154598672"
+                },
+                {
+                    "instructions": "1685032",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791077396638759"
+                },
+                {
+                    "instructions": "7132687",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791077640926825"
+                },
+                {
+                    "instructions": "62080713",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791077886945847"
+                },
+                {
+                    "instructions": "621615825",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791078156182143"
+                },
+                {
+                    "instructions": "6223853753",
+                    "method_name": "nat16InitHeap",
+                    "timestamp": "1755791078606351635"
+                },
+                {
+                    "instructions": "1077969",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791080860371033"
+                },
+                {
+                    "instructions": "1089938",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791081104450577"
+                },
+                {
+                    "instructions": "1220304",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791081349130292"
+                },
+                {
+                    "instructions": "2510364",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791081592622082"
+                },
+                {
+                    "instructions": "15398154",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791081838167237"
+                },
+                {
+                    "instructions": "144283490",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791082084158482"
+                },
+                {
+                    "instructions": "1433087773",
+                    "method_name": "nat32InitStack",
+                    "timestamp": "1755791082356334119"
+                },
+                {
+                    "instructions": "1083257",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791082877626558"
+                },
+                {
+                    "instructions": "1136460",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791083120313661"
+                },
+                {
+                    "instructions": "1682802",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791083361795404"
+                },
+                {
+                    "instructions": "7141690",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791083605760701"
+                },
+                {
+                    "instructions": "62293839",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791083854779616"
+                },
+                {
+                    "instructions": "621363656",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791084124355459"
+                },
+                {
+                    "instructions": "6330353606",
+                    "method_name": "nat32InitHeap",
+                    "timestamp": "1755791084577882782"
+                },
+                {
+                    "instructions": "1077189",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791086847554695"
+                },
+                {
+                    "instructions": "1090634",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791087092737401"
+                },
+                {
+                    "instructions": "1221886",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791087338383123"
+                },
+                {
+                    "instructions": "2540893",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791087583227162"
+                },
+                {
+                    "instructions": "15732603",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791087826567213"
+                },
+                {
+                    "instructions": "147630214",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791088073790372"
+                },
+                {
+                    "instructions": "1466589061",
+                    "method_name": "nat64InitStack",
+                    "timestamp": "1755791088347417082"
+                },
+                {
+                    "instructions": "1083395",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791088877594156"
+                },
+                {
+                    "instructions": "1140226",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791089122746154"
+                },
+                {
+                    "instructions": "1686267",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791089365964139"
+                },
+                {
+                    "instructions": "7159348",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791089612921655"
+                },
+                {
+                    "instructions": "61900932",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791089860543801"
+                },
+                {
+                    "instructions": "618806740",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791090131057643"
+                },
+                {
+                    "instructions": "6249755167",
+                    "method_name": "nat64InitHeap",
+                    "timestamp": "1755791090582031684"
+                },
+                {
+                    "instructions": "1078180",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791092829679843"
+                },
+                {
+                    "instructions": "1089678",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791093074806751"
+                },
+                {
+                    "instructions": "1219033",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791093319564519"
+                },
+                {
+                    "instructions": "2497934",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791093572111956"
+                },
+                {
+                    "instructions": "15282391",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791093819713268"
+                },
+                {
+                    "instructions": "143127197",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791094070803375"
+                },
+                {
+                    "instructions": "1421591471",
+                    "method_name": "nullInitStack",
+                    "timestamp": "1755791094342288061"
+                },
+                {
+                    "instructions": "1080859",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791094878629085"
+                },
+                {
+                    "instructions": "1139726",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791095120921673"
+                },
+                {
+                    "instructions": "1676571",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791095366002720"
+                },
+                {
+                    "instructions": "7128161",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791095609996569"
+                },
+                {
+                    "instructions": "62039267",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791095856121215"
+                },
+                {
+                    "instructions": "620212421",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791096124773360"
+                },
+                {
+                    "instructions": "6274851015",
+                    "method_name": "nullInitHeap",
+                    "timestamp": "1755791096573225567"
+                },
+                {
+                    "instructions": "1078691",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791098844227767"
+                },
+                {
+                    "instructions": "1105027",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791099090585520"
+                },
+                {
+                    "instructions": "1376002",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791099334820769"
+                },
+                {
+                    "instructions": "4085984",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791099579647761"
+                },
+                {
+                    "instructions": "31149578",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791099826258118"
+                },
+                {
+                    "instructions": "301780481",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791100078050583"
+                },
+                {
+                    "instructions": "3008091333",
+                    "method_name": "optInitStack",
+                    "timestamp": "1755791100377924755"
+                },
+                {
+                    "instructions": "1086665",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791101292352362"
+                },
+                {
+                    "instructions": "1149202",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791101535510969"
+                },
+                {
+                    "instructions": "1772229",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791101782750859"
+                },
+                {
+                    "instructions": "7966891",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791102028292445"
+                },
+                {
+                    "instructions": "70535065",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791102288960912"
+                },
+                {
+                    "instructions": "707544716",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791102607348968"
+                },
+                {
+                    "instructions": "9497041842",
+                    "method_name": "optInitHeap",
+                    "timestamp": "1755791103168930316"
+                },
+                {
+                    "instructions": "1741841",
+                    "method_name": "principalInitStack",
+                    "timestamp": "1755791106468795318"
+                },
+                {
+                    "instructions": "5630839",
+                    "method_name": "principalInitStack",
+                    "timestamp": "1755791106714939682"
+                },
+                {
+                    "instructions": "46532467",
+                    "method_name": "principalInitStack",
+                    "timestamp": "1755791106961081659"
+                },
+                {
+                    "instructions": "455693656",
+                    "method_name": "principalInitStack",
+                    "timestamp": "1755791107219888856"
+                },
+                {
+                    "instructions": "4549092750",
+                    "method_name": "principalInitStack",
+                    "timestamp": "1755791107558932170"
+                },
+                {
+                    "instructions": "1728121",
+                    "method_name": "principalInitHeap",
+                    "timestamp": "1755791108967851909"
+                },
+                {
+                    "instructions": "5668626",
+                    "method_name": "principalInitHeap",
+                    "timestamp": "1755791109213158439"
+                },
+                {
+                    "instructions": "46876978",
+                    "method_name": "principalInitHeap",
+                    "timestamp": "1755791109458768023"
+                },
+                {
+                    "instructions": "458627519",
+                    "method_name": "principalInitHeap",
+                    "timestamp": "1755791109714984939"
+                },
+                {
+                    "instructions": "4571570957",
+                    "method_name": "principalInitHeap",
+                    "timestamp": "1755791110061553540"
+                },
+                {
+                    "instructions": "1759022",
+                    "method_name": "recordInitStack",
+                    "timestamp": "1755791111527446656"
+                },
+                {
+                    "instructions": "5996416",
+                    "method_name": "recordInitStack",
+                    "timestamp": "1755791111772688369"
+                },
+                {
+                    "instructions": "50576446",
+                    "method_name": "recordInitStack",
+                    "timestamp": "1755791112019324459"
+                },
+                {
+                    "instructions": "494550355",
+                    "method_name": "recordInitStack",
+                    "timestamp": "1755791112274546943"
+                },
+                {
+                    "instructions": "4944652814",
+                    "method_name": "recordInitStack",
+                    "timestamp": "1755791112616965176"
+                },
+                {
+                    "instructions": "1756802",
+                    "method_name": "recordInitHeap",
+                    "timestamp": "1755791114096645881"
+                },
+                {
+                    "instructions": "6008276",
+                    "method_name": "recordInitHeap",
+                    "timestamp": "1755791114344431815"
+                },
+                {
+                    "instructions": "50397087",
+                    "method_name": "recordInitHeap",
+                    "timestamp": "1755791114591529906"
+                },
+                {
+                    "instructions": "494364826",
+                    "method_name": "recordInitHeap",
+                    "timestamp": "1755791114847033279"
+                },
+                {
+                    "instructions": "4935877294",
+                    "method_name": "recordInitHeap",
+                    "timestamp": "1755791115202826453"
+                },
+                {
+                    "instructions": "1077884",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791116776247499"
+                },
+                {
+                    "instructions": "1090466",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791117021053440"
+                },
+                {
+                    "instructions": "1226131",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791117265864376"
+                },
+                {
+                    "instructions": "2564245",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791117510078412"
+                },
+                {
+                    "instructions": "15904729",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791117755754529"
+                },
+                {
+                    "instructions": "149333716",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791118004493981"
+                },
+                {
+                    "instructions": "1483590779",
+                    "method_name": "textInitStack",
+                    "timestamp": "1755791118275869869"
+                },
+                {
+                    "instructions": "1085607",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791118809143207"
+                },
+                {
+                    "instructions": "1139192",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791119052433865"
+                },
+                {
+                    "instructions": "1686670",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791119294827610"
+                },
+                {
+                    "instructions": "7172659",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791119539820884"
+                },
+                {
+                    "instructions": "62207976",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791119791917214"
+                },
+                {
+                    "instructions": "625941612",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791120072523912"
+                },
+                {
+                    "instructions": "6383650851",
+                    "method_name": "textInitHeap",
+                    "timestamp": "1755791120586862731"
+                },
+                {
+                    "instructions": "1080519",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791122959814456"
+                },
+                {
+                    "instructions": "1120682",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791123205009893"
+                },
+                {
+                    "instructions": "1478034",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791123450084136"
+                },
+                {
+                    "instructions": "5057957",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791123693950690"
+                },
+                {
+                    "instructions": "40866004",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791123939586258"
+                },
+                {
+                    "instructions": "399833613",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791124192354245"
+                },
+                {
+                    "instructions": "3979590587",
+                    "method_name": "variantInitStack",
+                    "timestamp": "1755791124506535963"
+                },
+                {
+                    "instructions": "1085403",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791125562963064"
+                },
+                {
+                    "instructions": "1156238",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791125808738925"
+                },
+                {
+                    "instructions": "1790443",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791126055148787"
+                },
+                {
+                    "instructions": "8116713",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791126302090767"
+                },
+                {
+                    "instructions": "72431685",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791126550486643"
+                },
+                {
+                    "instructions": "721718160",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791126838301678"
+                },
+                {
+                    "instructions": "7353375411",
+                    "method_name": "variantInitHeap",
+                    "timestamp": "1755791127394961985"
+                },
+                {
+                    "instructions": "1093151",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791130042378359"
+                },
+                {
+                    "instructions": "1143488",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791130291613749"
+                },
+                {
+                    "instructions": "1669128",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791130535563832"
+                },
+                {
+                    "instructions": "6927850",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791130781384400"
+                },
+                {
+                    "instructions": "59492393",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791131028147434"
+                },
+                {
+                    "instructions": "585140395",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791131283524702"
+                },
+                {
+                    "instructions": "5841597680",
+                    "method_name": "vecInitStack",
+                    "timestamp": "1755791131638747851"
+                },
+                {
+                    "instructions": "1096020",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791133211408022"
+                },
+                {
+                    "instructions": "1187517",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791133457135205"
+                },
+                {
+                    "instructions": "2050828",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791133703444618"
+                },
+                {
+                    "instructions": "10719320",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791133951948774"
+                },
+                {
+                    "instructions": "98688384",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791134202388383"
+                },
+                {
+                    "instructions": "980542307",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791134493809681"
+                },
+                {
+                    "instructions": "13635920543",
+                    "method_name": "vecInitHeap",
+                    "timestamp": "1755791135131016921"
+                },
+                {
+                    "instructions": "2181225698",
+                    "method_name": "blobClearHeapStorage",
+                    "timestamp": "1755791147061543982"
+                },
+                {
+                    "instructions": "49905460",
+                    "method_name": "boolClearHeapStorage",
+                    "timestamp": "1755791148276644182"
+                },
+                {
+                    "instructions": "49905183",
+                    "method_name": "float32ClearHeapStorage",
+                    "timestamp": "1755791148530291203"
+                },
+                {
+                    "instructions": "49905323",
+                    "method_name": "float64ClearHeapStorage",
+                    "timestamp": "1755791148781600765"
+                },
+                {
+                    "instructions": "49905260",
+                    "method_name": "int16ClearHeapStorage",
+                    "timestamp": "1755791149036131595"
+                },
+                {
+                    "instructions": "49905316",
+                    "method_name": "int32ClearHeapStorage",
+                    "timestamp": "1755791149289624304"
+                },
+                {
+                    "instructions": "63905331",
+                    "method_name": "int64ClearHeapStorage",
+                    "timestamp": "1755791149542281189"
+                },
+                {
+                    "instructions": "49905320",
+                    "method_name": "int8ClearHeapStorage",
+                    "timestamp": "1755791149796127092"
+                },
+                {
+                    "instructions": "63905424",
+                    "method_name": "intClearHeapStorage",
+                    "timestamp": "1755791150048570792"
+                },
+                {
+                    "instructions": "49905253",
+                    "method_name": "nat16ClearHeapStorage",
+                    "timestamp": "1755791150301398666"
+                },
+                {
+                    "instructions": "49905316",
+                    "method_name": "nat32ClearHeapStorage",
+                    "timestamp": "1755791150558569568"
+                },
+                {
+                    "instructions": "63905348",
+                    "method_name": "nat64ClearHeapStorage",
+                    "timestamp": "1755791150815512907"
+                },
+                {
+                    "instructions": "49905334",
+                    "method_name": "nat8ClearHeapStorage",
+                    "timestamp": "1755791151074544891"
+                },
+                {
+                    "instructions": "63905424",
+                    "method_name": "natClearHeapStorage",
+                    "timestamp": "1755791151327058764"
+                },
+                {
+                    "instructions": "49905300",
+                    "method_name": "nullClearHeapStorage",
+                    "timestamp": "1755791151583522271"
+                },
+                {
+                    "instructions": "1060742850",
+                    "method_name": "optClearHeapStorage",
+                    "timestamp": "1755791151842295096"
+                },
+                {
+                    "instructions": "33261272",
+                    "method_name": "principalClearHeapStorage",
+                    "timestamp": "1755791152418807980"
+                },
+                {
+                    "instructions": "71543983",
+                    "method_name": "recordClearHeapStorage",
+                    "timestamp": "1755791152703497725"
+                },
+                {
+                    "instructions": "63906180",
+                    "method_name": "textClearHeapStorage",
+                    "timestamp": "1755791153006061565"
+                },
+                {
+                    "instructions": "826263472",
+                    "method_name": "variantClearHeapStorage",
+                    "timestamp": "1755791153265884649"
+                },
+                {
+                    "instructions": "1998801037",
+                    "method_name": "vecClearHeapStorage",
+                    "timestamp": "1755791153789832147"
                 }
             ]
         }

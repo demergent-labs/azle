@@ -1,209 +1,6 @@
 {
     "basic_bitcoin": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7993436497"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977053269137083"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "172961980"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977068149643885"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "172894114"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977068883605513"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173306933"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977069595797284"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173037950"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977070062484381"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "172927244"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977100673099564"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173261287"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977101168634763"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173051415"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977101644388772"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "175355888"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977102164101625"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "171781943"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977102637351036"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173446123"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977103114172615"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "180345053"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977103383370375"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173411636"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977123242002395"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173048330"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977123709008212"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173507351"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977124665721257"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "171669429"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977125130961162"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173863338"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977125598392583"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173524245"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977146555187957"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173135503"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977147026515092"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "173651740"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977147946442148"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "171804388"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977148213763705"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "171805018"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977163993073557"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -315,6 +112,116 @@
                     "instructions": "172083551",
                     "method_name": "http_request_update",
                     "timestamp": "1750854034154529375"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "170905250",
+                    "method_name": "1",
+                    "timestamp": "1755791371554306926"
+                },
+                {
+                    "instructions": "170800513",
+                    "method_name": "1",
+                    "timestamp": "1755791372022993754"
+                },
+                {
+                    "instructions": "171428639",
+                    "method_name": "1",
+                    "timestamp": "1755791372502607405"
+                },
+                {
+                    "instructions": "171025523",
+                    "method_name": "1",
+                    "timestamp": "1755791372978328045"
+                },
+                {
+                    "instructions": "170961289",
+                    "method_name": "1",
+                    "timestamp": "1755791403428043016"
+                },
+                {
+                    "instructions": "171466412",
+                    "method_name": "1",
+                    "timestamp": "1755791403906513234"
+                },
+                {
+                    "instructions": "170862049",
+                    "method_name": "1",
+                    "timestamp": "1755791404387324086"
+                },
+                {
+                    "instructions": "173307359",
+                    "method_name": "1",
+                    "timestamp": "1755791404887421836"
+                },
+                {
+                    "instructions": "169834121",
+                    "method_name": "1",
+                    "timestamp": "1755791405519253664"
+                },
+                {
+                    "instructions": "171501922",
+                    "method_name": "1",
+                    "timestamp": "1755791405998209735"
+                },
+                {
+                    "instructions": "178529015",
+                    "method_name": "1",
+                    "timestamp": "1755791406480037808"
+                },
+                {
+                    "instructions": "171776225",
+                    "method_name": "1",
+                    "timestamp": "1755791425420948929"
+                },
+                {
+                    "instructions": "171335289",
+                    "method_name": "1",
+                    "timestamp": "1755791425906057338"
+                },
+                {
+                    "instructions": "171608402",
+                    "method_name": "1",
+                    "timestamp": "1755791426403928055"
+                },
+                {
+                    "instructions": "170037035",
+                    "method_name": "1",
+                    "timestamp": "1755791426898716699"
+                },
+                {
+                    "instructions": "172414397",
+                    "method_name": "1",
+                    "timestamp": "1755791427401288625"
+                },
+                {
+                    "instructions": "171497780",
+                    "method_name": "1",
+                    "timestamp": "1755791447044176964"
+                },
+                {
+                    "instructions": "171159191",
+                    "method_name": "1",
+                    "timestamp": "1755791447531317731"
+                },
+                {
+                    "instructions": "171637667",
+                    "method_name": "1",
+                    "timestamp": "1755791448021951797"
+                },
+                {
+                    "instructions": "169942027",
+                    "method_name": "1",
+                    "timestamp": "1755791448511382801"
+                },
+                {
+                    "instructions": "170006935",
+                    "method_name": "1",
+                    "timestamp": "1755791464014824963"
                 }
             ]
         }

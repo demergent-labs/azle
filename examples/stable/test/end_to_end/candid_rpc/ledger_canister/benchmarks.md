@@ -1,54 +1,53 @@
 # Benchmarks for ledger_canister
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | getAccountBalance | 5_021_435 | 10_021_435 | $0.0000137294 | $13.72 | <font color="green">-206_837</font> |
+| 1 | getTransferFee | 2_149_987 | 7_149_987 | $0.0000097955 | $9.79 | <font color="green">-142_680</font> |
+| 2 | executeTransfer | 13_535_373 | 18_535_373 | $0.0000253935 | $25.39 | <font color="green">-565_610</font> |
+| 3 | executeTransfer | 13_511_028 | 18_511_028 | $0.0000253601 | $25.36 | <font color="green">-617_003</font> |
+| 4 | getBlocks | 5_840_427 | 10_840_427 | $0.0000148514 | $14.85 | <font color="green">-229_579</font> |
+| 5 | getSymbol | 1_197_560 | 6_197_560 | $0.0000084907 | $8.49 | <font color="green">-64_504</font> |
+| 6 | getName | 1_197_449 | 6_197_449 | $0.0000084905 | $8.49 | <font color="green">-65_045</font> |
+| 7 | getDecimals | 1_192_789 | 6_192_789 | $0.0000084841 | $8.48 | <font color="green">-65_631</font> |
+| 8 | getArchives | 1_192_592 | 6_192_592 | $0.0000084839 | $8.48 | <font color="green">-65_441</font> |
+| 9 | executeTransfer | 13_493_598 | 18_493_598 | $0.0000253362 | $25.33 | <font color="green">-594_174</font> |
+| 10 | getAccountBalance | 4_918_725 | 9_918_725 | $0.0000135887 | $13.58 | <font color="green">-222_501</font> |
+| 11 | executeTransfer | 13_488_141 | 18_488_141 | $0.0000253288 | $25.32 | <font color="green">-588_553</font> |
+| 12 | executeTransfer | 13_507_857 | 18_507_857 | $0.0000253558 | $25.35 | <font color="green">-597_725</font> |
+| 13 | executeTransfer | 14_291_794 | 19_291_794 | $0.0000264298 | $26.42 | <font color="green">-627_553</font> |
+| 14 | executeTransfer | 14_315_597 | 19_315_597 | $0.0000264624 | $26.46 | <font color="green">-598_396</font> |
 
-| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
-| --- | ----------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | getAccountBalance | 5_228_272    | 2_681_308 | $0.0000035653 | $3.56             | <font color="green">-73_193</font>  |
-| 1   | getTransferFee    | 2_292_667    | 1_507_066 | $0.0000020039 | $2.00             | <font color="green">-75_708</font>  |
-| 2   | executeTransfer   | 14_100_983   | 6_230_393 | $0.0000082844 | $8.28             | <font color="green">-91_988</font>  |
-| 3   | executeTransfer   | 14_128_031   | 6_241_212 | $0.0000082988 | $8.29             | <font color="green">-79_492</font>  |
-| 4   | getBlocks         | 6_070_006    | 3_018_002 | $0.0000040129 | $4.01             | <font color="green">-76_885</font>  |
-| 5   | getSymbol         | 1_262_064    | 1_094_825 | $0.0000014558 | $1.45             | <font color="green">-76_454</font>  |
-| 6   | getName           | 1_262_494    | 1_094_997 | $0.0000014560 | $1.45             | <font color="green">-73_490</font>  |
-| 7   | getDecimals       | 1_258_420    | 1_093_368 | $0.0000014538 | $1.45             | <font color="green">-71_196</font>  |
-| 8   | getArchives       | 1_258_033    | 1_093_213 | $0.0000014536 | $1.45             | <font color="green">-75_295</font>  |
-| 9   | executeTransfer   | 14_087_772   | 6_225_108 | $0.0000082773 | $8.27             | <font color="green">-110_765</font> |
-| 10  | getAccountBalance | 5_141_226    | 2_646_490 | $0.0000035190 | $3.51             | <font color="green">-80_332</font>  |
-| 11  | executeTransfer   | 14_076_694   | 6_220_677 | $0.0000082714 | $8.27             | <font color="green">-56_953</font>  |
-| 12  | executeTransfer   | 14_105_582   | 6_232_232 | $0.0000082868 | $8.28             | <font color="green">-68_119</font>  |
-| 13  | executeTransfer   | 14_919_347   | 6_557_738 | $0.0000087196 | $8.71             | <font color="green">-90_427</font>  |
-| 14  | executeTransfer   | 14_913_993   | 6_555_597 | $0.0000087168 | $8.71             | <font color="green">-116_260</font> |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | getAccountBalance | 5_228_272 | 10_228_272 | $0.0000140127 | $14.01 |
+| 1 | getTransferFee | 2_292_667 | 7_292_667 | $0.0000099910 | $9.99 |
+| 2 | executeTransfer | 14_100_983 | 19_100_983 | $0.0000261683 | $26.16 |
+| 3 | executeTransfer | 14_128_031 | 19_128_031 | $0.0000262054 | $26.20 |
+| 4 | getBlocks | 6_070_006 | 11_070_006 | $0.0000151659 | $15.16 |
+| 5 | getSymbol | 1_262_064 | 6_262_064 | $0.0000085790 | $8.57 |
+| 6 | getName | 1_262_494 | 6_262_494 | $0.0000085796 | $8.57 |
+| 7 | getDecimals | 1_258_420 | 6_258_420 | $0.0000085740 | $8.57 |
+| 8 | getArchives | 1_258_033 | 6_258_033 | $0.0000085735 | $8.57 |
+| 9 | executeTransfer | 14_087_772 | 19_087_772 | $0.0000261502 | $26.15 |
+| 10 | getAccountBalance | 5_141_226 | 10_141_226 | $0.0000138935 | $13.89 |
+| 11 | executeTransfer | 14_076_694 | 19_076_694 | $0.0000261351 | $26.13 |
+| 12 | executeTransfer | 14_105_582 | 19_105_582 | $0.0000261746 | $26.17 |
+| 13 | executeTransfer | 14_919_347 | 19_919_347 | $0.0000272895 | $27.28 |
+| 14 | executeTransfer | 14_913_993 | 19_913_993 | $0.0000272822 | $27.28 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | getAccountBalance | 5_301_465    | 2_710_586 | $0.0000036042 | $3.60             |
-| 1   | getTransferFee    | 2_368_375    | 1_537_350 | $0.0000020442 | $2.04             |
-| 2   | executeTransfer   | 14_192_971   | 6_267_188 | $0.0000083333 | $8.33             |
-| 3   | executeTransfer   | 14_207_523   | 6_273_009 | $0.0000083410 | $8.34             |
-| 4   | getBlocks         | 6_146_891    | 3_048_756 | $0.0000040538 | $4.05             |
-| 5   | getSymbol         | 1_338_518    | 1_125_407 | $0.0000014964 | $1.49             |
-| 6   | getName           | 1_335_984    | 1_124_393 | $0.0000014951 | $1.49             |
-| 7   | getDecimals       | 1_329_616    | 1_121_846 | $0.0000014917 | $1.49             |
-| 8   | getArchives       | 1_333_328    | 1_123_331 | $0.0000014937 | $1.49             |
-| 9   | executeTransfer   | 14_198_537   | 6_269_414 | $0.0000083363 | $8.33             |
-| 10  | getAccountBalance | 5_221_558    | 2_678_623 | $0.0000035617 | $3.56             |
-| 11  | executeTransfer   | 14_133_647   | 6_243_458 | $0.0000083017 | $8.30             |
-| 12  | executeTransfer   | 14_173_701   | 6_259_480 | $0.0000083230 | $8.32             |
-| 13  | executeTransfer   | 15_009_774   | 6_593_909 | $0.0000087677 | $8.76             |
-| 14  | executeTransfer   | 15_030_253   | 6_602_101 | $0.0000087786 | $8.77             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

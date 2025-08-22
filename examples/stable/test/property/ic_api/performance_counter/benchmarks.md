@@ -1,44 +1,43 @@
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | updatePerformanceCounter0 | 1_764_958 | 6_764_958 | $0.0000092680 | $9.26 | <font color="green">-31_098</font> |
+| 1 | updatePerformanceCounter0 | 1_745_275 | 6_745_275 | $0.0000092410 | $9.24 | <font color="green">-94_643_869</font> |
+| 2 | updatePerformanceCounter0 | 1_747_356 | 6_747_356 | $0.0000092439 | $9.24 | <font color="green">-94_640_089</font> |
+| 3 | updatePerformanceCounter0 | 3_603_702 | 8_603_702 | $0.0000117871 | $11.78 | <font color="green">-94_634_842</font> |
+| 4 | updatePerformanceCounter0 | 3_601_701 | 8_601_701 | $0.0000117843 | $11.78 | <font color="green">-94_636_074</font> |
+| 5 | updatePerformanceCounter1 | 1_716_156 | 6_716_156 | $0.0000092011 | $9.20 | <font color="green">-34_921</font> |
+| 6 | updatePerformanceCounter1 | 779_865 | 5_779_865 | $0.0000079184 | $7.91 | <font color="green">-42_622</font> |
+| 7 | updatePerformanceCounter1 | 765_132 | 5_765_132 | $0.0000078982 | $7.89 | <font color="green">-34_485</font> |
+| 8 | updatePerformanceCounter1 | 765_742 | 5_765_742 | $0.0000078991 | $7.89 | <font color="green">-35_808</font> |
+| 9 | updatePerformanceCounter1 | 763_403 | 5_763_403 | $0.0000078959 | $7.89 | <font color="green">-40_626</font> |
 
-| Id  | Method Name               | Instructions | Cycles     | USD           | USD/Million Calls | Change                                  |
-| --- | ------------------------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | updatePerformanceCounter0 | 1_796_056    | 1_308_422  | $0.0000017398 | $1.73             | <font color="green">-1_625</font>       |
-| 1   | updatePerformanceCounter0 | 96_389_144   | 39_145_657 | $0.0000520508 | $52.05            | <font color="green">-493_663_671</font> |
-| 2   | updatePerformanceCounter0 | 96_387_445   | 39_144_978 | $0.0000520499 | $52.04            | <font color="green">-493_667_323</font> |
-| 3   | updatePerformanceCounter0 | 98_238_544   | 39_885_417 | $0.0000530344 | $53.03            | <font color="green">-491_816_341</font> |
-| 4   | updatePerformanceCounter0 | 98_237_775   | 39_885_110 | $0.0000530340 | $53.03            | <font color="green">-491_816_751</font> |
-| 5   | updatePerformanceCounter1 | 1_751_077    | 1_290_430  | $0.0000017158 | $1.71             | <font color="red">+847</font>           |
-| 6   | updatePerformanceCounter1 | 822_487      | 918_994    | $0.0000012220 | $1.22             | <font color="green">-59_624</font>      |
-| 7   | updatePerformanceCounter1 | 799_617      | 909_846    | $0.0000012098 | $1.20             | <font color="green">-65_858</font>      |
-| 8   | updatePerformanceCounter1 | 801_550      | 910_620    | $0.0000012108 | $1.21             | <font color="green">-65_762</font>      |
-| 9   | updatePerformanceCounter1 | 804_029      | 911_611    | $0.0000012121 | $1.21             | <font color="green">-65_186</font>      |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | updatePerformanceCounter0 | 1_796_056 | 6_796_056 | $0.0000093106 | $9.31 |
+| 1 | updatePerformanceCounter0 | 96_389_144 | 101_389_144 | $0.0001389031 | $138.90 |
+| 2 | updatePerformanceCounter0 | 96_387_445 | 101_387_445 | $0.0001389008 | $138.90 |
+| 3 | updatePerformanceCounter0 | 98_238_544 | 103_238_544 | $0.0001414368 | $141.43 |
+| 4 | updatePerformanceCounter0 | 98_237_775 | 103_237_775 | $0.0001414358 | $141.43 |
+| 5 | updatePerformanceCounter1 | 1_751_077 | 6_751_077 | $0.0000092490 | $9.24 |
+| 6 | updatePerformanceCounter1 | 822_487 | 5_822_487 | $0.0000079768 | $7.97 |
+| 7 | updatePerformanceCounter1 | 799_617 | 5_799_617 | $0.0000079455 | $7.94 |
+| 8 | updatePerformanceCounter1 | 801_550 | 5_801_550 | $0.0000079481 | $7.94 |
+| 9 | updatePerformanceCounter1 | 804_029 | 5_804_029 | $0.0000079515 | $7.95 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name               | Instructions | Cycles      | USD           | USD/Million Calls |
-| --- | ------------------------- | ------------ | ----------- | ------------- | ----------------- |
-| 0   | updatePerformanceCounter0 | 1_797_681    | 1_309_072   | $0.0000017406 | $1.74             |
-| 1   | updatePerformanceCounter0 | 590_052_815  | 236_611_126 | $0.0003146147 | $314.61           |
-| 2   | updatePerformanceCounter0 | 590_054_768  | 236_611_907 | $0.0003146158 | $314.61           |
-| 3   | updatePerformanceCounter0 | 590_054_885  | 236_611_954 | $0.0003146158 | $314.61           |
-| 4   | updatePerformanceCounter0 | 590_054_526  | 236_611_810 | $0.0003146156 | $314.61           |
-| 5   | updatePerformanceCounter1 | 1_750_230    | 1_290_092   | $0.0000017154 | $1.71             |
-| 6   | updatePerformanceCounter1 | 882_111      | 942_844     | $0.0000012537 | $1.25             |
-| 7   | updatePerformanceCounter1 | 865_475      | 936_190     | $0.0000012448 | $1.24             |
-| 8   | updatePerformanceCounter1 | 867_312      | 936_924     | $0.0000012458 | $1.24             |
-| 9   | updatePerformanceCounter1 | 869_215      | 937_686     | $0.0000012468 | $1.24             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

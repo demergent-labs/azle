@@ -1,26 +1,22 @@
 {
     "inspect_message": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1698247"
-                    },
-                    "method_name": "accessible",
-                    "timestamp": {
-                        "__bigint__": "1741977062324442626"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "1706853",
                     "method_name": "accessible",
                     "timestamp": "1750853904793240069"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1686637",
+                    "method_name": "accessible",
+                    "timestamp": "1755790999357535539"
                 }
             ]
         }

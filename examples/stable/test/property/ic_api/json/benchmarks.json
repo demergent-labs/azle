@@ -1,0 +1,113 @@
+{
+    "canister": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "2148453",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791041523950267"
+                },
+                {
+                    "instructions": "65059075",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791041762024517"
+                },
+                {
+                    "instructions": "1767515",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791042012172311"
+                },
+                {
+                    "instructions": "8881512",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791042250204024"
+                },
+                {
+                    "instructions": "3444376",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791042488963591"
+                },
+                {
+                    "instructions": "29363817",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791042725258183"
+                },
+                {
+                    "instructions": "4494214",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791042968722120"
+                },
+                {
+                    "instructions": "26112277",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791043207078943"
+                },
+                {
+                    "instructions": "2372079",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791043450275357"
+                },
+                {
+                    "instructions": "5087028",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791043687493210"
+                },
+                {
+                    "instructions": "60280423",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791043926026996"
+                },
+                {
+                    "instructions": "2857701",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791044175194610"
+                },
+                {
+                    "instructions": "10105424",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791044413083266"
+                },
+                {
+                    "instructions": "69959739",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791044650908859"
+                },
+                {
+                    "instructions": "68703158",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791044903962414"
+                },
+                {
+                    "instructions": "4322067",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791045157262725"
+                },
+                {
+                    "instructions": "66731362",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791045392918171"
+                },
+                {
+                    "instructions": "20779110",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791045643205432"
+                },
+                {
+                    "instructions": "23273755",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791045884469063"
+                },
+                {
+                    "instructions": "2029070",
+                    "method_name": "processJsonUpdate",
+                    "timestamp": "1755791046127076847"
+                }
+            ]
+        }
+    }
+}

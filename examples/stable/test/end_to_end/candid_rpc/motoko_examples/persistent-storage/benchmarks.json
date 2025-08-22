@@ -1,26 +1,22 @@
 {
     "persistent_storage": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "995182458"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977071214250235"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
                     "instructions": "999685150",
                     "method_name": "postUpgrade",
                     "timestamp": "1750853909661806119"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1012324124",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1755791021290357250"
                 }
             ]
         }

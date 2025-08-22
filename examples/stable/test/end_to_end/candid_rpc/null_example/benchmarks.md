@@ -1,30 +1,29 @@
 # Benchmarks for null_example
 
-## Current benchmarks Azle version: 0.32.0
+## Current benchmarks Azle version: 0.33.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
+|-----------|-------------|------------|--------|-----|--------------|-------|
+| 0 | setPartiallyNullRecord | 5_827_454 | 10_827_454 | $0.0000148336 | $14.83 | <font color="green">-173_951</font> |
+| 1 | setSmallNullRecord | 4_227_440 | 9_227_440 | $0.0000126416 | $12.64 | <font color="green">-134_362</font> |
+| 2 | setLargeNullRecord | 5_512_659 | 10_512_659 | $0.0000144023 | $14.40 | <font color="green">-160_975</font> |
 
-| Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | setPartiallyNullRecord | 6_001_405    | 2_990_562 | $0.0000039765 | $3.97             | <font color="red">+2_788</font>  |
-| 1   | setSmallNullRecord     | 4_361_802    | 2_334_720 | $0.0000031044 | $3.10             | <font color="red">+17_131</font> |
-| 2   | setLargeNullRecord     | 5_673_634    | 2_859_453 | $0.0000038021 | $3.80             | <font color="red">+1_872</font>  |
+## Baseline benchmarks Azle version: 0.32.0
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+|-----------|-------------|------------|--------|-----|--------------|
+| 0 | setPartiallyNullRecord | 6_001_405 | 11_001_405 | $0.0000150719 | $15.07 |
+| 1 | setSmallNullRecord | 4_361_802 | 9_361_802 | $0.0000128257 | $12.82 |
+| 2 | setLargeNullRecord | 5_673_634 | 10_673_634 | $0.0000146229 | $14.62 |
 
-## Baseline benchmarks Azle version: 0.30.0
 
-| Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls |
-| --- | ---------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setPartiallyNullRecord | 5_998_617    | 2_989_446 | $0.0000039750 | $3.97             |
-| 1   | setSmallNullRecord     | 4_344_671    | 2_327_868 | $0.0000030953 | $3.09             |
-| 2   | setLargeNullRecord     | 5_671_762    | 2_858_704 | $0.0000038011 | $3.80             |
 
 ---
 
 **Note on calculations:**
-
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).

@@ -1,110 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.30.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1206987"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977016971406180"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1138446"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977021170167991"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1139811"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977024440526139"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1140641"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977027914102847"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1140932"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977031584477344"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1137561"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977035470865612"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1140374"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977039777563849"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1137659"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977044331225615"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1138193"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977048635069271"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1137162"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977053560584984"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "99500"
-                    },
-                    "method_name": "onLowWasmMemory",
-                    "timestamp": {
-                        "__bigint__": "1741977056176410765"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.32.0",
             "benchmarks": [
                 {
@@ -131,6 +27,81 @@
                     "instructions": "101838",
                     "method_name": "onLowWasmMemory",
                     "timestamp": "1750853925317145681"
+                }
+            ]
+        },
+        "current": {
+            "version": "0.33.0",
+            "benchmarks": [
+                {
+                    "instructions": "1085405",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791068264450166"
+                },
+                {
+                    "instructions": "1013274",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791071842941350"
+                },
+                {
+                    "instructions": "1015783",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791075650035448"
+                },
+                {
+                    "instructions": "1017501",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791079659388477"
+                },
+                {
+                    "instructions": "1018884",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791083875916886"
+                },
+                {
+                    "instructions": "1011857",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791088250291707"
+                },
+                {
+                    "instructions": "1016248",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791092917260255"
+                },
+                {
+                    "instructions": "1013745",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791097787863626"
+                },
+                {
+                    "instructions": "1012534",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791102599250243"
+                },
+                {
+                    "instructions": "1013517",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791107981086337"
+                },
+                {
+                    "instructions": "1012822",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791113381538354"
+                },
+                {
+                    "instructions": "1016438",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791118577853744"
+                },
+                {
+                    "instructions": "1016553",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1755791124784629963"
+                },
+                {
+                    "instructions": "99703",
+                    "method_name": "onLowWasmMemory",
+                    "timestamp": "1755791130486713526"
                 }
             ]
         }
