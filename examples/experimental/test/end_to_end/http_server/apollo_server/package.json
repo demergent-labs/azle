@@ -11,6 +11,6 @@
         "graphql": "^16.8.1"
     },
     "devDependencies": {
-        "@dfinity/identity-secp256k1": "3.2.1"
+        "@dfinity/identity-secp256k1": "3.2.2"
     }
 }

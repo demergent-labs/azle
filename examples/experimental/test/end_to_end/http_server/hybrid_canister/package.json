@@ -10,6 +10,6 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.21",
-        "@dfinity/identity-secp256k1": "3.2.1"
+        "@dfinity/identity-secp256k1": "3.2.2"
     }
 }

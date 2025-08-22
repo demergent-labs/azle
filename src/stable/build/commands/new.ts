@@ -21,13 +21,7 @@ export async function runCommand(
     await cp(templatePath, projectName, { recursive: true });
 
     // Edit the configuration files in place so they are ready to use in the new project
-    await editPackageJson(
-        projectName,
-        templatePath,
-        azleVersion,
-        experimental,
-        httpServer
-    );
+    await editPackageJson(projectName, templatePath, azleVersion, experimental);
     await editTsConfig(projectName, httpServer);
     await editJestConfig(projectName);
     await editDfxJson(projectName, templatePath, experimental);
@@ -47,8 +41,7 @@ async function editPackageJson(
     projectName: string,
     templatePath: string,
     azleVersion: string,
-    experimental: boolean,
-    httpServer: boolean
+    experimental: boolean
 ): Promise<void> {
     const templatePackageJsonString = await readFile(
         join(templatePath, 'package.json'),
@@ -73,9 +66,6 @@ async function editPackageJson(
     if (experimental === true) {
         packageJson.dependencies['azle-experimental-deps'] =
             devDependencies['azle-experimental-deps'];
-    }
-
-    if (httpServer === true) {
         packageJson.dependencies['@dfinity/identity-secp256k1'] =
             devDependencies['@dfinity/identity'];
     }
