@@ -1,20 +1,21 @@
 # Benchmarks for persistent_storage
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | postUpgrade | 1_012_324_124 | 1_017_324_124 | $0.0013937340 | $1_393.73 | <font color="red">+12_638_974</font> |
+
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade | 1_012_324_124 | 1_017_324_124 | $0.0013937340 | $1_393.73         | <font color="red">+12_638_974</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | postUpgrade | 999_685_150 | 1_004_685_150 | $0.0013764187 | $1_376.41 |
 
-
+| Id  | Method Name | Instructions | Cycles        | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | ------------- | ------------- | ----------------- |
+| 0   | postUpgrade | 999_685_150  | 1_004_685_150 | $0.0013764187 | $1_376.41         |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles
