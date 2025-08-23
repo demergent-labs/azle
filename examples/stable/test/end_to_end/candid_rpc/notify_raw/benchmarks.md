@@ -1,32 +1,35 @@
 # Benchmarks for canister1
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | sendNotification | 1_699_495 | 6_699_495 | $0.0000091783 | $9.17 | <font color="green">-49_857</font> |
+
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | sendNotification | 1_699_495    | 6_699_495 | $0.0000091783 | $9.17             | <font color="green">-49_857</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | sendNotification | 1_749_352 | 6_749_352 | $0.0000092466 | $9.24 |
+
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | sendNotification | 1_749_352    | 6_749_352 | $0.0000092466 | $9.24             |
 
 # Benchmarks for canister2
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | receiveNotification | 962_604 | 5_962_604 | $0.0000081688 | $8.16 | <font color="green">-19_128</font> |
+
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | receiveNotification | 962_604      | 5_962_604 | $0.0000081688 | $8.16             | <font color="green">-19_128</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | receiveNotification | 981_732 | 5_981_732 | $0.0000081950 | $8.19 |
 
-
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | receiveNotification | 981_732      | 5_981_732 | $0.0000081950 | $8.19             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

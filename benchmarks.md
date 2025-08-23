@@ -794,8 +794,6 @@ This document tracks high-level performance changes across Azle versions for com
 
 </table>
 
-
-
 ---
 
 _Report generated automatically by Azle_

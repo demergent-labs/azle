@@ -1,20 +1,21 @@
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | postUpgrade | 1_014_696_347 | 1_019_696_347 | $0.0013969840 | $1_396.98 | <font color="red">+12_334_651</font> |
+
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade | 1_014_696_347 | 1_019_696_347 | $0.0013969840 | $1_396.98         | <font color="red">+12_334_651</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | postUpgrade | 1_002_361_696 | 1_007_361_696 | $0.0013800855 | $1_380.08 |
 
-
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
+| 0   | postUpgrade | 1_002_361_696 | 1_007_361_696 | $0.0013800855 | $1_380.08         |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles
