@@ -1,22 +1,23 @@
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | updateCyclesBurn | 1_816_088 | 6_816_088 | $0.0000093380 | $9.33 | <font color="red">+449_057</font> |
-| 1 | assertCyclesBurnTypes | 1_226_239 | 6_226_239 | $0.0000085299 | $8.52 | <font color="green">-33_085</font> |
+
+| Id  | Method Name           | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | --------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | updateCyclesBurn      | 1_816_088    | 6_816_088 | $0.0000093380 | $9.33             | <font color="red">+449_057</font>  |
+| 1   | assertCyclesBurnTypes | 1_226_239    | 6_226_239 | $0.0000085299 | $8.52             | <font color="green">-33_085</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | updateCyclesBurn | 1_367_031 | 6_367_031 | $0.0000087228 | $8.72 |
-| 1 | assertCyclesBurnTypes | 1_259_324 | 6_259_324 | $0.0000085753 | $8.57 |
 
-
+| Id  | Method Name           | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | --------------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | updateCyclesBurn      | 1_367_031    | 6_367_031 | $0.0000087228 | $8.72             |
+| 1   | assertCyclesBurnTypes | 1_259_324    | 6_259_324 | $0.0000085753 | $8.57             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

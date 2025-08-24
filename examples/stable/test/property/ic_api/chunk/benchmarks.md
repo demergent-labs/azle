@@ -1,22 +1,23 @@
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | measureSum | 892_942 | 5_892_942 | $0.0000080733 | $8.07 | <font color="green">-45_775</font> |
-| 1 | measureSumTimer | 1_224_038 | 6_224_038 | $0.0000085269 | $8.52 | <font color="green">-24_358</font> |
+
+| Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | --------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | measureSum      | 892_942      | 5_892_942 | $0.0000080733 | $8.07             | <font color="green">-45_775</font> |
+| 1   | measureSumTimer | 1_224_038    | 6_224_038 | $0.0000085269 | $8.52             | <font color="green">-24_358</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | measureSum | 938_717 | 5_938_717 | $0.0000081360 | $8.13 |
-| 1 | measureSumTimer | 1_248_396 | 6_248_396 | $0.0000085603 | $8.56 |
 
-
+| Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | --------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | measureSum      | 938_717      | 5_938_717 | $0.0000081360 | $8.13             |
+| 1   | measureSumTimer | 1_248_396    | 6_248_396 | $0.0000085603 | $8.56             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles
