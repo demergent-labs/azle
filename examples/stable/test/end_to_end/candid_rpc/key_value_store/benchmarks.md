@@ -1,22 +1,23 @@
 # Benchmarks for key_value_store
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | set | 1_497_215 | 6_497_215 | $0.0000089012 | $8.90 | <font color="green">-14_374</font> |
-| 1 | set | 1_439_061 | 6_439_061 | $0.0000088215 | $8.82 | <font color="green">-16_982</font> |
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | set         | 1_497_215    | 6_497_215 | $0.0000089012 | $8.90             | <font color="green">-14_374</font> |
+| 1   | set         | 1_439_061    | 6_439_061 | $0.0000088215 | $8.82             | <font color="green">-16_982</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | set | 1_511_589 | 6_511_589 | $0.0000089209 | $8.92 |
-| 1 | set | 1_456_043 | 6_456_043 | $0.0000088448 | $8.84 |
 
-
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | set         | 1_511_589    | 6_511_589 | $0.0000089209 | $8.92             |
+| 1   | set         | 1_456_043    | 6_456_043 | $0.0000088448 | $8.84             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

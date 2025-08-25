@@ -1,20 +1,21 @@
 # Benchmarks for init
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | init | 1_006_735_298 | 1_011_735_298 | $0.0013860774 | $1_386.07 | <font color="red">+12_425_268</font> |
+
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init        | 1_006_735_298 | 1_011_735_298 | $0.0013860774 | $1_386.07         | <font color="red">+12_425_268</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | init | 994_310_030 | 999_310_030 | $0.0013690547 | $1_369.05 |
 
-
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- |
+| 0   | init        | 994_310_030  | 999_310_030 | $0.0013690547 | $1_369.05         |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

@@ -1,24 +1,25 @@
 # Benchmarks for timers
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | setTimers | 9_581_567 | 14_581_567 | $0.0000199767 | $19.97 | <font color="green">-333_433</font> |
-| 1 | clearTimer | 1_246_413 | 6_246_413 | $0.0000085576 | $8.55 | <font color="green">-15_842</font> |
-| 2 | clearTimer | 1_247_701 | 6_247_701 | $0.0000085594 | $8.55 | <font color="green">-15_143</font> |
+
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | setTimers   | 9_581_567    | 14_581_567 | $0.0000199767 | $19.97            | <font color="green">-333_433</font> |
+| 1   | clearTimer  | 1_246_413    | 6_246_413  | $0.0000085576 | $8.55             | <font color="green">-15_842</font>  |
+| 2   | clearTimer  | 1_247_701    | 6_247_701  | $0.0000085594 | $8.55             | <font color="green">-15_143</font>  |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | setTimers | 9_915_000 | 14_915_000 | $0.0000204336 | $20.43 |
-| 1 | clearTimer | 1_262_255 | 6_262_255 | $0.0000085793 | $8.57 |
-| 2 | clearTimer | 1_262_844 | 6_262_844 | $0.0000085801 | $8.58 |
 
-
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
+| 0   | setTimers   | 9_915_000    | 14_915_000 | $0.0000204336 | $20.43            |
+| 1   | clearTimer  | 1_262_255    | 6_262_255  | $0.0000085793 | $8.57             |
+| 2   | clearTimer  | 1_262_844    | 6_262_844  | $0.0000085801 | $8.58             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

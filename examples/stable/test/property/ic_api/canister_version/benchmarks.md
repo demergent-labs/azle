@@ -1,24 +1,25 @@
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | postUpgrade | 1_014_786_945 | 1_019_786_945 | $0.0013971081 | $1_397.10 | <font color="red">+13_298_479</font> |
-| 1 | setInspectMessageCanisterVersion | 938_536 | 5_938_536 | $0.0000081358 | $8.13 | <font color="green">-23_810</font> |
-| 2 | getUpdateCanisterVersion | 1_540_071 | 6_540_071 | $0.0000089599 | $8.95 | <font color="green">-40_131</font> |
+
+| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade                      | 1_014_786_945 | 1_019_786_945 | $0.0013971081 | $1_397.10         | <font color="red">+13_298_479</font> |
+| 1   | setInspectMessageCanisterVersion | 938_536       | 5_938_536     | $0.0000081358 | $8.13             | <font color="green">-23_810</font>   |
+| 2   | getUpdateCanisterVersion         | 1_540_071     | 6_540_071     | $0.0000089599 | $8.95             | <font color="green">-40_131</font>   |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | init | 1_001_488_466 | 1_006_488_466 | $0.0013788892 | $1_378.88 |
-| 1 | setInspectMessageCanisterVersion | 962_346 | 5_962_346 | $0.0000081684 | $8.16 |
-| 2 | getUpdateCanisterVersion | 1_580_202 | 6_580_202 | $0.0000090149 | $9.01 |
 
-
+| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls |
+| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- |
+| 0   | init                             | 1_001_488_466 | 1_006_488_466 | $0.0013788892 | $1_378.88         |
+| 1   | setInspectMessageCanisterVersion | 962_346       | 5_962_346     | $0.0000081684 | $8.16             |
+| 2   | getUpdateCanisterVersion         | 1_580_202     | 6_580_202     | $0.0000090149 | $9.01             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

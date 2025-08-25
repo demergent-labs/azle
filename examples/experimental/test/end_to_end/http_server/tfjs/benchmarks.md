@@ -1,21 +1,22 @@
 # Benchmarks for api
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | 1 | 95_148_585 | 100_148_585 | $0.0001372036 | $137.20 | <font color="green">-13_746_553_850</font> |
+
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                                     |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ------------------------------------------ |
+| 0   | 1           | 95_148_585   | 100_148_585 | $0.0001372036 | $137.20           | <font color="green">-13_746_553_850</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | init | 13_841_702_435 | 13_846_702_435 | $0.0189699823 | $18_969.98 |
-| 1 | http_request_update | 102_214_384 | 107_214_384 | $0.0001468837 | $146.88 |
 
-
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- |
+| 0   | init                | 13_841_702_435 | 13_846_702_435 | $0.0189699823 | $18_969.98        |
+| 1   | http_request_update | 102_214_384    | 107_214_384    | $0.0001468837 | $146.88           |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

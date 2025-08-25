@@ -1,20 +1,21 @@
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | alwaysReplyUpdate | 17_979_106 | 22_979_106 | $0.0000314814 | $31.48 | <font color="red">+16_715_533</font> |
+
+| Id  | Method Name       | Instructions | Cycles     | USD           | USD/Million Calls | Change                               |
+| --- | ----------------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | alwaysReplyUpdate | 17_979_106   | 22_979_106 | $0.0000314814 | $31.48            | <font color="red">+16_715_533</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | alwaysReplyUpdate | 1_263_573 | 6_263_573 | $0.0000085811 | $8.58 |
 
-
+| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | alwaysReplyUpdate | 1_263_573    | 6_263_573 | $0.0000085811 | $8.58             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

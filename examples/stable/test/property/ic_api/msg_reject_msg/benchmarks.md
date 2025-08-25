@@ -1,30 +1,33 @@
 # Benchmarks for caller
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | echoThroughReject | 2_335_133 | 7_335_133 | $0.0000100491 | $10.04 | <font color="green">-188_747</font> |
-| 1 | assertTypes | 2_208_256 | 7_208_256 | $0.0000098753 | $9.87 | <font color="green">-132_683</font> |
+
+| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
+| --- | ----------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | echoThroughReject | 2_335_133    | 7_335_133 | $0.0000100491 | $10.04            | <font color="green">-188_747</font> |
+| 1   | assertTypes       | 2_208_256    | 7_208_256 | $0.0000098753 | $9.87             | <font color="green">-132_683</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | echoThroughReject | 2_523_880 | 7_523_880 | $0.0000103077 | $10.30 |
-| 1 | assertTypes | 2_340_939 | 7_340_939 | $0.0000100571 | $10.05 |
+
+| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | echoThroughReject | 2_523_880    | 7_523_880 | $0.0000103077 | $10.30            |
+| 1   | assertTypes       | 2_340_939    | 7_340_939 | $0.0000100571 | $10.05            |
 
 # Benchmarks for rejector
 
 ## Current benchmarks Azle version: 0.33.0
+
 No benchmarks reported
 
 ## Baseline benchmarks Azle version: 0.32.0
+
 No benchmarks reported
-
-
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles
