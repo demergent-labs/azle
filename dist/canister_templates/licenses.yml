@@ -21091,7 +21091,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: wasmi
-  package_version: 0.51.0
+  package_version: 0.51.1
   repository: https://github.com/wasmi-labs/wasmi
   license: MIT/Apache-2.0
   licenses:
@@ -21100,7 +21100,7 @@ third_party_libraries:
   - license: Apache-2.0
     text: NOT FOUND
 - package_name: wasmi_collections
-  package_version: 0.51.0
+  package_version: 0.51.1
   repository: https://github.com/wasmi-labs/wasmi
   license: MIT/Apache-2.0
   licenses:
@@ -21109,7 +21109,7 @@ third_party_libraries:
   - license: Apache-2.0
     text: NOT FOUND
 - package_name: wasmi_core
-  package_version: 0.51.0
+  package_version: 0.51.1
   repository: https://github.com/wasmi-labs/wasmi
   license: MIT/Apache-2.0
   licenses:
@@ -21118,7 +21118,7 @@ third_party_libraries:
   - license: Apache-2.0
     text: NOT FOUND
 - package_name: wasmi_ir
-  package_version: 0.51.0
+  package_version: 0.51.1
   repository: https://github.com/wasmi-labs/wasmi
   license: MIT/Apache-2.0
   licenses:
