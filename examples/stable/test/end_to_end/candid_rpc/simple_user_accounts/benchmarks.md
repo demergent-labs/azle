@@ -1,20 +1,21 @@
 # Benchmarks for simple_user_accounts
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | createUser | 3_550_125 | 8_550_125 | $0.0000117137 | $11.71 | <font color="green">-138_333</font> |
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | createUser  | 3_550_125    | 8_550_125 | $0.0000117137 | $11.71            | <font color="green">-138_333</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | createUser | 3_688_458 | 8_688_458 | $0.0000119032 | $11.90 |
 
-
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | createUser  | 3_688_458    | 8_688_458 | $0.0000119032 | $11.90            |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

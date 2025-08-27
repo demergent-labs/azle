@@ -1,20 +1,21 @@
 # Benchmarks for update
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | simpleUpdate | 1_404_057 | 6_404_057 | $0.0000087736 | $8.77 | <font color="green">-13_999</font> |
+
+| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | simpleUpdate | 1_404_057    | 6_404_057 | $0.0000087736 | $8.77             | <font color="green">-13_999</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | simpleUpdate | 1_418_056 | 6_418_056 | $0.0000087927 | $8.79 |
 
-
+| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ------------ | ------------ | --------- | ------------- | ----------------- |
+| 0   | simpleUpdate | 1_418_056    | 6_418_056 | $0.0000087927 | $8.79             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

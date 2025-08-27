@@ -1,16 +1,17 @@
 # Benchmarks for primitive_types
 
 ## Current benchmarks Azle version: 0.33.0
+
 No benchmarks reported
 
 ## Baseline benchmarks Azle version: 0.32.0
+
 No benchmarks reported
-
-
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles

@@ -1,22 +1,23 @@
 # Benchmarks for outgoing_http_requests
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | xkcd | 24_038_753 | 29_038_753 | $0.0000397831 | $39.78 | <font color="green">-1_113_211</font> |
-| 1 | xkcdRaw | 1_064_719 | 6_064_719 | $0.0000083087 | $8.30 | <font color="green">-107_216</font> |
+
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | xkcd        | 24_038_753   | 29_038_753 | $0.0000397831 | $39.78            | <font color="green">-1_113_211</font> |
+| 1   | xkcdRaw     | 1_064_719    | 6_064_719  | $0.0000083087 | $8.30             | <font color="green">-107_216</font>   |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | xkcd | 25_151_964 | 30_151_964 | $0.0000413082 | $41.30 |
-| 1 | xkcdRaw | 1_171_935 | 6_171_935 | $0.0000084556 | $8.45 |
 
-
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
+| 0   | xkcd        | 25_151_964   | 30_151_964 | $0.0000413082 | $41.30            |
+| 1   | xkcdRaw     | 1_171_935    | 6_171_935  | $0.0000084556 | $8.45             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles
