@@ -1,20 +1,21 @@
 # Benchmarks for inspect_message
 
 ## Current benchmarks Azle version: 0.33.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls | Change |
-|-----------|-------------|------------|--------|-----|--------------|-------|
-| 0 | accessible | 1_686_637 | 6_686_637 | $0.0000091607 | $9.16 | <font color="green">-20_216</font> |
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | accessible  | 1_686_637    | 6_686_637 | $0.0000091607 | $9.16             | <font color="green">-20_216</font> |
 
 ## Baseline benchmarks Azle version: 0.32.0
-| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
-|-----------|-------------|------------|--------|-----|--------------|
-| 0 | accessible | 1_706_853 | 6_706_853 | $0.0000091884 | $9.18 |
 
-
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | accessible  | 1_706_853    | 6_706_853 | $0.0000091884 | $9.18             |
 
 ---
 
 **Note on calculations:**
+
 - All calculations assume a 13-node subnet
 - Cycles are calculated using the formula: base_fee + per_instruction_fee \* number_of_instructions
 - base_fee: 5_000_000 cycles
