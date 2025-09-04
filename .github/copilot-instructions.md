@@ -91,6 +91,20 @@ Remember, before the PR can be considered complete, you must at least do the fol
 - Use console.info if you intend for your logs to be committed to the codebase. Use console.log only for debugging purposes.
 - Use numeric separators for large numbers, for example 1_000_000 instead of 1000000
 
+## Code Review Guidelines
+
+The following guidelines should be followed whenever performing a code review.
+
+1. Enumerate and comment with a summary of all new features added. A feature is generally something that the end-user developer using Azle would be exposed to. For example, if we materially change the interface of, add to, or change the behavior of any of the APIs exported from the top-level `azle` npm package. If no new features were added, please say so.
+2. Enumerate and comment with a summary of all new breaking changes introduced. If no new breaking changes were introduced, please say so.
+3. Perform the following code quality checks
+    1. Declarative
+    2. Appropriate JSDocs, Rustdocs, or comments. We JSDocs and Rustdocs on all new functions and types. We only want code comments if an average competent software developer would not have enough information to understand the code just be reading the code.
+    3. Beautiful error handling (no unwraps, no expects, proper try/catch, all error conditions handled, etc)
+    4. Thoroughly tested (either the current tests are sufficient or new tests have been added)
+4. Ensure that the implementation is free of bugs, typos, organizational problems, code smells, etc
+5. In your review comment, please create a checkbox list for this entire numbered list (just copy the list entirely but replace the numbers with checkboxes) and check off each task that you have completed.
+
 ## Human Notes
 
 This section is for humans only, please ignore it if you are an AI.

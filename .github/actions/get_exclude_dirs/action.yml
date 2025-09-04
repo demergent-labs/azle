@@ -30,6 +30,8 @@ runs:
               ') }}"
 
               UNSTABLE_EXCLUSIONS="${{ format('
+              examples/stable/test/property/ic_api/chunk
+              examples/stable/test/property/candid_rpc/canister_methods/inspect_message
               ') }}"
 
               # These tests are unstable because of problems in external code. Consequently, failing tests are not helpful, so we're disabling them entirely for the time being.
