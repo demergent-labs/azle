@@ -103,6 +103,7 @@ The following guidelines should be followed whenever performing a code review.
     3. Beautiful error handling (no unwraps, no expects, proper try/catch, all error conditions handled, etc)
     4. Thoroughly tested (either the current tests are sufficient or new tests have been added)
 4. Ensure that the implementation is free of bugs, typos, organizational problems, code smells, etc
+5. In your review comment, please create a checkbox list for this entire numbered list (just copy the list entirely but replace the numbers with checkboxes) and check off each task that you have completed.
 
 ## Human Notes
 
