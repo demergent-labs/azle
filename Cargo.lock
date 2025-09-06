@@ -160,15 +160,14 @@ checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 [[package]]
 name = "candid"
 version = "0.10.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9d90f5a1426d0489283a0bd5da9ed406fb3e69597e0d823dcb88a1965bb58d2"
+source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
 dependencies = [
  "anyhow",
  "binread",
  "byteorder",
- "candid_derive 0.6.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid_derive 0.6.6",
  "hex",
- "ic_principal 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic_principal 0.1.1 (git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21)",
  "leb128",
  "num-bigint",
  "num-traits",
@@ -182,15 +181,16 @@ dependencies = [
 
 [[package]]
 name = "candid"
-version = "0.10.14"
-source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
+version = "0.10.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ae495fbaf9ee8f4f7898affbd3df85dba8598bfa4ffaca24726c42aa4beb7b1"
 dependencies = [
  "anyhow",
  "binread",
  "byteorder",
- "candid_derive 0.6.6 (git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21)",
+ "candid_derive 0.10.18",
  "hex",
- "ic_principal 0.1.1 (git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21)",
+ "ic_principal 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "leb128",
  "num-bigint",
  "num-traits",
@@ -213,8 +213,7 @@ dependencies = [
 [[package]]
 name = "candid_derive"
 version = "0.6.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3de398570c386726e7a59d9887b68763c481477f9a043fb998a2e09d428df1a9"
+source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -224,8 +223,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.6.6"
-source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
+version = "0.10.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7388be3b345b1a2ad30e529619b4db0d1955852afb56da821fa6a805f7cbf6be"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -240,7 +240,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "48a3da76f989cd350b7342c64c6c6008341bb6186f6832ef04e56dc50ba0fd76"
 dependencies = [
  "anyhow",
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "codespan-reporting",
  "convert_case",
  "hex",
@@ -258,7 +258,7 @@ version = "0.2.0-beta.4"
 source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
 dependencies = [
  "anyhow",
- "candid 0.10.14 (git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21)",
+ "candid 0.10.14",
  "codespan-reporting",
  "convert_case",
  "handlebars",
@@ -595,7 +595,7 @@ name = "experimental_canister_template"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "candid_parser 0.1.4",
  "ic-cdk",
  "ic-cdk-timers",
@@ -843,11 +843,11 @@ checksum = "9b112acc8b3adf4b107a8ec20977da0273a8c386765a3ec0229bd500a1443f9f"
 
 [[package]]
 name = "ic-cdk"
-version = "0.18.5"
+version = "0.18.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db9cc3e0e86ee12504c749fa33793014f1f4d6956a8a70e4db595169c5f6ac26"
+checksum = "4efb278f5d3ef033b3eed7f01f1096eaf67701896aa5ef69f5eddf5a84833dc0"
 dependencies = [
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "ic-cdk-executor",
  "ic-cdk-macros",
  "ic-error-types",
@@ -861,20 +861,21 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-executor"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15948808e3e7b50749fe50838df77fccaf048c8af2c26884ff5c8f787c29787a"
+checksum = "99f4ee8930fd2e491177e2eb7fff53ee1c407c13b9582bdc7d6920cf83109a2d"
 dependencies = [
+ "ic0",
  "slotmap",
 ]
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.18.5"
+version = "0.18.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b190cace2b141a5801252115bdc27397d47f086c928af3e917ce1da81b17e3cd"
+checksum = "7eb14c5d691cc9d72bb95459b4761e3a4b3444b85a63d17555d5ddd782969a1e"
 dependencies = [
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "darling",
  "proc-macro2",
  "quote",
@@ -887,7 +888,7 @@ version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ea87cf31444de833db85bbd15e97bc135ee14529b13158ffdaf6530bf6d7e85"
 dependencies = [
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "futures",
  "ic-cdk",
  "ic0",
@@ -909,11 +910,11 @@ dependencies = [
 
 [[package]]
 name = "ic-management-canister-types"
-version = "0.3.1"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98554c2d8a30c00b6bfda18062fdcef21215cad07a52d8b8b1eb3130e51bfe71"
+checksum = "ea7e5b8a0f7c3b320d9450ac950547db4f24a31601b5d398f9680b64427455d2"
 dependencies = [
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "serde",
  "serde_bytes",
 ]
@@ -1958,7 +1959,7 @@ dependencies = [
 name = "stable_canister_template"
 version = "0.0.0"
 dependencies = [
- "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "candid 0.10.18",
  "candid_parser 0.1.4",
  "ic-cdk",
  "ic-cdk-timers",
