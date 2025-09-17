@@ -35,10 +35,7 @@ runs:
               ') }}"
 
               # These tests are unstable because of problems in external code. Consequently, failing tests are not helpful, so we're disabling them entirely for the time being.
-              # multi_deploy will be fixed when https://github.com/demergent-labs/azle/issues/2145 is resolved
               EXTERNAL_EXCLUSIONS="${{ format('
-              examples/stable/test/end_to_end/candid_rpc/multi_deploy
-              examples/experimental/test/end_to_end/http_server/multi_deploy
               ') }}"
 
               # These tests are unstable and experimental. Since we aren't able to spend any time on them until 1.0 is released, we are disabling them entirely for the time being.
