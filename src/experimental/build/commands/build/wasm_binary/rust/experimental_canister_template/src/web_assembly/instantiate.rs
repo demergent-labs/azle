@@ -18,18 +18,7 @@ impl JsFn for NativeFunction {
             panic!("conversion from JsValue to JsArrayBuffer failed")
         };
 
-        let engine = wasmi::Engine::default();
-        let module = wasmi::Module::new(&engine, &mut &wasm_bytes[..]).unwrap();
-
-        let linker = <wasmi::Linker<()>>::new(&engine);
-
-        let mut store = wasmi::Store::new(&engine, ());
-
-        let instance = linker
-            .instantiate(&mut store, &module)
-            .unwrap()
-            .start(&mut store)
-            .unwrap();
+        let (instance, mut store) = instantiate_wasm_module(&wasm_bytes);
 
         let mut exports_js_object = context.new_object();
 
@@ -192,4 +181,13 @@ impl JsFn for NativeFunction {
 
         instantiated_source_js_object.into()
     }
+}
+
+fn instantiate_wasm_module(wasm_bytes: &[u8]) -> (wasmi::Instance, wasmi::Store<()>) {
+    let engine = wasmi::Engine::default();
+    let module = wasmi::Module::new(&engine, &mut &wasm_bytes[..]).unwrap();
+    let linker = <wasmi::Linker<()>>::new(&engine);
+    let mut store = wasmi::Store::new(&engine, ());
+    let instance = linker.instantiate_and_start(&mut store, &module).unwrap();
+    (instance, store)
 }
