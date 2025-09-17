@@ -16,7 +16,7 @@
     - [ ] Beautiful error handling (no unwraps, expects, etc)
     - [ ] Thoroughly tested
 - [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
-- [ ] Review is requested when ready
+- [ ] AI review requested and addressed
 
 ## Reviewer
 
