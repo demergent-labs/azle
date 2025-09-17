@@ -1315,7 +1315,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: candid
-  package_version: 0.10.18
+  package_version: 0.10.19
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
@@ -1731,7 +1731,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: candid_derive
-  package_version: 0.10.18
+  package_version: 0.10.19
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
