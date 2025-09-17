@@ -20,20 +20,22 @@ Whenever you are working on a feature, unless otherwise noted in the issue or it
 
 ### Starting dfx
 
-First ensure that `dfx` has been installed and is available as a command:
+First check if there is already a running replica:
 
 ```
-dfx --version
+dfx ping
 ```
 
-Try this first if `dfx` is not available as a command:
+If it's running, you'll see output including `"replica_health_status": "healthy"`.
+
+If `dfx` is not available as a command try this:
 
 ```
 export PATH="$HOME/.local/share/dfx/bin:$PATH"
 dfx --version
 ```
 
-Once `dfx` exists start it:
+If `dfx` now exists as a command then start up a replica:
 
 ```
 dfx start --clean --background --artificial-delay 0
