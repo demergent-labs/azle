@@ -15328,7 +15328,7 @@ third_party_libraries:
       IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
       DEALINGS IN THE SOFTWARE.
 - package_name: serde
-  package_version: 1.0.223
+  package_version: 1.0.225
   repository: https://github.com/serde-rs/serde
   license: MIT OR Apache-2.0
   licenses:
@@ -15744,7 +15744,7 @@ third_party_libraries:
 
       END OF TERMS AND CONDITIONS
 - package_name: serde_core
-  package_version: 1.0.223
+  package_version: 1.0.225
   repository: https://github.com/serde-rs/serde
   license: MIT OR Apache-2.0
   licenses:
@@ -15952,7 +15952,7 @@ third_party_libraries:
 
       END OF TERMS AND CONDITIONS
 - package_name: serde_derive
-  package_version: 1.0.223
+  package_version: 1.0.225
   repository: https://github.com/serde-rs/serde
   license: MIT OR Apache-2.0
   licenses:
