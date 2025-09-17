@@ -12,7 +12,7 @@ DFX_VERSION=$1
 
 # Install or update dfx using the official installation script
 echo "Installing dfx version $DFX_VERSION..."
-DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --proto '=https' --proto-redir '=https' --tlsv1.2 --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
+DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 
 # Determine the correct dfx path based on the operating system
 if [[ "$OSTYPE" == "darwin"* ]]; then
