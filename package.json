@@ -87,7 +87,7 @@
     },
     "azle": {
         "globalDependencies": {
-            "dfx": "0.29.0",
+            "dfx": "0.29.1",
             "node": "22.18.0",
             "rust": "1.89.0",
             "cargo-auditable": "0.7.0",
