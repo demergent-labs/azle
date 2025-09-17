@@ -4,7 +4,7 @@ import { candidDeepEqual } from 'azle/_internal/test/candid_deep_equal';
 
 import { jsonStringify } from '#lib/json';
 
-export type Test<> = {
+export type Test = {
     name: string;
     skip?: boolean;
     wait?: number;

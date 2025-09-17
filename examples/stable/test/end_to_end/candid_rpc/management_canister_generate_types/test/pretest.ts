@@ -1,25 +1,9 @@
 import { execSync } from 'child_process';
-import { lstatSync, readFileSync, writeFileSync } from 'fs';
 
 function pretest(): void {
     execSync(`dfx canister uninstall-code management_canister || true`, {
         stdio: 'inherit'
     });
-
-    // We generate this file without the workaroundForMultipleIDLPathsProblem so that we can do an exact comparison with the azle/canisters/management/idl/index.ts file
-    execSync(
-        `npm exec --offline azle generate ../../../../../../src/stable/lib/canisters/management/idl/ic.did > src/idl/management_no_workaround.ts`,
-        {
-            stdio: 'inherit'
-        }
-    );
-
-    execSync(
-        'npx prettier --ignore-path null --write src/idl/management_no_workaround.ts',
-        {
-            stdio: 'inherit'
-        }
-    );
 
     execSync(
         `npm exec --offline azle generate ../../../../../../src/stable/lib/canisters/management/idl/ic.did > src/idl/management.ts`,
@@ -27,8 +11,6 @@ function pretest(): void {
             stdio: 'inherit'
         }
     );
-
-    workaroundForMultipleIDLPathsProblem();
 
     execSync('npx prettier --ignore-path null --write src/idl/management.ts', {
         stdio: 'inherit'
@@ -51,27 +33,3 @@ function pretest(): void {
 }
 
 pretest();
-
-// TODO remove once this issue is resolved: https://github.com/dfinity/agent-js/issues/977
-// Basically what we do here is to replace import { IDL } from '@dfinity/candid' with import { IDL } from 'azle'
-// but only when azle is a symlink (accomplished usually in our dev environment through npm link azle)
-// The multiple IDL paths problem only occurs at least in the context of this test, in our local symlink
-// testing environment. Users shouldn't run into this issue because they will not have symlinked azle
-// The GitHub Actions tests on a release will run this test against azle as an npm package
-function workaroundForMultipleIDLPathsProblem(): void {
-    if (
-        lstatSync('../../../../../node_modules/azle').isSymbolicLink() === false
-    ) {
-        return;
-    }
-
-    const generatedTypesPath = 'src/idl/management.ts';
-
-    writeFileSync(
-        generatedTypesPath,
-        readFileSync(generatedTypesPath, 'utf-8').replace(
-            /import\s*{\s*IDL\s*}\s*from\s*['"]@dfinity\/candid['"]/g,
-            "import { IDL } from 'azle'"
-        )
-    );
-}
