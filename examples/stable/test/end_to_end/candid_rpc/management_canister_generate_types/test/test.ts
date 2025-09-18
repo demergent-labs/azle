@@ -21,10 +21,7 @@ runTests(() => {
     getTests(managementCanister as any)();
 
     it('should have generated a src/idl/management.ts file identical to azle/canisters/management/idl/index.ts', async () => {
-        const generatedContent = readFileSync(
-            'src/idl/management_no_workaround.ts',
-            'utf-8'
-        );
+        const generatedContent = readFileSync('src/idl/management.ts', 'utf-8');
 
         const referenceContent = readFileSync(
             '../../../../../../src/stable/lib/canisters/management/idl/index.ts',
