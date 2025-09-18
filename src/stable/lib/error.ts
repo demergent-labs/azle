@@ -45,6 +45,12 @@ export function validateUnsignedInteger(
         throw new Error(`${errorPrefix} cannot be negative`);
     }
 
+    if (size > 53) {
+        throw new Error(
+            `${errorPrefix} to remain within safe integer bounds, size cannot be greater than 53`
+        );
+    }
+
     const maxUnsignedInteger = Math.pow(2, size) - 1;
 
     if (number > maxUnsignedInteger) {
