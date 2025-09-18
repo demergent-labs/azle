@@ -18,6 +18,29 @@ The Rust code for static binary template creation and manipulation of those temp
 
 Whenever you are working on a feature, unless otherwise noted in the issue or it makes sense not to do this, you should generally use the following commands to test any changes you make by generating the stable and experimental templates, running one or more of the example tests locally, and linting. You should do this BEFORE COMMITTING ANY CHANGES.
 
+### Starting dfx
+
+First check if there is already a running replica:
+
+```
+dfx ping
+```
+
+If it's running, you'll see output including `"replica_health_status": "healthy"`.
+
+If `dfx` is not available as a command try this:
+
+```
+export PATH="$HOME/.local/share/dfx/bin:$PATH"
+dfx --version
+```
+
+If `dfx` now exists as a command then start up a replica:
+
+```
+dfx start --clean --background --artificial-delay 0
+```
+
 ### Generating the Wasm binary canister templates
 
 Here's how to generate the stable and experimental Wasm binary canister templates with one command. Always run this command from the Azle root directory:
