@@ -98,8 +98,16 @@ function getQueryAndUpdateMethods(
     );
 }
 
-function createCanisterParamsString(initMethodCandidString: string[]): string {
-    const parts = initMethodCandidString[0].split('->');
+function createCanisterParamsString(
+    initAndPostUpgradeMethodCandidString: string[]
+): string {
+    if (initAndPostUpgradeMethodCandidString.length !== 1) {
+        throw new Error(
+            'Expected exactly one init or post upgrade candid string'
+        );
+    }
+
+    const parts = initAndPostUpgradeMethodCandidString[0].split('->');
     if (parts.length >= 2) {
         return parts.slice(0, -1).join('->').trim();
     }

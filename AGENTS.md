@@ -137,7 +137,7 @@ Before merging a PR created by the GitHub Copilot coding agent, you will need to
 One simple way to do this is the following:
 
 1. Check out the coding agent's feature branch on your local machine
-2. Run this command from the root of the repository: `git reset --soft $(git merge-base --fork-point main HEAD)`
+2. Run this command from the root of the repository: `git reset --soft $(git merge-base main HEAD)`
 3. Commit and force push the changes
 
 The three steps above will essentially allow you to collapse all of the coding agent's commits into one commit on your machine, signed by you and verifiable by GitHub. You will need to force push to the coding agent's branch to remove all of its unverified commits.
