@@ -1,6 +1,6 @@
 import '#experimental/build/assert_experimental';
 
-import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
+import { Actor, ActorMethod, ActorSubclass } from '@icp-sdk/core/agent';
 import { watch } from 'chokidar';
 import { mkdir, writeFile } from 'fs/promises';
 import { dirname } from 'path';

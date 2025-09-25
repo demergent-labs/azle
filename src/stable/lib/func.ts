@@ -1,4 +1,4 @@
-import { GenericIdlFuncArgs, IDL } from '@dfinity/candid';
+import { GenericIdlFuncArgs, IDL } from '@icp-sdk/core/candid';
 
 export function toFuncArgs(types?: IDL.Type[]): GenericIdlFuncArgs {
     if (types === undefined) return [];

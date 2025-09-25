@@ -1,4 +1,4 @@
-import { ActorSubclass } from '@dfinity/agent';
+import { ActorSubclass } from '@icp-sdk/core/agent';
 import { getCanisterActor } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 

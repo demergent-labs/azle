@@ -1,7 +1,7 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { Principal } from '@dfinity/principal';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import { Principal } from '@icp-sdk/core/principal';
 import {
     defaultPropTestParams,
     expect,

@@ -1,4 +1,4 @@
-import { Agent, HttpAgent, Identity } from '@dfinity/agent';
+import { Agent, HttpAgent, Identity } from '@icp-sdk/core/agent';
 
 export async function createAgent(
     identity: Identity,

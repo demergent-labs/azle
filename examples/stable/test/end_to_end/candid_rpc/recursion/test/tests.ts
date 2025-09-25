@@ -1,5 +1,5 @@
-import { ActorSubclass } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import { ActorSubclass } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
@@ -20,7 +20,7 @@ import {
 } from './dfx_generated/recursion/recursion.did';
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
 
-// TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
+// TODO these tests should be rewritten to use @icp-sdk/core/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
 // TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885
 export function getRecursiveCanisterTests(
     recursive_canister: ActorSubclass<_REC_SERVICE>

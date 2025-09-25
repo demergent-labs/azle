@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-import { Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
+import { Identity } from '@icp-sdk/core/agent';
 import { toJwt } from 'azle/experimental/http_client';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

@@ -1,6 +1,6 @@
 import '#experimental/build/assert_experimental';
 
-import { IDL } from '@dfinity/candid';
+import { IDL } from '@icp-sdk/core/candid';
 
 import { escapeCandidName } from '#lib/did_file/visitor/escape_candid_name';
 import { jsonStringify } from '#lib/json';

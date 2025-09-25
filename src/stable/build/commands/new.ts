@@ -66,8 +66,6 @@ async function editPackageJson(
     if (experimental === true) {
         packageJson.dependencies['azle-experimental-deps'] =
             devDependencies['azle-experimental-deps'];
-        packageJson.dependencies['@dfinity/identity-secp256k1'] =
-            devDependencies['@dfinity/identity'];
     }
 
     const packageJsonPath = join(projectName, 'package.json');

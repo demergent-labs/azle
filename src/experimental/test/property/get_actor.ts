@@ -1,6 +1,6 @@
 import '#experimental/build/assert_experimental';
 
-import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
+import { ActorSubclass, Agent, HttpAgent } from '@icp-sdk/core/agent';
 import { createRequire } from 'module';
 
 import { getCanisterId } from '#utils/dfx';

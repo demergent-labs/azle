@@ -1,6 +1,6 @@
 import '#experimental/lib/assert_experimental';
 
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 
 import { serialize } from '../fetch';
 import { ThresholdKeyInfo } from './wallet';

@@ -1,5 +1,5 @@
-import { ActorMethod } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
+import { ActorMethod } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
 
 export interface chat_message {
     content: string;

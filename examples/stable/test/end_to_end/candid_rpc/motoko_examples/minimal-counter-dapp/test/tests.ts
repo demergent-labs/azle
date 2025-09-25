@@ -1,4 +1,4 @@
-import { ActorSubclass } from '@dfinity/agent';
+import { ActorSubclass } from '@icp-sdk/core/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from '../src/declarations/minimal_dapp/minimal_dapp.did';

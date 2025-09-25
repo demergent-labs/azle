@@ -1,6 +1,4 @@
-import { HttpAgent, Identity } from '@dfinity/agent';
-import { ActorSubclass } from '@dfinity/agent';
-import { Agent } from '@dfinity/agent';
+import { ActorSubclass, Agent, HttpAgent, Identity } from '@icp-sdk/core/agent';
 import { join } from 'path';
 
 import { getCanisterId } from '#utils/dfx';

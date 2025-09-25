@@ -1,5 +1,5 @@
-import { ActorSubclass } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
+import { ActorSubclass } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/_internal/test';
 

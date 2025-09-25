@@ -59,7 +59,7 @@ export function getPrelude(main: string): string {
         // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
         ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
-        export { Principal } from '@dfinity/principal';
+        export { Principal } from '@icp-sdk/core/principal';
         import * as CanisterModuleExperimental from '${absoluteMainPath}';
 
         const somethingDefaultExported = CanisterModuleExperimental.default !== undefined && CanisterModuleExperimental.default !== null;

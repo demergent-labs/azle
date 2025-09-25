@@ -1,6 +1,6 @@
 import '#experimental/build/assert_experimental';
 
-import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
+import { Actor, ActorMethod, ActorSubclass } from '@icp-sdk/core/agent';
 
 import { createAuthenticatedAgent } from '#experimental/utils/dfx';
 

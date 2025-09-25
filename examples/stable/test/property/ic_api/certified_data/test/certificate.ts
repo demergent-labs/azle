@@ -1,4 +1,4 @@
-import { Certificate, LookupPathStatus, NodePath } from '@dfinity/agent';
+import { Certificate, LookupPathStatus, NodePath } from '@icp-sdk/core/agent';
 
 export function findLookupValueOrThrow(
     certificate: Certificate,

@@ -1,6 +1,6 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
-import { ActorSubclass, HttpAgent } from '@dfinity/agent';
+import { ActorSubclass, HttpAgent } from '@icp-sdk/core/agent';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { defaultPropTestParams, expect, it, Test } from 'azle/_internal/test';
 import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';

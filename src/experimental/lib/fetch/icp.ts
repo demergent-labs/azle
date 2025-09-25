@@ -1,7 +1,7 @@
 import '#experimental/lib/assert_experimental';
 
-import { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
+import { IDL } from '@icp-sdk/core/candid';
+import { Principal } from '@icp-sdk/core/principal';
 
 import { call } from '#lib/ic_apis/index';
 

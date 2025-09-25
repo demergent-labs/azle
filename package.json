@@ -50,7 +50,7 @@
     },
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
-        "@dfinity/agent": "^3.2.2",
+        "@icp-sdk/core": "^4.0.4",
         "@sinonjs/text-encoding": "0.7.3",
         "binaryen": "^116.0.0",
         "esbuild": "^0.25.10",
@@ -58,14 +58,13 @@
         "typescript": "^5.9.2"
     },
     "devDependencies": {
-        "@dfinity/identity": "^3.2.2",
         "@eslint/js": "^9.35.0",
         "@types/semver": "^7.7.1",
         "@types/uuid": "^11.0.0",
         "@typescript-eslint/eslint-plugin": "^8.44.0",
         "@typescript-eslint/parser": "^8.44.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#985d11578dea3381d720d118a59507045e2bed32",
-        "cuzz": "0.0.22",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#0afef5f615bc77fb303c5e95211daf6d7bb73dd3",
+        "cuzz": "0.0.23",
         "eslint": "^9.35.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-simple-import-sort": "^12.1.1",

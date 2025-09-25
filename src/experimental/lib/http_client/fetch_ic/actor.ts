@@ -1,5 +1,10 @@
-import { Actor, ActorMethod, ActorSubclass, Identity } from '@dfinity/agent';
-import type { Principal } from '@dfinity/principal';
+import {
+    Actor,
+    ActorMethod,
+    ActorSubclass,
+    Identity
+} from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 
 import { createAgent } from './agent';
 

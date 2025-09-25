@@ -1,4 +1,4 @@
-import { Identity } from '@dfinity/agent';
+import { Identity } from '@icp-sdk/core/agent';
 
 export function getIdentity(
     headers: RequestInit['headers']

@@ -1,4 +1,4 @@
-import { ActorSubclass } from '@dfinity/agent';
+import { ActorSubclass } from '@icp-sdk/core/agent';
 import { expect, it as test } from 'azle/_internal/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';

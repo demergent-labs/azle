@@ -1,4 +1,4 @@
-import { ActorSubclass } from '@dfinity/agent';
+import { ActorSubclass } from '@icp-sdk/core/agent';
 import { afterAll, beforeAll } from '@jest/globals';
 import { expect, it, please, Test, wait } from 'azle/_internal/test';
 
