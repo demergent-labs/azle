@@ -3,6 +3,17 @@ import { dirname, join } from 'path';
 
 import { getDfxRoot } from '#utils/dfx_root';
 
+/**
+ * Builds the canister's bundled JavaScript from the `main` entrypoint.
+ *
+ * @remarks
+ * - Generates a small prelude that initializes Azle globals and registers Candid/method metadata wiring needed later.
+ * - Uses esbuild to compile TypeScript, tree-shake, and bundle into a single ESM module.
+ * - Returns the bundled JavaScript as a string; it does not write to disk.
+ *
+ * @param main - The entry file path from `dfx.json` (relative to the dfx root).
+ * @returns The fully bundled JavaScript source string produced by esbuild.
+ */
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);
     const buildOptions = getBuildOptions(prelude, main);
