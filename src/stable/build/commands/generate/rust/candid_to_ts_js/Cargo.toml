@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 candid_parser = { git = "https://github.com/demergent-labs/candid", rev = "22e24796dbb31b2d133bcd4d234abbaf34d6fd21" }
-wasm-bindgen = "0.2.103"
+wasm-bindgen = "0.2.104"
