@@ -21,11 +21,6 @@ export default class {
     mul(n: bigint): bigint {
         this.cell *= n;
 
-        // TODO remove this once this bug in @icp-sdk/core/candid is fixed: https://github.com/dfinity/agent-js/issues/953
-        if (Number(this.cell) === Infinity || Number(this.cell) === -Infinity) {
-            this.cell = BigInt(Number.MAX_VALUE);
-        }
-
         return this.cell;
     }
 
