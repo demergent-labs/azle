@@ -1,6 +1,6 @@
 import '#experimental/build/assert_experimental';
 
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 
 import { Opt } from './constructed/opt_arb';
 import { Record } from './constructed/record_arb';

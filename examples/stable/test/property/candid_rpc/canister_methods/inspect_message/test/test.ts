@@ -1,6 +1,6 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
-import { Agent } from '@dfinity/agent';
+import { Agent } from '@icp-sdk/core/agent';
 import {
     createAuthenticatedAgentSync,
     getPrincipal

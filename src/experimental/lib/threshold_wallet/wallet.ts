@@ -1,7 +1,7 @@
 import '#experimental/lib/assert_experimental';
 import './register_get_url';
 
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 import { ethers } from 'ethers';
 
 import { calculateRsvForTEcdsa } from './calculate_rsv_for_tecdsa';

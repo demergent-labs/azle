@@ -1,5 +1,5 @@
-import { SignIdentity } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { SignIdentity } from '@icp-sdk/core/agent';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { execSync } from 'child_process';
 
 const someoneIdentity = createIdentity(2);

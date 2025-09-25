@@ -1,4 +1,4 @@
-import { IDL, JsonValue } from '@dfinity/candid';
+import { IDL, JsonValue } from '@icp-sdk/core/candid';
 
 import { CanisterClassMeta } from './canister_methods';
 import { msgArgData } from './ic_apis/msg_arg_data';

@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "azle": "0.33.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d520f28563b2d255c7edf5b672da6083fd722259",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#0afef5f615bc77fb303c5e95211daf6d7bb73dd3",
         "express": "^4.18.2",
         "sql.js": "1.8.0",
         "uuid": "^11.1.0"

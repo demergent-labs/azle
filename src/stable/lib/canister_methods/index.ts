@@ -1,4 +1,4 @@
-import { GenericIdlFuncArgs, IDL } from '@dfinity/candid';
+import { GenericIdlFuncArgs, IDL } from '@icp-sdk/core/candid';
 
 import { toFuncArgs } from '#lib/func';
 import { MethodMeta } from '#utils/types';

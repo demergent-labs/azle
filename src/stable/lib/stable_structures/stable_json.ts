@@ -1,4 +1,4 @@
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 // @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 

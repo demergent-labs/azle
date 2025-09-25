@@ -12,4 +12,5 @@ const helloWorldCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(helloWorldCanister));
+// TODO get rid of this cast to any once the dfx generate command imports from @icp-sdk/core instead of the old @dfinity packages
+runTests(getTests(helloWorldCanister as any));

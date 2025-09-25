@@ -1,6 +1,6 @@
-import { ActorMethod } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
+import { ActorMethod } from '@icp-sdk/core/agent';
+import { IDL } from '@icp-sdk/core/candid';
+import { Principal } from '@icp-sdk/core/principal';
 
 export type HeaderField = [string, string];
 export interface HttpRequest {

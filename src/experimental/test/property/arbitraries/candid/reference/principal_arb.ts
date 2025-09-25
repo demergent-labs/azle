@@ -1,6 +1,6 @@
 import '#experimental/build/assert_experimental';
 
-import { Principal } from '@dfinity/principal';
+import { Principal } from '@icp-sdk/core/principal';
 import fc from 'fast-check';
 
 import { Context } from '../../types';

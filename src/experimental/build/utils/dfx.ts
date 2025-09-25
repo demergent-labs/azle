@@ -1,7 +1,7 @@
 import '#experimental/build/assert_experimental';
 
-import { HttpAgent } from '@dfinity/agent';
-import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
+import { HttpAgent } from '@icp-sdk/core/agent';
+import { Secp256k1KeyIdentity } from '@icp-sdk/core/identity/secp256k1';
 import { execSync } from 'child_process';
 
 import { getCanisterId } from '#utils/dfx';

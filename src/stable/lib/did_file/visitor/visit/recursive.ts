@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '@icp-sdk/core/candid';
 
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 

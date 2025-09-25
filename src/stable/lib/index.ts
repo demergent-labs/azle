@@ -12,5 +12,5 @@ export * from './ic_apis';
 export * from './json';
 export * from './stable_structures/stable_b_tree_map';
 export * from './stable_structures/stable_json';
-export * from '@dfinity/candid';
-export * from '@dfinity/principal';
+export * from '@icp-sdk/core/candid';
+export * from '@icp-sdk/core/principal';

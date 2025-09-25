@@ -1,4 +1,4 @@
-import { GenericIdlFuncArgs, IDL } from '@dfinity/candid';
+import { GenericIdlFuncArgs, IDL } from '@icp-sdk/core/candid';
 
 import { visitFunc } from './visit/func';
 import { visitOpt } from './visit/opt';

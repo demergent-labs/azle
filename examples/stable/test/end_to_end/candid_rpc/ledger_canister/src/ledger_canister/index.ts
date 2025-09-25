@@ -1,4 +1,4 @@
-import { getCrc32 } from '@dfinity/principal';
+import { getCrc32 } from '@icp-sdk/core/principal';
 import { call, IDL, Principal, query, update } from 'azle';
 import {
     AccountIdentifierByteBuf,
