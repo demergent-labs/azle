@@ -21,6 +21,9 @@ export function RecursiveNameValuesArb(
     recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Recursive>> {
     const recShape = recursiveShapes[recDefinition.name];
+    if (recShape === undefined) {
+        throw new Error(`Missing recursive shape for ${recDefinition.name}`);
+    }
     return RecursiveValuesArb(context, recShape, recursiveShapes);
 }
 
