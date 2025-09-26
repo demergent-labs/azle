@@ -38,15 +38,24 @@ export function RecursiveDefinitionArb(
         })
         .chain((innerRecDef) => {
             return fc.tuple(
-                candidTypeArbForInnerType(context, [innerRecDef, ...parents])(
-                    context.constraints.depthLevel ?? 0
-                ),
+                candidTypeArbForInnerType(
+                    {
+                        ...context,
+                        constraints: {
+                            forceInline: true
+                        }
+                    },
+                    [innerRecDef, ...parents]
+                )(context.constraints.depthLevel ?? 0),
                 fc.constant(innerRecDef)
             );
         })
         .map(
             ([
-                { definition: innerType },
+                {
+                    definition: innerType,
+                    recursiveShapes: innerTypeRecursiveShapes
+                },
                 recCanDef
             ]): WithShapes<RecursiveCandidDefinition> => {
                 const {
@@ -76,6 +85,7 @@ export function RecursiveDefinitionArb(
                 return {
                     definition: recursiveShape,
                     recursiveShapes: {
+                        ...innerTypeRecursiveShapes,
                         [name]: recursiveShape
                     }
                 };
