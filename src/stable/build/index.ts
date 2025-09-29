@@ -105,6 +105,12 @@ export function throwIfInvalidCommand(command: string): void {
 async function handleExtensionCommand(ioType: IOType): Promise<void> {
     const subCommand = process.argv[3] as SubCommand['extension'];
 
+    if (subCommand === undefined) {
+        throw new Error(
+            'No subcommand found when running azle extension. Try azle extension install'
+        );
+    }
+
     if (subCommand === 'install') {
         handleExtensionInstallCommand(ioType);
 
@@ -120,6 +126,12 @@ function handleExtensionInstallCommand(ioType: IOType): void {
 
 async function handleDevCommand(ioType: IOType): Promise<void> {
     const subCommand = process.argv[3] as SubCommand['dev'];
+
+    if (subCommand === undefined) {
+        throw new Error(
+            'No subcommand found when running azle dev. Try azle dev audit, azle dev setup, or azle dev template'
+        );
+    }
 
     if (subCommand === 'audit') {
         await runDevAuditCommand(ioType);
@@ -209,6 +221,12 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
 
 async function handleBuildCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
+
+    if (canisterName === undefined) {
+        throw new Error(
+            'No canister name found when running azle build. Try azle build <canisterName>'
+        );
+    }
     const canisterConfig = await getCanisterConfig(canisterName);
 
     checkForExperimentalDfxJsonFields(canisterConfig);
@@ -243,6 +261,12 @@ async function handleNewCommand(): Promise<void> {
 
 async function handleGenerateCommand(): Promise<void> {
     const candidPath = process.argv[3];
+
+    if (candidPath === undefined) {
+        throw new Error(
+            'No candid path found when running azle generate. Try azle generate <candidPath>'
+        );
+    }
 
     await runGenerateCommand(candidPath);
 }
