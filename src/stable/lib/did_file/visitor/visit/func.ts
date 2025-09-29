@@ -55,7 +55,7 @@ function getValidFuncAnnotations(
         );
     }
 
-    return annotations.filter(isSupportedFuncAnnotation);
+    return annotations as FuncAnnotation[];
 }
 
 function isSupportedFuncAnnotation(
