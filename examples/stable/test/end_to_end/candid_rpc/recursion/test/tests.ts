@@ -2,7 +2,6 @@ import { ActorSubclass } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/_internal/test';
-import { execSync } from 'child_process';
 
 import {
     _SERVICE,
@@ -19,9 +18,6 @@ import {
     rec_16
 } from './dfx_generated/recursion/recursion.did';
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
-
-// TODO these tests should be rewritten to use @icp-sdk/core/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
-// TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885
 export function getRecursiveCanisterTests(
     recursive_canister: ActorSubclass<_REC_SERVICE>
 ): Test {
@@ -289,47 +285,37 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('test rec service simple', async () => {
-            const principalId = getCanisterId('recursive_canister');
-            const result = execSync(
-                `dfx canister call recursion testRecServiceSimple '(service "${principalId}")'`
-            )
-                .toString()
-                .trim();
+            const recursiveCanisterPrincipal = getRecursiveCanisterPrincipal();
+            const result = await recursion_canister.testRecServiceSimple(
+                recursiveCanisterPrincipal
+            );
 
-            expect(result).toBe(`(service "${principalId}")`);
+            expect(result.toText()).toBe(recursiveCanisterPrincipal.toText());
         });
 
         it('test rec service', async () => {
-            const principalId = getCanisterId('recursive_canister');
-            const result = execSync(
-                `dfx canister call recursion testRecService '(service "${principalId}")'`
-            )
-                .toString()
-                .trim();
+            const recursiveCanisterPrincipal = getRecursiveCanisterPrincipal();
+            const result = await recursion_canister.testRecService(
+                recursiveCanisterPrincipal
+            );
 
-            expect(result).toBe(`(service "${principalId}")`);
+            expect(result.toText()).toBe(recursiveCanisterPrincipal.toText());
         });
 
         it('test rec service return', async () => {
-            const principalId = getCanisterId('recursive_canister');
-            const result = execSync(
-                `dfx canister call recursion testRecServiceReturn`
-            )
-                .toString()
-                .trim();
+            const recursiveCanisterPrincipal = getRecursiveCanisterPrincipal();
+            const result = await recursion_canister.testRecServiceReturn();
 
-            expect(result).toBe(`(service "${principalId}")`);
+            expect(result.toText()).toBe(recursiveCanisterPrincipal.toText());
         });
 
         it('test rec service call', async () => {
-            const principalId = getCanisterId('recursive_canister');
-            const result = execSync(
-                `dfx canister call recursion testRecServiceCall '(service "${principalId}")'`
-            )
-                .toString()
-                .trim();
+            const recursiveCanisterPrincipal = getRecursiveCanisterPrincipal();
+            const result = await recursion_canister.testRecServiceCall(
+                recursiveCanisterPrincipal
+            );
 
-            expect(result).toBe(`(service "${principalId}")`);
+            expect(result.toText()).toBe(recursiveCanisterPrincipal.toText());
         });
 
         it('recursive vec with variant', async () => {
@@ -411,4 +397,8 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
             expect(result).toStrictEqual(input);
         });
     };
+}
+
+function getRecursiveCanisterPrincipal(): Principal {
+    return Principal.fromText(getCanisterId('recursive_canister'));
 }
