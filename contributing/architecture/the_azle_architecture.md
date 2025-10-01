@@ -41,14 +41,29 @@ The Azle build command source code can be found at [src/stable/build/commands/bu
 
 ## Azle's runtime library
 
-0. View the sequence diagram [here](./runtime_library_sequence.md)
-1. During init or postUpgrade, the final compiled JavaScript bundle is executed. This includes executing any exported canister classes. The canister classes will make use of the decorators. At runtime these decorators will hook up a final global callback with an index. This index corresponds to the index that was hard-coded into the exported Wasm functions during the Wasm binary manipulation process.
-2. When an ICP request comes in, the following process occurs
-    1. The ICP replica finds the appropriately exported canister method name by looking for exports such as `canister_query [method_name]`, `canister_update [method_name]`, etc.
-    2. These exported Wasm functions are hard-coded with an index obtained from the MethodMeta data structure. That index is used as the key in the `globalThis._azleCanisterClassMeta.callbacks` property. Thus the Rust program is able to execute the global JavaScript callback.
-    3. The callback is called, using the JavaScript ICP APIs to decode any ICP Candid arguments. The arguments are passed to the developer's own defined canister method, the result is returned and then automatically encoded into the Candid binary format and the ICP message is replied to.
-3. The ICP APIs are available as imports from `azle`. The available APIs have a TypeScript front, and under-the-hood are connected to Rust using `rquickjs`.
-4. The developer is thus free to use the decorators to hook up their canister classes, and then call into ICP's APIs using the available imports from the `azle` module in their code.
-5. QuickJS is used as the JavaScript interpreter. It is a bare-bones JavaScript interpreter that provides the JavaScript language. It does not provide the Web APIs nor the Node.js standard library. Thus many JavaScript programs designed for a web browser or Node.js will not work. The purpose of Azle's experimental mode is to seek to enable more and more of the Web APIs and Node.js stdlib.
+The runtime library executes within the deployed canister's Wasm environment on the ICP replica. It bridges the developer's TypeScript/JavaScript code with the ICP system APIs through QuickJS and Rust.
 
-## Azle's testing utilities
+The Azle runtime library source code can be found at [src/stable/lib](src/stable/lib). The process is as follows:
+
+0. View the sequence diagram [here](./runtime_library_sequence.md)
+1. Canister initialization (`init` or `postUpgrade`)
+    1. The compiled JavaScript bundle embedded in the Wasm binary is executed
+    2. Canister class decorators register JavaScript callbacks into `globalThis._azleCanisterClassMeta.callbacks` with integer indices
+    3. These indices correspond to the hard-coded indices in the exported Wasm functions generated during the build process
+2. Request handling (when an ICP request arrives)
+    1. The ICP replica invokes the appropriate exported Wasm function (e.g. `canister_query [methodName]`, `canister_update [methodName]`)
+    2. The exported Wasm function calls into Rust with its hard-coded index
+    3. Rust retrieves the JavaScript callback from `globalThis._azleCanisterClassMeta.callbacks[index]`
+    4. Rust executes the JavaScript callback through QuickJS
+    5. The callback decodes Candid arguments from the ICP request using Azle's Candid decoding APIs
+    6. The developer's canister method executes with the decoded arguments
+    7. The return value is encoded into Candid binary format
+    8. The ICP message is replied to with the encoded result
+3. ICP API integration
+    1. ICP APIs are available as TypeScript imports from the `azle` module
+    2. These TypeScript APIs bridge to Rust implementations using `rquickjs`
+    3. The Rust implementations call the appropriate ICP System API functions
+4. JavaScript runtime environment
+    1. QuickJS serves as the JavaScript interpreter, providing the JavaScript language specification
+    2. Web APIs and Node.js standard library are generally not available in stable mode
+    3. Experimental mode aims to progressively enable Web APIs and Node.js stdlib functionality
