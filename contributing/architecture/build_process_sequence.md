@@ -24,7 +24,7 @@ sequenceDiagram
     Azle->>Azle: Delete .azle/[canisterName]
 
     Note over Azle: Step 3: Compile & Bundle
-    Azle->>Azle: Add prelude to entrypoint<br/>(class instantiation, Candid gen, method meta)
+    Azle->>Azle: Add prelude to entrypoint<br/>(canister class instantiation, Candid gen, method meta gen)
     Azle->>ESBuild: Compile and bundle TypeScript/JavaScript
     ESBuild-->>Azle: Return bundled JavaScript
 
@@ -42,7 +42,7 @@ sequenceDiagram
 
     Note over Azle: Step 7: Generate Final Wasm Binary
     Azle->>Azle: Manipulate stable canister template Wasm
-    Azle->>Azle: Include bundled JavaScript
+    Azle->>Azle: Include JS in passive data segment
     Azle->>Azle: Export functions for each canister method
     Azle->>Azle: Hard-code index arguments for callbacks
 
