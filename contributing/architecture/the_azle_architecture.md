@@ -12,36 +12,33 @@ This document describes Azle's architecture for security researchers and core de
 
 ## Azle's build process
 
-The build process begins with invoking Azle's `Node.js` executable, usually through a command like `npx azle [commandName]`. The `build` command itself (there are various other commands that don't result in building the canister's final Wasm binary) will usually be invoked during the `dfx` command line process, such as from the commands `dfx  deploy` or `dfx build`. The [Azle dfx extension](../../src/stable/build/dfx_extension/extension.json) defines the command that begins the build process.
+The build process executes on a development laptop or CI/CD machine, transforming TypeScript/JavaScript source code into a deployable Wasm binary. It's typically invoked through `dfx deploy` or `dfx build` commands.
 
-The Azle build command source starts at [src/stable/build/commands/build/index.ts](../../src/stable/build/commands/build/index.ts). The process is as follows:
+The Azle build command source code can be found at [src/stable/build/commands/build/index.ts](../../src/stable/build/commands/build/index.ts). The process is as follows:
 
 0. View the sequence diagram [here](./build_process_sequence.md)
-1. Get the context:
-    1. Path of file to store the canister's Candid file (Azle `dfx` extension default or `candid` property of canister configuration in `dfx.json`)
-    2. Path of directory to store the canister's build artifacts (`.azle/[canisterName]`)
-    3. Path to the developer's TypeScript/JavaScript entrypoint (`main` property of canister configuration in `dfx.json`)
-    4. Path of file to store the canister's Wasm binary file (Azle `dfx` extension default or `wasm` property of canister configuration in `dfx.json`)
-    5. Data object that will be passed into the Wasm's runtime code (e.g. contains environment variables from the developer)
+1. Context gathering
+    1. Build configuration is retrieved from `dfx.json` and the Azle dfx extension
+    2. Paths for the Candid file, Wasm binary, TypeScript/JavaScript entrypoint, and build artifacts directory are determined
+    3. Environment variables and runtime data are prepared for embedding in the Wasm binary
     - See [get_context.ts](../../src/stable/build/commands/build/get_context.ts)
-2. Delete the canister build artifacts directory
-3. Compile and bundle the canister's TypeScript/JavaScript from the `main` entrypoint into a final JavaScript file
-    1. A prelude is added to the canister's TypeScript/JavaScript entrypoint. This prelude handles the canister class instantiation, Candid generation, and canister method meta generation
-    2. The final TypeScript/JavaScript program is compiled and bundled using `esbuild`
+2. TypeScript/JavaScript compilation
+    1. A prelude is prepended to the developer's entrypoint to handle canister class instantiation, Candid generation, and method meta generation
+    2. The complete TypeScript/JavaScript program is compiled and bundled into a single JavaScript file using `esbuild`
+    3. The bundled JavaScript is written to `.azle/[canisterName]/main.js`
     - See [javascript.ts](../../src/stable/build/commands/build/javascript.ts)
-4. Write the final JavaScript file into the build artifacts directory as `.azle/[canisterName]/main.js`
-5. Generate the canister's Candid file and method meta information
-    1. The stable canister template Wasm binary is manipulated to include the final compiled and bundled JavaScript code in a passive data segment that is instantiated dynamically at Wasm runtime
-    2. The new Wasm binary is then executed within Node.js' Wasm environment
-    3. The result of the execution is the canister's full Candid file and a method meta data object necessary for generating the canister's final Wasm binary
+3. Candid and method meta generation
+    1. The [stable canister template](#the-stable-canister-template) Wasm binary is manipulated to embed the bundled JavaScript code in a passive data segment
+    2. The modified Wasm binary is executed within Node.js' Wasm environment
+    3. The execution produces the canister's Candid interface definition and method metadata
+    4. The Candid file is written to the build artifacts directory
     - See [candid_and_method_meta/](../../src/stable/build/commands/build/candid_and_method_meta)
-6. Write the Candid file into the build artifacts directory
-7. Generate the canister's final Wasm binary
-    1. The stable canister template Wasm binary is manipulated to include the final compiled and bundled JavaScript code along with functions exported for each of the canister methods
-    2. The exported functions are hard-coded to call a Rust function with an index argument that corresponds to the globally registered JavaScript callbacks at Wasm runtime
+4. Final Wasm binary generation
+    1. The [stable canister template](#the-stable-canister-template) Wasm binary is manipulated to embed the bundled JavaScript code
+    2. Exported Wasm functions are generated for each canister method, hard-coded to call Rust with index arguments
+    3. These indices correspond to JavaScript callbacks registered globally at Wasm runtime
+    4. The final Wasm binary is written to the build artifacts directory and is ready for deployment to ICP
     - See [wasm_binary/](../../src/stable/build/commands/build/wasm_binary)
-8. Write the Wasm binary file into the build artifacts directory
-9. At this point the Wasm binary may be deployed to a local or mainnet ICP replica
 
 ## Azle's runtime library
 
@@ -77,3 +74,25 @@ The Azle runtime library source code can be found at [src/stable/lib](../../src/
     1. QuickJS serves as the JavaScript interpreter, providing the JavaScript language specification
     2. Web APIs and Node.js standard library are generally not available in stable mode
     3. Experimental mode aims to progressively enable Web APIs and Node.js stdlib functionality
+
+## The stable canister template
+
+The stable canister template is a pre-compiled Rust Wasm binary that serves as the foundation for all Azle canisters. It provides the Wasm environment that executes TypeScript/JavaScript code through QuickJS and bridges to ICP System APIs.
+
+The template source code is located at [src/stable/build/commands/build/wasm_binary/rust/stable_canister_template](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template). Its generation process is as follows:
+
+1. Template compilation
+    1. The Rust crate `stable_canister_template` is compiled to Wasm using `cargo build --target wasm32-wasip1`
+    2. The resulting Wasm binary is transformed using `wasi2ic` to make it ICP-compatible
+    3. The compiled template is stored statically in the Azle package for reuse across builds
+    - See [stable.ts](../../src/stable/build/commands/dev/template/stable.ts) and [compile.ts](../../src/stable/build/commands/build/wasm_binary/compile.ts)
+2. Template components
+    1. **QuickJS runtime**: Embeds the QuickJS JavaScript interpreter (`rquickjs`) to execute TypeScript/JavaScript code
+    2. **ICP System API bindings**: Rust implementations that bridge JavaScript calls to ICP system APIs
+    3. **Memory management**: Provides stable memory structures and memory managers for canister state persistence
+    4. **Execution scaffolding**: Contains the framework for method registration, callback execution, and request handling
+    - See [stable_canister_template/src/](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/)
+3. Dynamic manipulation
+    1. During each canister build, the static template is manipulated to embed the developer's compiled JavaScript code
+    2. Custom Wasm functions are generated and exported for each canister method defined by the developer
+    3. These exported functions act as entry points that the ICP replica can invoke
