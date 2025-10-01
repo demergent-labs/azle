@@ -16,6 +16,7 @@ The build process begins with invoking Azle's `Node.js` executable, usually thro
 
 The Azle build command source code can be found at [src/stable/build/commands/build/index.ts](src/stable/build/commands/build/index.ts). The process is as follows:
 
+0. View the sequence diagram [here](./build_process_sequence.md)
 1. Get the context:
     1. Path of file to store the canister's Candid file (Azle `dfx` extension default or `candid` property of canister configuration in `dfx.json`)
     2. Path of directory to store the canister's build artifacts (`.azle/[canisterName]`)
@@ -38,8 +39,9 @@ The Azle build command source code can be found at [src/stable/build/commands/bu
 8. Write the Wasm binary file into the build artifacts directory
 9. At this point the Wasm binary may be deployed to a local or mainnet ICP replica
 
-## Azle's runtime TypeScript/JavaScript library
+## Azle's runtime library
 
+0. View the sequence diagram [here](./runtime_library_sequence.md)
 1. During init or postUpgrade, the final compiled JavaScript bundle is executed. This includes executing any exported canister classes. The canister classes will make use of the decorators. At runtime these decorators will hook up a final global callback with an index. This index corresponds to the index that was hard-coded into the exported Wasm functions during the Wasm binary manipulation process.
 2. When an ICP request comes in, the following process occurs
     1. The ICP replica finds the appropriately exported canister method name by looking for exports such as `canister_query [method_name]`, `canister_update [method_name]`, etc.
