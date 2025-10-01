@@ -1,41 +1,44 @@
-# The Azle Architecture
+# The Azle architecture
 
-Azle is a Canister Development Kit (CDK) for the Internet Computer Protocol (ICP).
+Azle is a Canister Development Kit ([CDK](https://internetcomputer.org/docs/building-apps/developer-tools/cdks/)) for the Internet Computer Protocol ([ICP](https://internetcomputer.org/)). In other words it's a WebAssembly runtime for TypeScript and JavaScript on ICP.
 
-Another way to think about Azle is that it's a WebAssembly runtime for TypeScript and JavaScript on ICP. Instead of compiling TypeScript/JavaScript to Wasm directly, Azle compiles a JavaScript engine (QuickJS) to Wasm and embeds developer JavaScript into that Wasm module. Azle then provides bindings to the ICP system API and a developer-friendly decorator API.
+This document describes Azle's architecture for security researchers and core developers. It focuses on the stable implementation found under `src/stable`.
 
-This document describes Azle's architecture for security researchers and new core developers. It focuses on the stable implementation under `src/stable`.
+`src/stable` is split into three directories, representing Azle's three major architectural components:
 
-## Build Process
+1. `src/stable/build`: Azle's build process (generally executes on a development laptop or CI/CD machine)
+2. `src/stable/lib`: Azle's runtime TypeScript/JavaScript library (generally executes within the ICP or Node.js Wasm environment)
+3. `src/stable/test`: Azle's testing utilities (generally executes on a development laptop or CI/CD machine)
 
-The build process begins with executing the Azle executable, usually through a command like `npx azle [command name]`. During the `dfx` command line process, such as `dfx  deploy` or `dfx build`, the [Azle dfx extension](src/stable/build/dfx_extension/extension.json) defines the command that begins the build process.
+## Azle's build process
 
-1. [Determine stable or experimental mode](src/build.ts)
-2. If stable mode is determined, [invoke its build process](src/stable/build/index.ts).
-    1. Determine which command the user has invoked
-    2. If the `build` command has been invoked
-        1. The canister configuration is retrieved from the developer's `dfx.json` file.
-        2. Various paths are determined from the canister configuration, including where to place the generated Candid file, where to find the entrypoint to the developer's TypeScript or JavaScript code, and where to place the final Wasm binary.
-        3. The final Azle build artificats are located at `./.azle/[canister_name]`. This is known as the canister path.
-        4. The canister path is entirely deleted.
-        5. The developer's TypeScript or JavaScript code is then compiled into JavaScript and bundled into one file using `esbuild`. A prelude is added that handles retrieving the developer's exported canister classes.
-        6. The prelude also hooks up a global method called `_azleGetCandidAndMethodMeta`. This function returns the fully compiled and generated Candid file for the canister, and a data structure called `MethodMeta` that contains information about each canister method, including its name, what type of method it is (init, postUpgrade, query, update, etc), and an index used at runtime by the Wasm exported functions to execute the final hooked up JavaScript callback.
-        7. This final compiled JavaScript file is written to `./.azle/[canister_name]/main.js`.
-        8. The Candid and MethodMeta are now retrieved by executing the Wasm module in Node.js' Wasm environment
-            1. Azle ships with a static Wasm module that is essentially a canister template. It has no JavaScript or canister methods, but has the internals necessary to execute the canister if provided with JavaScript and canister method exports. This code is written in Rust and found here.
-            2. The static canister template is manipulated, the JavaScript is placed into a passive data segment in the Wasm binary. The passive data segment will be essentially instantiated at runtime.
-            3. The Wasm module has no canister method exports at this time.
-            4. The Wasm module is now executed in Node.js' Wasm environment.
-            5. During this execution the MethodMeta data structure is populated with the canister method information necessary for use at runtime in the ICP replica's environment
-            6. The end result of this process is the fully generated Candid string for the canister, and the Method Meta data structure.
-        9. The Candid file is written to `./.azle/[canister_name]/[candid_file_name].did`.
-        10. With the MethodMeta data structure created, we can now fully manipulate the static canister template, placing the final compiled JavaScript into a passive data segment and also exported functions that act as the canister methods. At runtime these are invoked by the ICP replica, and in turn using an index for Wasm memory simplicity, the JavaScript callback corresponding to the exported canister method is executed.
-        11. By default the final manipulated Wasm binary is stored at `./.azle/[canister_name]/[canister_name].wasm`.
-        12. At this point the final Wasm binary has been created and can be deployed to ICP.
-    3. Other commands are not described in this document
-3. If experimental mode is determined, [invoke its build process](src/experimental/build/index.ts).
+The build process begins with invoking Azle's `Node.js` executable, usually through a command like `npx azle [command name]`. The `build` command itself (there are various other commands that don't result in building the canister's final Wasm binary) will usually be invoked during the `dfx` command line process, such as from the commands `dfx  deploy` or `dfx build`. The [Azle dfx extension](src/stable/build/dfx_extension/extension.json) defines the command that begins the build process.
 
-## ICP Runtime Process
+The Azle build command source code can be found at [src/stable/build/commands/build/index.ts](src/stable/build/commands/build/index.ts). The process is as follows:
+
+1. Get the context:
+    1. Path of file to store the canister's Candid file (Azle `dfx` extension default or `candid` property of canister configuration in `dfx.json`)
+    2. Path of directory to store the canister's build artifacts (`.azle/[canisterName]`)
+    3. Path to the developer's TypeScript/JavaScript entrypoint (`main` property of canister configuration in `dfx.json`)
+    4. Path of file to store the canister's Wasm binary file (Azle `dfx` extension default or `wasm` property of canister configuration in `dfx.json`)
+    5. Data object that will be passed into the Wasm's runtime code (e.g. contains environment variables from the developer)
+2. Delete the canister build artifacts directory
+3. Compile and bundle the canister's TypeScript/JavaScript from the `main` entrypoint into a final JavaScript file
+    1. A prelude is added to the canister's TypeScript/JavaScript entrypoint. This prelude handles the canister class instantiation, Candid generation, and canister method meta generation
+    2. The final TypeScript/JavaScript program is compiled and bundled using `esbuild`
+4. Write the final JavaScript file into the build artifacts directory as `.azle/[canisterName]/main.js`
+5. Generate the canister's Candid file and method meta information
+    1. The stable canister template Wasm binary is manipulated to include the final compiled and bundled JavaScript code in a passive data segment that is instantiated dynamically at Wasm runtime
+    2. The new Wasm binary is then executed within Node.js' Wasm environment
+    3. The result of the execution is the canister's full Candid file and a method meta data object necessary for generating the canister's final Wasm binary
+6. Write the Candid file into the build artifacts directory
+7. Generate the canister's final Wasm binary
+    1. The stable canister template Wasm binary is manipulated to include the final compiled and bundled JavaScript code along with functions exported for each of the canister methods
+    2. The exported functions are hard-coded to call a Rust function with an index argument that corresponds to the globally registered JavaScript callbacks at Wasm runtime
+8. Write the Wasm binary file into the build artifacts directory
+9. At this point the Wasm binary may be deployed to a local or mainnet ICP replica
+
+## Azle's runtime TypeScript/JavaScript library
 
 1. During init or postUpgrade, the final compiled JavaScript bundle is executed. This includes executing any exported canister classes. The canister classes will make use of the decorators. At runtime these decorators will hook up a final global callback with an index. This index corresponds to the index that was hard-coded into the exported Wasm functions during the Wasm binary manipulation process.
 2. When an ICP request comes in, the following process occurs
@@ -45,3 +48,5 @@ The build process begins with executing the Azle executable, usually through a c
 3. The ICP APIs are available as imports from `azle`. The available APIs have a TypeScript front, and under-the-hood are connected to Rust using `rquickjs`.
 4. The developer is thus free to use the decorators to hook up their canister classes, and then call into ICP's APIs using the available imports from the `azle` module in their code.
 5. QuickJS is used as the JavaScript interpreter. It is a bare-bones JavaScript interpreter that provides the JavaScript language. It does not provide the Web APIs nor the Node.js standard library. Thus many JavaScript programs designed for a web browser or Node.js will not work. The purpose of Azle's experimental mode is to seek to enable more and more of the Web APIs and Node.js stdlib.
+
+## Azle's testing utilities
