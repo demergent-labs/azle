@@ -44,7 +44,7 @@ The Azle build command source code can be found at [src/stable/build/commands/bu
 
 The runtime library executes within the deployed canister's Wasm environment on the ICP replica. It bridges the developer's TypeScript/JavaScript code with the ICP system APIs through QuickJS and Rust.
 
-The Azle runtime library source code can be found at [src/stable/lib](../../src/stable/lib). The process is as follows:
+The Azle runtime library source code can be found at [src/stable/lib](../../src/stable/lib). The library code works as follows:
 
 0. View the sequence diagram [here](./runtime_library_sequence.md)
 1. Canister initialization (`init` or `postUpgrade`)
@@ -92,7 +92,8 @@ The template source code is located at [src/stable/build/commands/build/wasm_bin
     3. **Memory management**: Provides stable memory structures and memory managers for canister state persistence
     4. **Execution scaffolding**: Contains the framework for method registration, callback execution, and request handling
     - See [stable_canister_template/src/](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/)
-3. Dynamic manipulation
-    1. During each canister build, the static template is manipulated to embed the developer's compiled JavaScript code
-    2. Custom Wasm functions are generated and exported for each canister method defined by the developer
-    3. These exported functions act as entry points that the ICP replica can invoke
+3. Dynamic Wasm binary manipulation
+    1. View the sequence diagram [here](./wasm_binary_manipulation_sequence.md)
+    2. During each canister build, the static template is manipulated to embed the developer's compiled JavaScript code
+    3. Custom Wasm functions are generated and exported for each canister method defined by the developer
+    4. These exported functions act as entry points that the ICP replica can invoke

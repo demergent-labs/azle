@@ -2,117 +2,53 @@
 
 ```mermaid
 sequenceDiagram
-    participant Build as Build Process
-    participant GWBI as getWasmBinary()
-    participant Template as Template Compiler
-    participant MWB as manipulateWasmBinary()
-    participant Binaryen as Binaryen Module
-    participant Runtime as Runtime (Deployed Canister)
+    participant BuildProcess as Build Process
+    participant Manipulator as Binary Manipulator
+    participant Module as Wasm Module
 
-    Note over Build,Runtime: Build-Time Manipulation
+    BuildProcess->>Manipulator: Manipulate binary with JavaScript code,<br/>template path, runtime data, validation flag, and method metadata
 
-    Build->>GWBI: getWasmBinary(ioType, js, wasmData, methodMeta)
+    Manipulator->>Manipulator: Load canister template binary
+    Note over Manipulator: Read template file from disk<br/>Parse into manipulable module
+    activate Module
+    Manipulator->>Module: Module instance created
 
-    alt Template doesn't exist or dev mode
-        GWBI->>Template: compile Rust canister template
-        Note over Template: cargo build --target wasm32-wasip1
-        Template->>Template: wasi2ic conversion
-        Template-->>GWBI: static canister template Wasm
+    Manipulator->>Module: Add canister method proxies
+    Note over Module: Create proxy functions for:<br/>query methods, update methods,<br/>init, post_upgrade, pre_upgrade,<br/>inspect_message, heartbeat,<br/>and on_low_wasm_memory hooks
+
+    Manipulator->>Module: Extract memory information
+    Note over Module: Get existing memory layout<br/>and data segment details
+    Module-->>Manipulator: Memory configuration and segments
+
+    Manipulator->>Manipulator: Encode JavaScript code to bytes
+    Note over Manipulator: Convert JavaScript string to byte array
+    Manipulator->>Manipulator: Encode runtime data to bytes
+    Note over Manipulator: Serialize runtime data to JSON,<br/>then convert to byte array
+
+    Manipulator->>Module: Add passive data segments to memory
+    Note over Module: Configure memory with:<br/>• Original data segments<br/>• New passive segment for JavaScript code<br/>• New passive segment for runtime data
+
+    Manipulator->>Module: Add JavaScript size function
+    Note over Module: Replace stub function<br/>with function returning<br/>JavaScript code byte length
+
+    Manipulator->>Module: Add runtime data size function
+    Note over Module: Replace stub function<br/>with function returning<br/>runtime data byte length
+
+    Manipulator->>Module: Add JavaScript initialization function
+    Note over Module: Replace stub function<br/>with function that loads JavaScript<br/>from passive segment into memory
+
+    Manipulator->>Module: Add runtime data initialization function
+    Note over Module: Replace stub function<br/>with function that loads runtime data<br/>from passive segment into memory
+
+    alt Validation requested
+        Manipulator->>Module: Validate module
+        Note over Module: Verify module structure<br/>and integrity
     end
 
-    GWBI->>MWB: manipulateWasmBinary(js, canisterTemplatePath, wasmData, validate, methodMeta)
+    Manipulator->>Module: Emit final binary
+    Module-->>Manipulator: Complete Wasm binary as byte array
+    deactivate Module
 
-    MWB->>Binaryen: readBinary(originalWasm)
-    Note over Binaryen: Load static template binary
-    Binaryen-->>MWB: module
+    Manipulator-->>BuildProcess: Final Wasm binary
 
-    MWB->>MWB: addCanisterMethodProxies(module, methodMeta)
-    Note over MWB: Create proxy functions for:<br/>- queries/composite queries<br/>- updates<br/>- init/post_upgrade<br/>- pre_upgrade/inspect_message<br/>- heartbeat/on_low_wasm_memory
-
-    MWB->>MWB: getMemoryInformation(module)
-    Note over MWB: Extract existing memory segments
-
-    MWB->>MWB: encode(js) → encodedJs
-    MWB->>MWB: encode(JSON.stringify(wasmData)) → encodedWasmData
-
-    MWB->>MWB: addPassiveDataSegmentsToMemory()
-    Note over MWB: Add 2 passive segments:<br/>1. Compiled JavaScript code<br/>2. WasmData JSON
-
-    MWB->>MWB: addPassiveSizeFunction('js_passive_data_size', encodedJs)
-    Note over MWB: Replace stub function<br/>return encodedJs.byteLength
-
-    MWB->>MWB: addPassiveSizeFunction('wasm_data_passive_data_size', encodedWasmData)
-    Note over MWB: Replace stub function<br/>return encodedWasmData.byteLength
-
-    MWB->>MWB: addInitPassiveDataFunction('init_js_passive_data', segmentIndex, encodedJs)
-    Note over MWB: Replace stub function:<br/>memory.init + data.drop
-
-    MWB->>MWB: addInitPassiveDataFunction('init_wasm_data_passive_data', segmentIndex, encodedWasmData)
-    Note over MWB: Replace stub function:<br/>memory.init + data.drop
-
-    alt validate === true
-        MWB->>Binaryen: module.validate()
-    end
-
-    MWB->>Binaryen: module.emitBinary()
-    Binaryen-->>MWB: manipulated Wasm binary
-
-    MWB-->>GWBI: Uint8Array
-    GWBI-->>Build: final Wasm binary
-
-    Build->>Build: writeFile(wasmBinaryPath, wasmBinary)
-
-    Note over Build,Runtime: Runtime Execution
-
-    Runtime->>Runtime: canister_init() or canister_post_upgrade()
-
-    Runtime->>Runtime: get_js_code()
-    Runtime->>Runtime: size = js_passive_data_size()
-    Note over Runtime: Returns actual size<br/>from manipulated function
-    Runtime->>Runtime: init_js_passive_data(vec_location)
-    Note over Runtime: memory.init loads passive segment<br/>into allocated Vec<u8>
-    Runtime-->>Runtime: JavaScript code bytes
-
-    Runtime->>Runtime: get_wasm_data()
-    Runtime->>Runtime: size = wasm_data_passive_data_size()
-    Note over Runtime: Returns actual size<br/>from manipulated function
-    Runtime->>Runtime: init_wasm_data_passive_data(vec_location)
-    Note over Runtime: memory.init loads passive segment<br/>into allocated Vec<u8>
-    Runtime->>Runtime: serde_json::from_str()
-    Runtime-->>Runtime: WasmData struct
-
-    Note over Runtime: JS engine initialized with injected code<br/>and environment configuration
 ```
-
-## Key Points
-
-### Build-Time Manipulation
-
-1. **Template Generation**: Rust canister template is compiled to Wasm with stub functions containing static dummy values
-2. **Binary Loading**: Binaryen loads the template as a mutable module
-3. **Method Proxies**: Canister method proxies are added for IC system API functions
-4. **Data Encoding**: JavaScript code and WasmData are encoded as UTF-8 byte arrays
-5. **Passive Segments**: Two passive data segments are added to the Wasm memory:
-    - Segment N: Compiled JavaScript code
-    - Segment N+1: Serialized WasmData JSON
-6. **Function Replacement**: Stub functions are replaced with actual implementations:
-    - `js_passive_data_size()`: Returns the actual byte length of the JavaScript code
-    - `wasm_data_passive_data_size()`: Returns the actual byte length of the WasmData JSON
-    - `init_js_passive_data()`: Uses `memory.init` to copy the passive segment into the provided memory location, then `data.drop` to free the segment
-    - `init_wasm_data_passive_data()`: Same process for WasmData segment
-
-### Runtime Execution
-
-1. **Data Retrieval**: At runtime, `get_js_code()` and `get_wasm_data()` functions:
-    - Call size functions to allocate correctly-sized vectors
-    - Call init functions to load passive segments into memory
-    - Return the populated byte arrays
-2. **Deserialization**: WasmData is deserialized from JSON into a Rust struct
-3. **JS Engine Initialization**: The JavaScript engine is initialized with the injected code and configuration
-
-### Why This Approach?
-
-- **Single Binary**: Avoids needing separate data files or build artifacts
-- **Efficient**: Passive segments are only loaded when needed and can be dropped after initialization
-- **Type-Safe**: Rust structs provide compile-time guarantees at runtime
-- **Flexible**: Each canister deployment gets custom JavaScript and configuration baked in

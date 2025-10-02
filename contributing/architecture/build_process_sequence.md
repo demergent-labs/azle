@@ -16,7 +16,7 @@ sequenceDiagram
     Azle->>Azle: Read dfx.json config
     Azle->>Azle: Get Candid file path
     Azle->>Azle: Get build artifacts path (.azle/[canisterName])
-    Azle->>Azle: Get main entrypoint path
+    Azle->>Azle: Get main TS/JS entrypoint path
     Azle->>Azle: Get Wasm binary path
     Azle->>Azle: Prepare runtime data object
 
@@ -24,7 +24,7 @@ sequenceDiagram
     Azle->>Azle: Delete .azle/[canisterName]
 
     Note over Azle: Step 3: Compile & Bundle
-    Azle->>Azle: Add prelude to entrypoint<br/>(canister class instantiation, Candid gen, method meta gen)
+    Azle->>Azle: Add prelude to TS/JS entrypoint<br/>(canister class instantiation, Candid gen, method meta gen)
     Azle->>ESBuild: Compile and bundle TypeScript/JavaScript
     ESBuild-->>Azle: Return bundled JavaScript
 
@@ -35,7 +35,7 @@ sequenceDiagram
     Azle->>Azle: Manipulate stable canister template Wasm
     Azle->>Azle: Include JS in passive data segment
     Azle->>NodeWasm: Execute modified Wasm binary
-    NodeWasm-->>Azle: Return Candid file & method meta
+    NodeWasm-->>Azle: Return Candid & method meta
 
     Note over Azle: Step 6: Write Candid File
     Azle->>Azle: Write Candid to build artifacts

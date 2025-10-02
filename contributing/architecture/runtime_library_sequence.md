@@ -18,8 +18,8 @@ sequenceDiagram
 
     Note over JS: Register Callbacks
     JS->>JS: Execute canister class decorators
-    JS->>JS: Register callbacks to globalThis._azleCanisterClassMeta.callbacks
     JS->>JS: Assign integer indices to each callback
+    JS->>JS: Register callbacks to globalThis._azleCanisterClassMeta.callbacks
 
     Note over JS,DevCode: Callbacks mapped to indices<br/>matching hard-coded Wasm exports
 
@@ -46,14 +46,12 @@ sequenceDiagram
     DevCode->>DevCode: Execute business logic
     DevCode-->>JS: Return result
 
-    Note over JS: Encode Candid Result
+    Note over JS: Encode Candid Result and Reply
     JS->>JS: Encode return value to Candid binary format
-
-    JS-->>QuickJS: Encoded result
-    QuickJS-->>Rust: Return encoded result
-
-    Note over Rust: Reply to ICP
-    Rust->>ICP: Reply with Candid-encoded result
+    JS->>JS: Call msgReply API from 'azle' module
+    JS->>QuickJS: Bridge msgReply API call
+    QuickJS->>Rust: Invoke Rust implementation (via rquickjs)
+    Rust->>ICP: Call ICP msg_reply with Candid-encoded result
     ICP-->>ICP: Process response
 
     Note over ICP,DevCode: ICP API Integration (when needed)
