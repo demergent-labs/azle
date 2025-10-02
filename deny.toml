@@ -16,7 +16,6 @@ allow = [
 [sources]
 allow-git = [
     "https://github.com/demergent-labs/wasmedge-quickjs",
-    "https://github.com/demergent-labs/candid",
 ]
 unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
