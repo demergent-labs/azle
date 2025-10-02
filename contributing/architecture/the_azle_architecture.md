@@ -40,6 +40,29 @@ The Azle build command source code can be found at [src/stable/build/commands/bu
     4. The final Wasm binary is written to the build artifacts directory and is ready for deployment to ICP
     - See [wasm_binary/](../../src/stable/build/commands/build/wasm_binary)
 
+### The stable canister template
+
+The stable canister template is a pre-compiled Rust Wasm binary that serves as the foundation for all Azle canisters. It provides the Wasm environment that executes TypeScript/JavaScript code through QuickJS and bridges to ICP System APIs.
+
+The template source code is located at [src/stable/build/commands/build/wasm_binary/rust/stable_canister_template](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template). Its generation process is as follows:
+
+1. Template compilation
+    1. The Rust crate `stable_canister_template` is compiled to Wasm using `cargo build --target wasm32-wasip1`
+    2. The resulting Wasm binary is transformed using `wasi2ic` to make it ICP-compatible
+    3. The compiled template is stored statically in the Azle package for reuse across builds
+    - See [stable.ts](../../src/stable/build/commands/dev/template/stable.ts) and [compile.ts](../../src/stable/build/commands/build/wasm_binary/compile.ts)
+2. Template components
+    1. **QuickJS runtime**: Embeds the QuickJS JavaScript interpreter (`rquickjs`) to execute TypeScript/JavaScript code
+    2. **ICP System API bindings**: Rust implementations that bridge JavaScript calls to ICP system APIs
+    3. **Memory management**: Provides stable memory structures and memory managers for canister state persistence
+    4. **Execution scaffolding**: Contains the framework for method registration, callback execution, and request handling
+    - See [stable_canister_template/src/](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/)
+3. Dynamic Wasm binary manipulation
+    1. View the sequence diagram [here](./wasm_binary_manipulation_sequence.md)
+    2. During each canister build, the static template is manipulated to embed the developer's compiled JavaScript code
+    3. Custom Wasm functions are generated and exported for each canister method defined by the developer
+    4. These exported functions act as entry points that the ICP replica can invoke
+
 ## Azle's runtime library
 
 The runtime library executes within the deployed canister's Wasm environment on the ICP replica. It bridges the developer's TypeScript/JavaScript code with the ICP system APIs through QuickJS and Rust.
@@ -75,25 +98,36 @@ The Azle runtime library source code can be found at [src/stable/lib](../../src/
     2. Web APIs and Node.js standard library are generally not available in stable mode
     3. Experimental mode aims to progressively enable Web APIs and Node.js stdlib functionality
 
-## The stable canister template
+## Azle's testing utilities
 
-The stable canister template is a pre-compiled Rust Wasm binary that serves as the foundation for all Azle canisters. It provides the Wasm environment that executes TypeScript/JavaScript code through QuickJS and bridges to ICP System APIs.
+Azle's stable mode has three main types of tests:
 
-The template source code is located at [src/stable/build/commands/build/wasm_binary/rust/stable_canister_template](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template). Its generation process is as follows:
+1. [End-to-end](#end-to-end-tests)
+2. [Property](#property-tests)
+3. [Fuzz](#fuzz-tests)
 
-1. Template compilation
-    1. The Rust crate `stable_canister_template` is compiled to Wasm using `cargo build --target wasm32-wasip1`
-    2. The resulting Wasm binary is transformed using `wasi2ic` to make it ICP-compatible
-    3. The compiled template is stored statically in the Azle package for reuse across builds
-    - See [stable.ts](../../src/stable/build/commands/dev/template/stable.ts) and [compile.ts](../../src/stable/build/commands/build/wasm_binary/compile.ts)
-2. Template components
-    1. **QuickJS runtime**: Embeds the QuickJS JavaScript interpreter (`rquickjs`) to execute TypeScript/JavaScript code
-    2. **ICP System API bindings**: Rust implementations that bridge JavaScript calls to ICP system APIs
-    3. **Memory management**: Provides stable memory structures and memory managers for canister state persistence
-    4. **Execution scaffolding**: Contains the framework for method registration, callback execution, and request handling
-    - See [stable_canister_template/src/](../../src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/)
-3. Dynamic Wasm binary manipulation
-    1. View the sequence diagram [here](./wasm_binary_manipulation_sequence.md)
-    2. During each canister build, the static template is manipulated to embed the developer's compiled JavaScript code
-    3. Custom Wasm functions are generated and exported for each canister method defined by the developer
-    4. These exported functions act as entry points that the ICP replica can invoke
+Utilities used during testing can be found at [src/stable/test](../../src/stable/test) and [src/experimental/test](../../src/experimental/test). Due to time and resource constraints, we have decided to allow experimental testing utilities into the stable mode tests. We do not believe that the drawbacks of allowing experimental testing code into stable mode tests outweigh the benefits of having more and better testing against stable mode code.
+
+### End-to-end tests
+
+Located at [examples/stable/test/end_to_end](../../examples/stable/test/end_to_end/), these tests deploy full Azle canisters and verify they work correctly with manually written test cases.
+
+**How they work**: Build a canister → Deploy to local replica → Execute test assertions using the JS agent or `dfx` CLI → Verify expected outputs for specific inputs.
+
+**Philosophy**: End-to-end tests serve dual purposes as both automated correctness checks and educational examples. They validate specific features (e.g., `async_await`, `randomness`, `timers`) with clear, deterministic test cases that are easy to understand and debug.
+
+### Property tests
+
+Located at [examples/stable/test/property](../../examples/stable/test/property/), these tests use property-based testing with [fast-check](https://github.com/dubzzz/fast-check) to validate Azle across automatically generated inputs.
+
+**How they work**: Generate random but valid Candid types and canister methods → Synthesize complete canister source code → Build, deploy, and test automatically → Run tens to hundreds of iterations with different inputs.
+
+**Philosophy**: Instead of testing specific cases, property tests validate invariants that should hold for _all_ valid inputs. They attempt to ensure that Azle correctly handles the full spectrum of Candid types and canister configurations, discovering edge cases that manual testing might miss.
+
+### Fuzz tests
+
+Fuzz tests use the [cuzz](https://github.com/demergent-labs/cuzz) library to test concurrent execution with random inputs. They run against existing end-to-end test canisters and are configured via `cuzz.json` files.
+
+**How they work**: Generate random valid inputs → Repeatedly call canister methods with these inputs → Explore different execution interleavings of concurrent calls → Monitor for crashes, traps, and unexpected errors → Vary timing between calls to trigger race conditions.
+
+**Philosophy**: Fuzz tests discover bugs from both unpredictable inputs and concurrent execution that deterministic tests miss. They ensure canisters remain stable when handling arbitrary data under concurrent load, which is critical for ICP where canisters receive concurrent inter-canister calls and asynchronous operations can interleave unexpectedly.
