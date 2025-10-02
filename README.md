@@ -59,7 +59,9 @@ cd hello_world
 
 ## Documentation
 
-See [The Azle Book](https://demergent-labs.github.io/azle/).
+For developing ICP canisters with Azle, see [The Azle Book](https://demergent-labs.github.io/azle/).
+
+For Azle core development and security research, see [The Azle architecture](./contributing/architecture/the_azle_architecture.md).
 
 ## Discussion
 
