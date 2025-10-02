@@ -37,17 +37,12 @@ export function getTests(): Test {
 
         it('gets the init msg arg data from the canister', async () => {
             const constraints: DefinitionConstraints = {
-                recursiveWeights: true,
+                depthLevel: 1, // Force only primitive types (no complex/recursive types)
                 weights: {
-                    func: 0, // random func is not supported for didc
+                    // Disable problematic primitive types
                     null: 0, // null comes out of didc random as (null) and out of candidDecode as (null: null)
-                    opt: 0, // None comes out of didc random as (null) and out of candidDecode as (null: null)
-                    record: 0, // record property names don't get decoded as actual names
-                    variant: 0, // variant property names don't get decoded as actual names
                     float32: 0, // float32 without a decimal point aren't accepted by candidEncodeQuery
-                    float64: 0, // float64 with a decimal point is accepted by candidEncodeQuery
-                    blob: 0, // blobs are different from didc random and candidDecode, but in a way that seems broken
-                    vec: 0 // if given an empty vec, candidEncode will give a byte array representing a vec of empty regardless of the original type of the vec, additionally if given a vec of nat8 that is the same as blob which is broken
+                    float64: 0 // float64 with a decimal point is accepted by candidEncodeQuery
                 }
             };
             await fc.assert(
