@@ -37,6 +37,8 @@ export function RecursiveDefinitionArb(
             return fc.constant(recCanDef);
         })
         .chain((innerRecDef) => {
+            const depthLevel = context.constraints.depthLevel ?? 0;
+            const nextDepthLevel = depthLevel <= 0 ? 0 : depthLevel - 1;
             return fc.tuple(
                 candidTypeArbForInnerType(
                     {
@@ -46,7 +48,7 @@ export function RecursiveDefinitionArb(
                         }
                     },
                     [innerRecDef, ...parents]
-                )(context.constraints.depthLevel ?? 0),
+                )(nextDepthLevel),
                 fc.constant(innerRecDef)
             );
         })
@@ -67,7 +69,10 @@ export function RecursiveDefinitionArb(
 
                 const imports = generateImports(innerType);
 
-                const runtimeTypeObject = generateRuntimeTypeObject(innerType);
+                const runtimeTypeObject = fillRuntimeTypeObject(
+                    recCanDef,
+                    innerType
+                );
 
                 const recursiveShape: RecursiveCandidDefinition = {
                     candidMeta: {
@@ -109,11 +114,17 @@ function generateImports(innerType: CandidDefinition): Set<string> {
     return new Set([...innerType.candidMeta.imports, 'IDL']);
 }
 
-function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
-    const rec = IDL.Rec();
+function fillRuntimeTypeObject(
+    recCanDef: RecursiveCandidName,
+    innerType: CandidDefinition
+): IDL.Type {
+    const runtimeTypeObject = (recCanDef.candidMeta.runtimeTypeObject ??
+        IDL.Rec()) as ReturnType<typeof IDL.Rec>;
 
     // TODO IDL.Empty is a placeholder for void...not quite correct
-    rec.fill(innerType.candidMeta.runtimeTypeObject ?? IDL.Empty);
+    runtimeTypeObject.fill(innerType.candidMeta.runtimeTypeObject ?? IDL.Empty);
 
-    return rec;
+    recCanDef.candidMeta.runtimeTypeObject = runtimeTypeObject;
+
+    return runtimeTypeObject;
 }

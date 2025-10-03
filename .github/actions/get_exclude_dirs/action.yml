@@ -34,10 +34,8 @@ runs:
               examples/stable/test/property/candid_rpc/canister_methods/inspect_message
               ') }}"
 
-              # TODO enable the recursive test below once https://github.com/demergent-labs/azle/issues/1526 is resolved
               # These tests are unstable because of problems in external code. Consequently, failing tests are not helpful, so we're disabling them entirely for the time being.
               EXTERNAL_EXCLUSIONS="${{ format('
-              examples/stable/test/property/candid_rpc/recursive
               ') }}"
 
               # These tests are unstable and experimental. Since we aren't able to spend any time on them until 1.0 is released, we are disabling them entirely for the time being.

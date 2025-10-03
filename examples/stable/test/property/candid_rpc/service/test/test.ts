@@ -5,6 +5,7 @@ import {
     runPropTests,
     shortArrayConstraints
 } from 'azle/experimental/_internal/test/property';
+import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import { ServiceArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/reference/service_arb';
 import {
     CanisterArb,
@@ -17,6 +18,7 @@ import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
 const context = { constraints: {} };
+const serviceArbInnerContext = { constraints: { depthLevel: 2 } };
 
 const AllServicesQueryMethodArb = QueryMethodArb(
     {
@@ -26,10 +28,13 @@ const AllServicesQueryMethodArb = QueryMethodArb(
         generateBody,
         generateTests
     },
-    fc.uniqueArray(ServiceArb(context), {
-        selector: (entry) => entry.src.typeAnnotation
-    }),
-    ServiceArb(context)
+    fc.uniqueArray(
+        ServiceArb(context, candidDefinitionArb(serviceArbInnerContext, {})),
+        {
+            selector: (entry) => entry.src.typeAnnotation
+        }
+    ),
+    ServiceArb(context, candidDefinitionArb(serviceArbInnerContext, {}))
 );
 
 const arrayConstraints =
