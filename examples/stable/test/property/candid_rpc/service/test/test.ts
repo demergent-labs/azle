@@ -5,7 +5,6 @@ import {
     runPropTests,
     shortArrayConstraints
 } from 'azle/experimental/_internal/test/property';
-import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import { ServiceArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/reference/service_arb';
 import {
     CanisterArb,
@@ -17,11 +16,7 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-// Use reduced depth level (3 instead of default 5) to prevent memory exhaustion
-// when generating services with recursive types. Services can have multiple methods,
-// each with multiple parameters and return types, leading to exponential complexity
-// growth with deeper recursive types.
-const context = { constraints: { depthLevel: 2 } };
+const context = { constraints: {} };
 
 const AllServicesQueryMethodArb = QueryMethodArb(
     {
@@ -31,13 +26,10 @@ const AllServicesQueryMethodArb = QueryMethodArb(
         generateBody,
         generateTests
     },
-    fc.uniqueArray(
-        ServiceArb({ constraints: {} }, candidDefinitionArb(context, {})),
-        {
-            selector: (entry) => entry.src.typeAnnotation
-        }
-    ),
-    ServiceArb({ constraints: {} }, candidDefinitionArb(context, {}))
+    fc.uniqueArray(ServiceArb(context), {
+        selector: (entry) => entry.src.typeAnnotation
+    }),
+    ServiceArb(context)
 );
 
 const arrayConstraints =
@@ -56,4 +48,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb({ constraints: {} }, CanisterConfigArb));
+runPropTests(CanisterArb(context, CanisterConfigArb));

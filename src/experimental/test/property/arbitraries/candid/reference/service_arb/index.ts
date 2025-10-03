@@ -29,7 +29,7 @@ import { ServiceValueArb } from './values_arb';
 export function ServiceArb(
     context: Context,
     innerCandidDefinitionArb: WithShapesArb<CandidDefinition> = candidDefinitionArb(
-        context,
+        { constraints: { depthLevel: 2 } },
         {}
     )
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
