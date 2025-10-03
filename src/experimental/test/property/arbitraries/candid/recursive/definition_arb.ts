@@ -37,6 +37,8 @@ export function RecursiveDefinitionArb(
             return fc.constant(recCanDef);
         })
         .chain((innerRecDef) => {
+            const depthLevel = context.constraints.depthLevel ?? 0;
+            const nextDepthLevel = depthLevel <= 0 ? 0 : depthLevel - 1;
             return fc.tuple(
                 candidTypeArbForInnerType(
                     {
@@ -46,7 +48,7 @@ export function RecursiveDefinitionArb(
                         }
                     },
                     [innerRecDef, ...parents]
-                )(context.constraints.depthLevel ?? 0),
+                )(nextDepthLevel),
                 fc.constant(innerRecDef)
             );
         })
