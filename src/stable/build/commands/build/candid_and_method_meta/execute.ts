@@ -35,11 +35,14 @@ export async function execute(
             data_certificate_copy: (): void => {},
             data_certificate_present: (): void => {},
             data_certificate_size: (): void => {},
-            debug_print: (ptr: number, len: number): void => {
+            debug_print: (rawPointer: number, rawLength: number): void => {
+                const pointer = normalizePtrToU32(rawPointer);
+                const length = normalizePtrToU32(rawLength);
+
                 const memory = new Uint8Array(
                     (wasmInstance.exports.memory as any).buffer,
-                    ptr,
-                    len
+                    pointer,
+                    length
                 );
                 const message = new TextDecoder('utf8').decode(memory);
 
@@ -77,11 +80,14 @@ export async function execute(
             stable64_size: (): void => {},
             stable64_write: (): void => {},
             time: (): bigint => 0n,
-            trap: (ptr: number, len: number): void => {
+            trap: (rawPointer: number, rawLength: number): void => {
+                const pointer = normalizePtrToU32(rawPointer);
+                const length = normalizePtrToU32(rawLength);
+
                 const memory = new Uint8Array(
                     (wasmInstance.exports.memory as any).buffer,
-                    ptr,
-                    len
+                    pointer,
+                    length
                 );
                 const message = new TextDecoder('utf8').decode(memory);
 
@@ -103,12 +109,12 @@ export async function execute(
 
     // TODO When moving to Wasm64 this whole process will not to be updated to be 64-bit compatible
     try {
-        // We are using an unsigned right shift (>>> 0) to convert any valid Wasm addresses
-        // higher than the i32 maximum size of 2^31 - 1 to their correct unsigned u32 representation
-        const pointerAndLengthStructAddress =
-            ((
-                wasmInstance.exports as any
-            ).get_candid_and_method_meta_pointer() as number) >>> 0;
+        const rawPointerAndLengthStructAddress = (
+            wasmInstance.exports as any
+        ).get_candid_and_method_meta_pointer() as number;
+        const pointerAndLengthStructAddress = normalizePtrToU32(
+            rawPointerAndLengthStructAddress
+        );
 
         const memoryBuffer = (wasmInstance.exports.memory as WebAssembly.Memory)
             .buffer;
@@ -156,4 +162,10 @@ function readPointerAndLength(
         pointer: view.getUint32(pointerIndex, true),
         length: view.getUint32(lengthIndex, true)
     };
+}
+
+// We are using an unsigned right shift (>>> 0) to convert any valid Wasm addresses
+// higher than the i32 maximum size of 2^31 - 1 to their correct unsigned u32 representation
+function normalizePtrToU32(value: number): number {
+    return value >>> 0;
 }
