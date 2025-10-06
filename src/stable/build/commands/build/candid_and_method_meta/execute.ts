@@ -101,6 +101,7 @@ export async function execute(
         // }
     });
 
+    // TODO When moving to Wasm64 this whole process will not to be updated to be 64-bit compatible
     try {
         const pointerAddress = (
             wasmInstance.exports as any
@@ -135,10 +136,21 @@ function readPointerAndLength(
     memoryBuffer: ArrayBuffer,
     baseAddress: number
 ): { pointer: number; length: number } {
-    const view = new DataView(memoryBuffer, baseAddress, 8);
+    const pointerAndLengthStructSize = 8;
+
+    const view = new DataView(
+        memoryBuffer,
+        baseAddress,
+        pointerAndLengthStructSize
+    );
+
+    const u32Size = 4;
+
+    const pointerIndex = 0;
+    const lengthIndex = pointerIndex + u32Size;
 
     return {
-        pointer: view.getUint32(0, true),
-        length: view.getUint32(4, true)
+        pointer: view.getUint32(pointerIndex, true),
+        length: view.getUint32(lengthIndex, true)
     };
 }
