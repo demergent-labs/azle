@@ -1,4 +1,5 @@
 .azle
 .dfx
+.icp
 dfx_generated
 node_modules

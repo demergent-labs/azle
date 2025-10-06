@@ -1,0 +1,10 @@
+canister:
+    name: hello_world
+    build:
+        steps:
+            - type: script
+              commands:
+                  - sh -c 'CANISTER_CANDID_PATH=.azle/hello_world/hello_world.did npx azle build hello_world'
+                  - sh -c 'mv .azle/hello_world/hello_world.wasm "$ICP_WASM_OUTPUT_PATH"'
+                  - sh -c 'gzip --no-name "$ICP_WASM_OUTPUT_PATH"'
+                  - sh -c 'mv "${ICP_WASM_OUTPUT_PATH}.gz" "$ICP_WASM_OUTPUT_PATH"'

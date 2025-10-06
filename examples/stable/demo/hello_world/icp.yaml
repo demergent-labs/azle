@@ -1,0 +1,7 @@
+canister:
+    name: hello_world
+    build:
+        recipe:
+            type: file://azle.hb.yaml
+            configuration:
+                main: src/index.ts

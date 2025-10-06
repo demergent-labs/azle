@@ -1,0 +1,8 @@
+build:
+    steps:
+        - type: script
+          commands:
+              - sh -c 'CANISTER_CANDID_PATH=.azle/{{name}}/{{name}}.did npx azle build {{name}}'
+              - sh -c 'mv .azle/{{name}}/{{name}}.wasm "$ICP_WASM_OUTPUT_PATH"'
+              - sh -c 'gzip --no-name "$ICP_WASM_OUTPUT_PATH"'
+              - sh -c 'mv "${ICP_WASM_OUTPUT_PATH}.gz" "$ICP_WASM_OUTPUT_PATH"'
