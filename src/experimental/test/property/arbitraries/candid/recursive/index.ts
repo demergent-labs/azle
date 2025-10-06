@@ -2,7 +2,6 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
 import { Context } from '../../types';
 import { complexCandidDefinitionMemo } from '../candid_definition_arb/complex_candid_definition_memo';
 import { RecursiveCandidDefinition } from '../candid_definition_arb/types';
@@ -23,7 +22,7 @@ export function RecursiveArb(
             {
                 ...context,
                 constraints: {
-                    depthLevel: DEFAULT_DEFINITION_MAX_DEPTH,
+                    depthLevel: 3,
                     forceInline: true
                 }
             },
