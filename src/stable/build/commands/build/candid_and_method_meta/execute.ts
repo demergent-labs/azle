@@ -103,16 +103,19 @@ export async function execute(
 
     // TODO When moving to Wasm64 this whole process will not to be updated to be 64-bit compatible
     try {
-        const pointerAddress = (
-            wasmInstance.exports as any
-        ).get_candid_and_method_meta_pointer() as number;
+        // We are using an unsigned right shift (>>> 0) to convert any valid Wasm addresses
+        // higher than the i32 maximum size of 2^31 - 1 to their correct unsigned u32 representation
+        const pointerAndLengthStructAddress =
+            ((
+                wasmInstance.exports as any
+            ).get_candid_and_method_meta_pointer() as number) >>> 0;
 
         const memoryBuffer = (wasmInstance.exports.memory as WebAssembly.Memory)
             .buffer;
 
         const { pointer, length } = readPointerAndLength(
             memoryBuffer,
-            pointerAddress
+            pointerAndLengthStructAddress
         );
 
         const candidBytes = new Uint8Array(memoryBuffer, pointer, length);
