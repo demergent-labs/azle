@@ -58,14 +58,14 @@
         "typescript": "^5.9.3"
     },
     "devDependencies": {
-        "@eslint/js": "^9.36.0",
+        "@eslint/js": "^9.37.0",
         "@types/semver": "^7.7.1",
         "@types/uuid": "^11.0.0",
         "@typescript-eslint/eslint-plugin": "^8.45.0",
         "@typescript-eslint/parser": "^8.45.0",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#0afef5f615bc77fb303c5e95211daf6d7bb73dd3",
         "cuzz": "0.0.23",
-        "eslint": "^9.36.0",
+        "eslint": "^9.37.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "fast-check": "^4.3.0",
