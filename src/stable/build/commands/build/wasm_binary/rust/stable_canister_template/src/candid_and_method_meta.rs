@@ -11,17 +11,23 @@ use crate::{
 
 type CCharPtr = *mut c_char;
 
+#[repr(C)]
+pub struct PointerAndLength {
+    pub pointer: CCharPtr,
+    pub length: usize,
+}
+
 #[unsafe(no_mangle)]
-pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
+pub fn get_candid_and_method_meta_pointer() -> *mut PointerAndLength {
     match initialize_and_get_candid_and_method_meta() {
-        Ok(c_char_ptr) => c_char_ptr,
+        Ok(pointer_and_length) => pointer_and_length,
         Err(error) => {
             trap(&format!("Candid and MethodMeta generation failed: {error}"));
         }
     }
 }
 
-fn initialize_and_get_candid_and_method_meta() -> Result<CCharPtr, Box<dyn Error>> {
+fn initialize_and_get_candid_and_method_meta() -> Result<*mut PointerAndLength, Box<dyn Error>> {
     let js = get_js_code()?;
     let wasm_data = get_wasm_data()?;
 
@@ -41,9 +47,12 @@ fn initialize_and_get_candid_and_method_meta() -> Result<CCharPtr, Box<dyn Error
             .ok_or("Failed to convert candidAndMethodMeta JS value to string")?
             .to_string()?;
 
+        let length = candid_and_method_meta.len();
         let c_string = CString::new(candid_and_method_meta)?;
-        let c_char_ptr = c_string.into_raw();
+        let pointer = c_string.into_raw();
 
-        Ok(c_char_ptr)
+        let pointer_and_length = PointerAndLength { pointer, length };
+
+        Ok(Box::into_raw(Box::new(pointer_and_length)))
     })
 }

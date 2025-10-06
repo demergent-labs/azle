@@ -102,23 +102,21 @@ export async function execute(
     });
 
     try {
-        // TODO can we simplify this to be more like azle_log above?
-        const candidAndMethodMetaPointer = (
+        const pointerAddress = (
             wasmInstance.exports as any
-        ).get_candid_and_method_meta_pointer();
+        ).get_candid_and_method_meta_pointer() as number;
 
-        const memory = new Uint8Array(
-            (wasmInstance.exports.memory as any).buffer
+        const memoryBuffer = (wasmInstance.exports.memory as WebAssembly.Memory)
+            .buffer;
+
+        const { pointer, length } = readPointerAndLength(
+            memoryBuffer,
+            pointerAddress
         );
 
-        let candidBytes: number[] = [];
-        let i = candidAndMethodMetaPointer;
-        while (memory[i] !== 0) {
-            candidBytes.push(memory[i]);
-            i += 1;
-        }
+        const candidBytes = new Uint8Array(memoryBuffer, pointer, length);
 
-        const resultString = Buffer.from(candidBytes).toString();
+        const resultString = new TextDecoder('utf8').decode(candidBytes);
 
         return JSON.parse(resultString);
     } catch (error: any) {
@@ -131,4 +129,16 @@ export async function execute(
             throw new Error(error.message);
         }
     }
+}
+
+function readPointerAndLength(
+    memoryBuffer: ArrayBuffer,
+    baseAddress: number
+): { pointer: number; length: number } {
+    const view = new DataView(memoryBuffer, baseAddress, 8);
+
+    return {
+        pointer: view.getUint32(0, true),
+        length: view.getUint32(4, true)
+    };
 }
