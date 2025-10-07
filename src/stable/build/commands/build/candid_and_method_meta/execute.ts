@@ -36,8 +36,8 @@ export async function execute(
             data_certificate_present: (): void => {},
             data_certificate_size: (): void => {},
             debug_print: (rawPointer: number, rawLength: number): void => {
-                const pointer = normalizePtrToU32(rawPointer);
-                const length = normalizePtrToU32(rawLength);
+                const pointer = normalizePtrToUint32(rawPointer);
+                const length = normalizePtrToUint32(rawLength);
 
                 const memory = new Uint8Array(
                     (wasmInstance.exports.memory as any).buffer,
@@ -81,8 +81,8 @@ export async function execute(
             stable64_write: (): void => {},
             time: (): bigint => 0n,
             trap: (rawPointer: number, rawLength: number): void => {
-                const pointer = normalizePtrToU32(rawPointer);
-                const length = normalizePtrToU32(rawLength);
+                const pointer = normalizePtrToUint32(rawPointer);
+                const length = normalizePtrToUint32(rawLength);
 
                 const memory = new Uint8Array(
                     (wasmInstance.exports.memory as any).buffer,
@@ -112,7 +112,7 @@ export async function execute(
         const rawPointerAndLengthStructAddress = (
             wasmInstance.exports as any
         ).get_candid_and_method_meta_pointer() as number;
-        const pointerAndLengthStructAddress = normalizePtrToU32(
+        const pointerAndLengthStructAddress = normalizePtrToUint32(
             rawPointerAndLengthStructAddress
         );
 
@@ -166,6 +166,6 @@ function readPointerAndLength(
 
 // We are using an unsigned right shift (>>> 0) to convert any valid Wasm addresses
 // higher than the i32 maximum size of 2^31 - 1 to their correct unsigned u32 representation
-function normalizePtrToU32(value: number): number {
+function normalizePtrToUint32(value: number): number {
     return value >>> 0;
 }
