@@ -260,7 +260,6 @@ export function addInitPassiveDataFunction(
     encodedByteLength: number
 ): void {
     module.removeFunction(name);
-
     module.addFunction(
         name,
         binaryen.createType([binaryen.i32]),
