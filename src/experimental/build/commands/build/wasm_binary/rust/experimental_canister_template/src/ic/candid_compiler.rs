@@ -9,7 +9,7 @@ impl JsFn for NativeFunction {
             panic!("conversion from JsValue to JsString failed")
         };
 
-        let (env, actor) =
+        let (env, actor, _) =
             candid_parser::pretty_check_file(std::path::Path::new(&candid_path)).unwrap();
 
         let result = candid_parser::bindings::javascript::compile(&env, &actor);
