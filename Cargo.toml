@@ -9,7 +9,7 @@ members = [
 [workspace.dependencies]
 anyhow = "1.0.100"
 candid = "0.10.19"
-candid_parser = "0.1.4"
+candid_parser = "0.2.2"
 ic-cdk = "0.18.7"
 ic-cdk-timers = "0.12.2"
 ic-stable-structures = "0.6.9"
