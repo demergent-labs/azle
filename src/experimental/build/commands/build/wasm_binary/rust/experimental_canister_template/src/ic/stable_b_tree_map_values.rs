@@ -39,7 +39,7 @@ impl JsFn for NativeFunction {
                 } else {
                     length_string.parse().unwrap()
                 })
-                .map(|(_, value)| value.bytes)
+                .map(|entry| entry.value().bytes.clone())
                 .collect()
         });
 

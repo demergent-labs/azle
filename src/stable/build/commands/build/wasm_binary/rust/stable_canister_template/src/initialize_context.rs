@@ -26,17 +26,32 @@ pub fn initialize_context(
     wasm_environment: WasmEnvironment,
     init: Option<bool>,
 ) -> Result<(), Box<dyn Error>> {
+    ic_cdk::println!("initialize_context 0");
+
     let runtime = Runtime::new()?;
+
+    ic_cdk::println!("initialize_context 1");
+
     let context = Context::full(&runtime)?;
+
+    ic_cdk::println!("initialize_context 2");
 
     CONTEXT_REF_CELL.with(|context_ref_cell| {
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
+    ic_cdk::println!("initialize_context 3");
+
     with_ctx(|ctx| {
+        ic_cdk::println!("initialize_context 4");
+
         let globals = ctx.globals();
 
+        ic_cdk::println!("initialize_context 5");
+
         globals.set("_azleActions", Array::new(ctx.clone()))?;
+
+        ic_cdk::println!("initialize_context 6");
 
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
@@ -83,16 +98,24 @@ pub fn initialize_context(
 
         globals.set("process", process)?;
 
+        ic_cdk::println!("initialize_context 0");
+
         // JavaScript code execution: macrotask
         let promise = Module::evaluate(ctx.clone(), main_js_path, js)?;
+
+        ic_cdk::println!("initialize_context 1");
 
         // We should handle the promise error before drain_microtasks
         // as all JavaScript microtasks queued from the JavaScript macrotask code execution above
         // will be discarded if there is a trap
         handle_promise_error(&ctx, &promise)?;
 
+        ic_cdk::println!("initialize_context 2");
+
         // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
         drain_microtasks(&ctx);
+
+        ic_cdk::println!("initialize_context 3");
 
         Ok(())
     })

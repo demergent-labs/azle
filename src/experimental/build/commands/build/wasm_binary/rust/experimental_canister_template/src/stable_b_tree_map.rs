@@ -17,6 +17,10 @@ pub struct AzleStableBTreeMapKey {
 }
 
 impl Storable for AzleStableBTreeMapKey {
+    fn into_bytes(self) -> Vec<u8> {
+        self.bytes
+    }
+
     fn to_bytes(&self) -> std::borrow::Cow<'_, [u8]> {
         std::borrow::Cow::Borrowed(&self.bytes)
     }
@@ -36,6 +40,10 @@ pub struct AzleStableBTreeMapValue {
 }
 
 impl Storable for AzleStableBTreeMapValue {
+    fn into_bytes(self) -> Vec<u8> {
+        self.bytes
+    }
+
     fn to_bytes(&self) -> std::borrow::Cow<'_, [u8]> {
         std::borrow::Cow::Borrowed(&self.bytes)
     }
