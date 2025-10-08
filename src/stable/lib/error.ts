@@ -40,14 +40,14 @@ export function validateUnsignedInteger(
     errorPrefix: string,
     size: number,
     number: number
-): void {
+): number {
     if (number < 0) {
-        throw new Error(`${errorPrefix} cannot be negative`);
+        throw new Error(`${errorPrefix}: cannot be negative`);
     }
 
     if (size > 53) {
         throw new Error(
-            `${errorPrefix} to remain within safe integer bounds, size cannot be greater than 53`
+            `${errorPrefix}: to remain within safe integer bounds, size cannot be greater than 53`
         );
     }
 
@@ -55,7 +55,9 @@ export function validateUnsignedInteger(
 
     if (number > maxUnsignedInteger) {
         throw new Error(
-            `${errorPrefix} cannot be greater than ${maxUnsignedInteger} (2^${size} - 1)`
+            `${errorPrefix}: cannot be greater than ${maxUnsignedInteger} (2^${size} - 1)`
         );
     }
+
+    return number;
 }
