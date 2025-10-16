@@ -53,7 +53,7 @@
         "@icp-sdk/core": "^4.1.0",
         "@sinonjs/text-encoding": "0.7.3",
         "binaryen": "^116.0.0",
-        "esbuild": "^0.25.10",
+        "esbuild": "^0.25.11",
         "tsx": "^4.20.6",
         "typescript": "^5.9.3"
     },
