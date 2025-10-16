@@ -1,4 +1,5 @@
 // TODO readdress the workarounds below once this issue is resolved: https://github.com/DelSkayn/rquickjs/issues/413
+// TODO revisit once Rust's `never_type` stabilization (https://github.com/rust-lang/rust/issues/35121) lets us expose `trap` to QuickJS without extra shims.
 
 use ic_cdk::api::trap;
 use rquickjs::{Ctx, Function, Result};
