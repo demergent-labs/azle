@@ -22,7 +22,7 @@ export function RecursiveArb(
             {
                 ...context,
                 constraints: {
-                    depthLevel: 3,
+                    depthLevel: 2,
                     forceInline: true
                 }
             },

@@ -33,7 +33,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                     .iter()
                     .skip(skip_amount)
                     .take(take_amount)
-                    .map(|(_, value)| TypedArray::<u8>::new(ctx.clone(), value.bytes))
+                    .map(|entry| TypedArray::<u8>::new(ctx.clone(), entry.value().bytes.clone()))
                     .collect::<Result<Vec<TypedArray<u8>>>>()?;
 
                 Ok(values)

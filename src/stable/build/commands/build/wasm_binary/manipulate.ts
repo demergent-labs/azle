@@ -1,6 +1,7 @@
 import binaryen from 'binaryen';
 import { readFile } from 'fs/promises';
 
+import { validateUnsignedInteger } from '#lib/error';
 import { MethodMeta } from '#utils/types';
 
 // TODO can we make the start function just load the passive segment into memory?
@@ -28,24 +29,35 @@ export async function manipulateWasmBinary<T extends Record<string, unknown>>(
         encodedWasmData
     );
 
-    addPassiveSizeFunction(module, 'js_passive_data_size', encodedJs);
+    const encodedJsByteLength = validateUnsignedInteger(
+        'manipulateWasmBinary encodedJs.byteLength',
+        32,
+        encodedJs.byteLength
+    );
+    const encodedWasmDataByteLength = validateUnsignedInteger(
+        'manipulateWasmBinary encodedWasmData.byteLength',
+        32,
+        encodedWasmData.byteLength
+    );
+
+    addPassiveSizeFunction(module, 'js_passive_data_size', encodedJsByteLength);
     addPassiveSizeFunction(
         module,
         'wasm_data_passive_data_size',
-        encodedWasmData
+        encodedWasmDataByteLength
     );
 
     addInitPassiveDataFunction(
         module,
         'init_js_passive_data',
         memorySegmentInfos.length,
-        encodedJs
+        encodedJsByteLength
     );
     addInitPassiveDataFunction(
         module,
         'init_wasm_data_passive_data',
         memorySegmentInfos.length + 1,
-        encodedWasmData
+        encodedWasmDataByteLength
     );
 
     if (validate === true) {
@@ -229,16 +241,15 @@ export function addPassiveDataSegmentsToMemory(
 export function addPassiveSizeFunction(
     module: binaryen.Module,
     name: string,
-    encoded: Uint8Array
+    encodedByteLength: number
 ): void {
     module.removeFunction(name);
-
     module.addFunction(
         name,
         binaryen.none,
         binaryen.i32,
         [],
-        module.i32.const(encoded.byteLength)
+        module.i32.const(encodedByteLength)
     );
 }
 
@@ -246,10 +257,9 @@ export function addInitPassiveDataFunction(
     module: binaryen.Module,
     name: string,
     segmentNumber: number,
-    encoded: Uint8Array
+    encodedByteLength: number
 ): void {
     module.removeFunction(name);
-
     module.addFunction(
         name,
         binaryen.createType([binaryen.i32]),
@@ -260,7 +270,7 @@ export function addInitPassiveDataFunction(
                 segmentNumber.toString() as unknown as number,
                 module.local.get(0, binaryen.i32),
                 module.i32.const(0),
-                module.i32.const(encoded.byteLength)
+                module.i32.const(encodedByteLength)
             ),
             module.data.drop(segmentNumber.toString() as unknown as number)
         ])

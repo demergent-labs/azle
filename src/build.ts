@@ -80,6 +80,13 @@ async function isExperimental(): Promise<boolean> {
         command === 'upload-assets'
     ) {
         const canisterName = process.argv[3];
+
+        if (canisterName === undefined) {
+            throw new Error(
+                `No canister name found when running azle ${command}. Try azle ${command} <canisterName>`
+            );
+        }
+
         const canisterConfig = await getCanisterConfig(canisterName);
 
         return canisterConfig?.custom?.experimental === true;

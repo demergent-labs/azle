@@ -1,4 +1,12 @@
+use std::os::raw::c_char;
+
 use wasmedge_quickjs::AsObject;
+
+#[repr(C)]
+pub struct PointerAndLength {
+    pub pointer: *mut c_char,
+    pub length: usize,
+}
 
 use crate::{
     RUNTIME, ic,
@@ -8,7 +16,7 @@ use crate::{
 
 // Heavily inspired by https://stackoverflow.com/a/47676844
 #[unsafe(no_mangle)]
-pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
+pub fn get_candid_and_method_meta_pointer() -> *mut PointerAndLength {
     std::panic::set_hook(Box::new(|panic_info| {
         let msg = match panic_info.payload().downcast_ref::<&str>() {
             Some(s) => *s,
@@ -98,9 +106,13 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
             let candid_and_method_meta_string =
                 candid_and_method_meta.to_string().unwrap().to_string();
 
+            let length = candid_and_method_meta_string.len();
             let c_string = std::ffi::CString::new(candid_and_method_meta_string).unwrap();
+            let pointer = c_string.into_raw();
 
-            c_string.into_raw()
+            let pointer_and_length = PointerAndLength { pointer, length };
+
+            Box::into_raw(Box::new(pointer_and_length))
         })
     })
 }

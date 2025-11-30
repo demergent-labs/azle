@@ -14,7 +14,7 @@ pub struct WasmData {
 
 #[inline(never)]
 #[unsafe(no_mangle)]
-extern "C" fn init_js_passive_data(js_vec_location: i32) {
+extern "C" fn init_js_passive_data(js_vec_location: usize) {
     // Without something like this to make the function bodies different,
     // the init_js_passive_data and init_wasm_data_passive_data functions
     // seem to be optimized into the same function in the Wasm binary
@@ -47,14 +47,14 @@ pub fn get_js_code() -> Result<Vec<u8>, Box<dyn Error>> {
     // This cast to usize appears to be well defined and safe
     let js_vec_location = js_vec.as_mut_ptr() as usize;
 
-    init_js_passive_data(i32::try_from(js_vec_location)?);
+    init_js_passive_data(js_vec_location);
 
     Ok(js_vec)
 }
 
 #[inline(never)]
 #[unsafe(no_mangle)]
-extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) {
+extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: usize) {
     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
     unsafe { read_volatile(&wasm_data_vec_location) };
 }
@@ -81,7 +81,7 @@ pub fn get_wasm_data() -> Result<WasmData, Box<dyn Error>> {
     // This cast to usize appears to be well defined and safe
     let wasm_data_vec_location = wasm_data_vec.as_mut_ptr() as usize;
 
-    init_wasm_data_passive_data(i32::try_from(wasm_data_vec_location)?);
+    init_wasm_data_passive_data(wasm_data_vec_location);
 
     let wasm_data_str = str::from_utf8(&wasm_data_vec).map_err(|e| {
         format!(
