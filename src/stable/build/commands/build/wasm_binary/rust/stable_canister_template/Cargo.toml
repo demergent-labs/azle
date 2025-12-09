@@ -16,7 +16,7 @@ ic-stable-structures = { workspace = true }
 ic-wasi-polyfill = { workspace = true }
 peak_alloc = { workspace = true }
 rand = { workspace = true }
-rquickjs = { version = "0.9.0", features = ["array-buffer"] }
+rquickjs = { version = "0.10.0", features = ["array-buffer"] }
 scopeguard = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
