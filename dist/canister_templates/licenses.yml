@@ -1075,7 +1075,7 @@ third_party_libraries:
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
       THE SOFTWARE.
 - package_name: bytes
-  package_version: 1.10.1
+  package_version: 1.11.1
   repository: https://github.com/tokio-rs/bytes
   license: MIT
   licenses:
