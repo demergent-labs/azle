@@ -96,7 +96,9 @@ export default class {
 
                 throw error;
             } else {
-                throw new Error(`executing within the reject callback`);
+                throw new Error(`executing within the reject callback`, {
+                    cause: error
+                });
             }
         }
     }
@@ -144,7 +146,10 @@ export default class {
             this.rejectMessage = error.rejectMessage;
 
             throw new Error(
-                `You cannot allow a trap to occur in a cleanup callback`
+                `You cannot allow a trap to occur in a cleanup callback`,
+                {
+                    cause: error
+                }
             );
         }
     }

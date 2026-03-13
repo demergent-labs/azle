@@ -221,7 +221,9 @@ export function idlEncode(
     try {
         return IDL.encode(argTypes, args);
     } catch (error) {
-        throw new Error(`Failed to encode Candid arguments: ${error}`);
+        throw new Error(`Failed to encode Candid arguments: ${error}`, {
+            cause: error
+        });
     }
 }
 
@@ -240,6 +242,8 @@ export function idlDecode(
     try {
         return IDL.decode(retTypes, bytes);
     } catch (error) {
-        throw new Error(`Failed to decode Candid bytes: ${error}`);
+        throw new Error(`Failed to decode Candid bytes: ${error}`, {
+            cause: error
+        });
     }
 }

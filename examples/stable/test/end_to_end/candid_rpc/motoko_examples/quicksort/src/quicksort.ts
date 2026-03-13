@@ -20,7 +20,6 @@ function sortByHelper<X>(
     if (l < r) {
         let i = l;
         let j = r;
-        let swap = xs[0];
         const pivot = xs[Math.round(Int.abs(l + r) / 2)];
         while (i <= j) {
             while (Order.isLess(f(xs[Int.abs(i)], pivot))) {
@@ -30,9 +29,12 @@ function sortByHelper<X>(
                 j -= 1;
             }
             if (i <= j) {
-                swap = xs[Int.abs(i)];
-                xs[Int.abs(i)] = xs[Int.abs(j)];
-                xs[Int.abs(j)] = swap;
+                const leftIndex = Int.abs(i);
+                const rightIndex = Int.abs(j);
+                const swap = xs[leftIndex];
+
+                xs[leftIndex] = xs[rightIndex];
+                xs[rightIndex] = swap;
                 i += 1;
                 j -= 1;
             }

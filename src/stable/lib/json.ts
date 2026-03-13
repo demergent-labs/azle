@@ -33,7 +33,10 @@ export function jsonParse(
         return JSON.parse(text, reviver ?? jsonReviver);
     } catch (error: any) {
         throw new Error(
-            `jsonParse: Error parsing JSON: ${error.message}. text: ${text}`
+            `jsonParse: Error parsing JSON: ${error.message}. text: ${text}`,
+            {
+                cause: error
+            }
         );
     }
 }

@@ -113,7 +113,9 @@ async function encodeFileContents(changedFiles: string[]): Promise<Addition[]> {
                     contents: content
                 };
             } catch (error) {
-                throw new Error(`Failed to read file ${file}: ${error}`);
+                throw new Error(`Failed to read file ${file}: ${error}`, {
+                    cause: error
+                });
             }
         })
     );

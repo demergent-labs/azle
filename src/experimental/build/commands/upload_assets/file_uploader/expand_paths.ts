@@ -45,6 +45,8 @@ async function expandDirectory(
             Promise.resolve([])
         );
     } catch (error: any) {
-        throw new Error(`Error reading directory: ${error.message}`);
+        throw new Error(`Error reading directory: ${error.message}`, {
+            cause: error
+        });
     }
 }
