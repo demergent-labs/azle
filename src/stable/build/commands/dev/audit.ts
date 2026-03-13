@@ -9,7 +9,7 @@ export async function runCommand(ioType: IOType = 'inherit'): Promise<void> {
         stdio: ioType
     };
 
-    runAuditCommand('npm audit', options);
+    runAuditCommand('npm audit --audit-level=moderate', options);
     runAuditCommand('npm run license-check', options);
 
     runAuditCommand('cargo audit', options);

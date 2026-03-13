@@ -90,9 +90,9 @@
             "node": "22.22.0",
             "rust": "1.89.0",
             "cargo-auditable": "0.7.0",
-            "cargo-audit": "https://github.com/rustsec/rustsec?rev=4cc355b042cc2c7468642c022191d8f1f1352884#4cc355b0",
+            "cargo-audit": "https://github.com/rustsec/rustsec?rev=4b5a4ab1#4b5a4ab1",
             "cargo-bundle-licenses": "4.0.0",
-            "cargo-deny": "0.18.4",
+            "cargo-deny": "https://github.com/EmbarkStudios/cargo-deny?rev=93424189#93424189",
             "wasi2ic": "0.2.15"
         }
     }
