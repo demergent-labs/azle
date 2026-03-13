@@ -374,7 +374,10 @@ async function createAndVerifyCertificate(
     return await Certificate.create({
         certificate,
         rootKey,
-        canisterId: canisterPrincipal
+        principal: {
+            canisterId: canisterPrincipal
+        },
+        agent
     });
 }
 

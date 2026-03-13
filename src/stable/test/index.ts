@@ -67,7 +67,7 @@ export function runTests(tests: Test): void {
             (shouldRunTypeChecks === true ? it : it.skip)(
                 'checks TypeScript types',
                 async () => {
-                    normalizeDfxGeneratedFiles();
+                    normalizeGeneratedFilesForTypeChecks();
 
                     const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
                     try {
@@ -147,6 +147,11 @@ wait.skip = (name: string, delay: number): void =>
     runWait(test.skip, name, delay);
 wait.only = (name: string, delay: number): void =>
     runWait(test.only, name, delay);
+
+function normalizeGeneratedFilesForTypeChecks(): void {
+    normalizeDfxGeneratedFiles();
+    normalizeDfxGeneratedFiles(`${process.cwd()}/src/declarations`);
+}
 
 export function please(name: string, fn: () => void | Promise<void>): void {
     test(`please ${name}`, async () => {

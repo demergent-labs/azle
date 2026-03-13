@@ -1,9 +1,17 @@
 import * as fc from 'fast-check';
 
-export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
+type DefaultPropTestParams = {
+    numRuns: number;
+    reporter: (runDetails: any) => void;
+    endOnFailure: boolean;
+    seed?: number;
+    path?: string;
+};
+
+export function defaultPropTestParams(): DefaultPropTestParams {
     const baseParams = {
         numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
-        reporter: (runDetails: fc.RunDetails<T>): void => {
+        reporter: (runDetails: any): void => {
             const seed = runDetails.seed;
             const path = runDetails.counterexamplePath;
             const experimental = process.env.AZLE_EXPERIMENTAL === 'true';
