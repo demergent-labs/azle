@@ -4,6 +4,7 @@ import { HttpAgent } from '@icp-sdk/core/agent';
 import { Secp256k1KeyIdentity } from '@icp-sdk/core/identity/secp256k1';
 import { execSync } from 'child_process';
 
+import { createLocalReplicaCompatibleFetch } from '#utils/create_local_replica_compatible_fetch';
 import { getCanisterId } from '#utils/dfx';
 import { getDfxRoot } from '#utils/dfx_root';
 
@@ -27,13 +28,14 @@ export function addController(
 }
 
 export async function createAnonymousAgent(): Promise<void> {
-    const agent = new HttpAgent({
-        host: getAgentHost()
-    });
+    const host = getAgentHost();
 
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
+    await HttpAgent.create({
+        host,
+        shouldFetchRootKey: process.env.DFX_NETWORK !== 'ic',
+        verifyQuerySignatures: shouldVerifyQuerySignatures(),
+        fetch: createLocalReplicaCompatibleFetch(host)
+    });
 }
 
 /**
@@ -53,16 +55,15 @@ export async function createAuthenticatedAgent(
         generateIdentity(identityName);
     }
 
-    const agent = new HttpAgent({
-        host: getAgentHost(),
-        identity: getSecp256k1KeyIdentity(identityName)
+    const host = getAgentHost();
+
+    return HttpAgent.create({
+        host,
+        identity: getSecp256k1KeyIdentity(identityName),
+        shouldFetchRootKey: process.env.DFX_NETWORK !== 'ic',
+        verifyQuerySignatures: shouldVerifyQuerySignatures(),
+        fetch: createLocalReplicaCompatibleFetch(host)
     });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
-
-    return agent;
 }
 
 /**
@@ -85,12 +86,14 @@ export function createAuthenticatedAgentSync(
         generateIdentity(identityName);
     }
 
-    const agent = new HttpAgent({
-        host: getAgentHost(),
-        identity: getSecp256k1KeyIdentity(identityName)
-    });
+    const host = getAgentHost();
 
-    return agent;
+    return HttpAgent.createSync({
+        host,
+        identity: getSecp256k1KeyIdentity(identityName),
+        verifyQuerySignatures: shouldVerifyQuerySignatures(),
+        fetch: createLocalReplicaCompatibleFetch(host)
+    });
 }
 
 export function generateIdentity(name: string): Buffer {
@@ -209,4 +212,8 @@ function determineStorageMode(): StorageMode | undefined {
         );
     }
     return mode;
+}
+
+function shouldVerifyQuerySignatures(): boolean {
+    return process.env.DFX_NETWORK === 'ic';
 }
