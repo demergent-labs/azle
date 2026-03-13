@@ -7,7 +7,7 @@ members = [
 ]
 
 [workspace.dependencies]
-anyhow = "1.0.100"
+anyhow = "1.0.102"
 candid = "0.10.24"
 candid_parser = "0.1.4"
 ic-cdk = "0.18.7"
@@ -18,8 +18,8 @@ peak_alloc = "0.3.0"
 rand = "0.9.2"
 scopeguard = "1.2.0"
 serde = "1.0.228"
-serde_json = "1.0.145"
-slotmap = "1.0.7"
+serde_json = "1.0.149"
+slotmap = "1.1.1"
 
 [profile.release]
 lto = true
