@@ -61,20 +61,51 @@ fn ic_print(value: &str) {
     println!("{value}");
 }
 
+fn slice_from_raw_parts_or_empty<'a, T>(pointer: *const T, len: usize) -> &'a [T] {
+    if pointer.is_null() == true || len == 0 {
+        return &[];
+    }
+
+    unsafe { std::slice::from_raw_parts(pointer, len) }
+}
+
+fn slice_from_raw_parts_mut_or_empty<'a, T>(pointer: *mut T, len: usize) -> &'a mut [T] {
+    if pointer.is_null() == true || len == 0 {
+        return &mut [];
+    }
+
+    unsafe { std::slice::from_raw_parts_mut(pointer, len) }
+}
+
+#[cfg(feature = "report_wasi_calls")]
+fn read_if_present<T: Copy>(pointer: *const T, default: T) -> T {
+    if pointer.is_null() == true {
+        return default;
+    }
+
+    unsafe { pointer.read() }
+}
+
+fn write_if_present<T>(pointer: *mut T, value: T) {
+    if pointer.is_null() == false {
+        unsafe { pointer.write(value) };
+    }
+}
+
 #[allow(clippy::missing_safety_doc)]
 pub unsafe fn forward_to_debug(iovs: *const wasi::Ciovec, len: i32, res: *mut wasi::Size) -> i32 {
-    let iovs = unsafe { std::slice::from_raw_parts(iovs, len as usize) };
+    let iovs = slice_from_raw_parts_or_empty(iovs, len as usize);
 
     let mut written = 0;
 
     for iov in iovs {
-        let buf = unsafe { std::slice::from_raw_parts(iov.buf, iov.buf_len) };
+        let buf = slice_from_raw_parts_or_empty(iov.buf, iov.buf_len);
         let str = std::str::from_utf8(buf).unwrap_or("");
         ic_print(str);
         written += iov.buf_len;
     }
 
-    unsafe { *res = written };
+    write_if_present(res, written);
 
     wasi::ERRNO_SUCCESS.raw() as i32
 }
@@ -158,8 +189,7 @@ pub unsafe extern "C" fn __ic_custom_fd_write(
     debug_instructions!("__ic_custom_fd_write");
 
     let src_io_vec: *const SrcBuf = iovs as *const SrcBuf;
-    let src_io_vec: &[SrcBuf] =
-        unsafe { std::slice::from_raw_parts(src_io_vec, len as wasi::Size) };
+    let src_io_vec: &[SrcBuf] = slice_from_raw_parts_or_empty(src_io_vec, len as wasi::Size);
 
     #[cfg(feature = "report_wasi_calls")]
     {
@@ -177,11 +207,11 @@ pub unsafe extern "C" fn __ic_custom_fd_write(
 
             match fs.write_vec(fd as Fd, src_io_vec) {
                 Ok(r) => {
-                    unsafe { *res = r as wasi::Size };
+                    write_if_present(res, r as wasi::Size);
                     wasi::ERRNO_SUCCESS.raw() as i32
                 }
                 Err(er) => {
-                    unsafe { *res = 0 };
+                    write_if_present(res, 0);
                     into_errno(er)
                 }
             }
@@ -190,7 +220,7 @@ pub unsafe extern "C" fn __ic_custom_fd_write(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("res={}", *res);
+        let r = format!("res={}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_fd_write", result, start, "{r}");
     }
 
@@ -216,8 +246,7 @@ pub unsafe extern "C" fn __ic_custom_fd_read(
     debug_instructions!("__ic_custom_fd_read");
 
     let dst_io_vec = iovs as *const DstBuf;
-    let dst_io_vec: &[DstBuf] =
-        unsafe { std::slice::from_raw_parts(dst_io_vec, len as wasi::Size) };
+    let dst_io_vec: &[DstBuf] = slice_from_raw_parts_or_empty(dst_io_vec, len as wasi::Size);
 
     #[cfg(feature = "report_wasi_calls")]
     {
@@ -240,11 +269,11 @@ pub unsafe extern "C" fn __ic_custom_fd_read(
 
         match fs.read_vec(fd as Fd, dst_io_vec) {
             Ok(r) => {
-                unsafe { *res = r as wasi::Size };
+                write_if_present(res, r as wasi::Size);
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
             Err(er) => {
-                unsafe { *res = 0 };
+                write_if_present(res, 0);
                 into_errno(er)
             }
         }
@@ -252,7 +281,7 @@ pub unsafe extern "C" fn __ic_custom_fd_read(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("res={}", *res);
+        let r = format!("res={}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_fd_read", result, start, "{r}");
     }
 
@@ -278,8 +307,7 @@ pub unsafe extern "C" fn __ic_custom_fd_pwrite(
     debug_instructions!("__ic_custom_fd_pwrite");
 
     let src_io_vec: *const SrcBuf = iovs as *const SrcBuf;
-    let src_io_vec: &[SrcBuf] =
-        unsafe { std::slice::from_raw_parts(src_io_vec, len as wasi::Size) };
+    let src_io_vec: &[SrcBuf] = slice_from_raw_parts_or_empty(src_io_vec, len as wasi::Size);
 
     #[cfg(feature = "report_wasi_calls")]
     {
@@ -298,12 +326,12 @@ pub unsafe extern "C" fn __ic_custom_fd_pwrite(
             let mut fs = fs.borrow_mut();
             match fs.write_vec_with_offset(fd as Fd, src_io_vec, offset as FileSize) {
                 Ok(r) => {
-                    unsafe { *res = r as wasi::Size };
+                    write_if_present(res, r as wasi::Size);
 
                     wasi::ERRNO_SUCCESS.raw() as i32
                 }
                 Err(er) => {
-                    unsafe { *res = 0 };
+                    write_if_present(res, 0);
                     into_errno(er)
                 }
             }
@@ -312,7 +340,7 @@ pub unsafe extern "C" fn __ic_custom_fd_pwrite(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("res={}", *res);
+        let r = format!("res={}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_fd_pwrite", result, start, "{r}");
     }
 
@@ -336,7 +364,7 @@ pub unsafe extern "C" fn __ic_custom_fd_pread(
     let start = ic_instruction_counter();
 
     let dst_io_vec = iovs as *const DstBuf;
-    let dst_io_vec = unsafe { std::slice::from_raw_parts(dst_io_vec, len as wasi::Size) };
+    let dst_io_vec = slice_from_raw_parts_or_empty(dst_io_vec, len as wasi::Size);
 
     #[cfg(feature = "report_wasi_calls")]
     {
@@ -364,11 +392,11 @@ pub unsafe extern "C" fn __ic_custom_fd_pread(
 
         match reading_result {
             Ok(r) => {
-                unsafe { *res = r as wasi::Size };
+                write_if_present(res, r as wasi::Size);
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
             Err(er) => {
-                unsafe { *res = 0 };
+                write_if_present(res, 0);
                 into_errno(er)
             }
         }
@@ -376,7 +404,7 @@ pub unsafe extern "C" fn __ic_custom_fd_pread(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("res={}", *res);
+        let r = format!("res={}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_fd_pread", result, start, "{r}");
     }
 
@@ -421,12 +449,12 @@ pub unsafe extern "C" fn __ic_custom_fd_seek(
             wasi_helpers::into_stable_fs_wence(whence as u8),
         ) {
             Ok(r) => {
-                unsafe { *res = r as wasi::Filesize };
+                write_if_present(res, r as wasi::Filesize);
 
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
             Err(er) => {
-                unsafe { *res = 0 };
+                write_if_present(res, 0);
                 into_errno(er)
             }
         }
@@ -434,7 +462,7 @@ pub unsafe extern "C" fn __ic_custom_fd_seek(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("res={}", unsafe { *res });
+        let r = format!("res={}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_fd_seek", result, start, "{r}");
     }
 
@@ -492,11 +520,11 @@ pub unsafe extern "C" fn __ic_custom_path_open(
 
         match r {
             Ok(r) => {
-                unsafe { *res = r as Fd };
+                write_if_present(res, r as Fd);
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
             Err(er) => {
-                unsafe { *res = 0 };
+                write_if_present(res, 0);
                 into_errno(er)
             }
         }
@@ -504,7 +532,7 @@ pub unsafe extern "C" fn __ic_custom_path_open(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let par = format!("res={}", *res);
+        let par = format!("res={}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_path_open", result, start, "{par}");
     }
 
@@ -567,9 +595,7 @@ pub unsafe extern "C" fn __ic_custom_fd_filestat_get(fd: Fd, ret_val: *mut wasi:
                     ctim: metadata.times.created,
                 };
 
-                unsafe {
-                    *ret_val = value;
-                }
+                write_if_present(ret_val, value);
 
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
@@ -579,7 +605,14 @@ pub unsafe extern "C" fn __ic_custom_fd_filestat_get(fd: Fd, ret_val: *mut wasi:
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let ret = format!("ret_val={:?}", unsafe { *ret_val });
+        let ret = format!(
+            "ret_val={:?}",
+            if ret_val.is_null() == true {
+                None
+            } else {
+                Some(unsafe { *ret_val })
+            }
+        );
         debug_instructions!("__ic_custom_fd_filestat_get", result, start, "{ret}");
     }
 
@@ -630,12 +663,12 @@ pub unsafe extern "C" fn __ic_custom_fd_tell(fd: Fd, res: *mut wasi::Filesize) -
 
         match fs.tell(fd as Fd) {
             Ok(pos) => {
-                unsafe { *res = pos as wasi::Filesize };
+                write_if_present(res, pos as wasi::Filesize);
 
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
             Err(er) => {
-                unsafe { *res = 0 };
+                write_if_present(res, 0);
                 into_errno(er)
             }
         }
@@ -643,7 +676,7 @@ pub unsafe extern "C" fn __ic_custom_fd_tell(fd: Fd, res: *mut wasi::Filesize) -
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("{}", unsafe { *res });
+        let r = format!("{}", read_if_present(res, 0));
         debug_instructions!("__ic_custom_fd_tell", result, start, "{r}");
     }
 
@@ -677,7 +710,7 @@ pub unsafe extern "C" fn __ic_custom_fd_prestat_get(fd: i32, prestat: *mut wasi:
                 },
             };
 
-            unsafe { *prestat = pstat };
+            write_if_present(prestat, pstat);
 
             wasi::ERRNO_SUCCESS.raw() as i32
         } else {
@@ -687,9 +720,14 @@ pub unsafe extern "C" fn __ic_custom_fd_prestat_get(fd: i32, prestat: *mut wasi:
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("prestat.u.dir.pr_name_len={}", unsafe {
-            (*prestat).u.dir.pr_name_len
-        });
+        let r = format!(
+            "prestat.u.dir.pr_name_len={}",
+            if prestat.is_null() == true {
+                0
+            } else {
+                unsafe { (*prestat).u.dir.pr_name_len }
+            }
+        );
         debug_instructions!("__ic_custom_fd_prestat_get fd={}", ret, start, "{r}");
     }
 
@@ -738,7 +776,7 @@ pub unsafe extern "C" fn __ic_custom_fd_prestat_dir_name(
     #[cfg(feature = "report_wasi_calls")]
     {
         let mn = std::cmp::min(max_len as usize, 50);
-        let buf = unsafe { std::slice::from_raw_parts_mut(path, mn) };
+        let buf = slice_from_raw_parts_mut_or_empty(path, mn);
 
         let ret_path = format!("buf={buf:?}... ");
 
@@ -874,7 +912,7 @@ pub unsafe extern "C" fn __ic_custom_fd_fdstat_get(fd: Fd, ret_fdstat: *mut wasi
                     fs_rights_inheriting: fdstat.rights_inheriting,
                 };
 
-                unsafe { *ret_fdstat = tmp_fd_stat };
+                write_if_present(ret_fdstat, tmp_fd_stat);
 
                 wasi::ERRNO_SUCCESS.raw() as i32
             }
@@ -884,7 +922,14 @@ pub unsafe extern "C" fn __ic_custom_fd_fdstat_get(fd: Fd, ret_fdstat: *mut wasi
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let r = format!("ret_fdstat={:?}", unsafe { *ret_fdstat });
+        let r = format!(
+            "ret_fdstat={:?}",
+            if ret_fdstat.is_null() == true {
+                None
+            } else {
+                Some(unsafe { *ret_fdstat })
+            }
+        );
         debug_instructions!("__ic_custom_fd_fdstat_get", result, start, "{r}");
     }
 
@@ -1093,15 +1138,16 @@ pub unsafe extern "C" fn __ic_custom_fd_readdir(
 
     #[cfg(feature = "report_wasi_calls")]
     {
+        let res_value = read_if_present(res, 0) as usize;
         let mn = std::cmp::min(
             #[allow(clippy::unnecessary_cast)]
-            std::cmp::min(bytes_len as usize, unsafe { *res } as usize),
+            std::cmp::min(bytes_len as usize, res_value),
             50,
         );
 
-        let buf = unsafe { std::slice::from_raw_parts_mut(bytes, mn) };
+        let buf = slice_from_raw_parts_mut_or_empty(bytes, mn);
 
-        let t = format!("buf={buf:?}... res={}", unsafe { *res });
+        let t = format!("buf={buf:?}... res={res_value}");
 
         debug_instructions!("__ic_custom_fd_readdir", result, start, "{t}");
     }
@@ -1149,7 +1195,7 @@ pub unsafe extern "C" fn __ic_custom_random_get(buf: *mut u8, buf_len: wasi::Siz
     #[cfg(feature = "report_wasi_calls")]
     debug_instructions!("__ic_custom_random_get");
 
-    let buf = unsafe { std::slice::from_raw_parts_mut(buf, buf_len) };
+    let buf = slice_from_raw_parts_mut_or_empty(buf, buf_len);
     RNG.with(|rng| {
         let mut rng = rng.borrow_mut();
         rng.fill_bytes(buf);
@@ -1220,8 +1266,8 @@ pub unsafe extern "C" fn __ic_custom_environ_sizes_get(
         let env = env.borrow();
         let (count, size) = env.environ_sizes_get();
 
-        unsafe { *entry_count = count };
-        unsafe { *buffer_size = size };
+        write_if_present(entry_count, count);
+        write_if_present(buffer_size, size);
     });
 
     let result = 0;
@@ -1268,10 +1314,8 @@ pub unsafe extern "C" fn __ic_custom_args_sizes_get(
     #[cfg(feature = "report_wasi_calls")]
     debug_instructions!("__ic_custom_arg_sizes_get -> 0");
 
-    unsafe {
-        *len1 = 0;
-        *len2 = 0;
-    }
+    write_if_present(len1, 0);
+    write_if_present(len2, 0);
     0
 }
 
@@ -1284,7 +1328,7 @@ pub unsafe extern "C" fn __ic_custom_clock_res_get(id: i32, result: *mut u64) ->
     #[cfg(feature = "report_wasi_calls")]
     debug_instructions!("__ic_custom_clock_res_get -> 0");
 
-    unsafe { *result = 1_000_000_000 }; // 1 second.
+    write_if_present(result, 1_000_000_000); // 1 second.
     wasi::ERRNO_SUCCESS.raw() as i32
 }
 
@@ -1304,7 +1348,7 @@ pub unsafe extern "C" fn __ic_custom_clock_time_get(
 
     prevent_elimination(&[id, precision as i32]);
 
-    unsafe { *time = ic_time() };
+    write_if_present(time, ic_time());
     let result = wasi::ERRNO_SUCCESS.raw() as i32;
 
     #[cfg(feature = "report_wasi_calls")]
@@ -1394,8 +1438,9 @@ pub unsafe extern "C" fn __ic_custom_path_filestat_get(
         let fd = fs.open(parent_fd as Fd, file_name, fd_stat, open_flags, 0);
 
         // don't leave result undefined
-        unsafe {
-            *result = wasi::Filestat {
+        write_if_present(
+            result,
+            wasi::Filestat {
                 dev: 0,
                 ino: 0,
                 filetype: wasi::FILETYPE_UNKNOWN,
@@ -1404,8 +1449,8 @@ pub unsafe extern "C" fn __ic_custom_path_filestat_get(
                 atim: 0,
                 mtim: 0,
                 ctim: 0,
-            }
-        };
+            },
+        );
 
         match fd {
             Ok(fd) => {
@@ -1414,8 +1459,9 @@ pub unsafe extern "C" fn __ic_custom_path_filestat_get(
 
                 match res {
                     Ok(metadata) => {
-                        unsafe {
-                            *result = wasi::Filestat {
+                        write_if_present(
+                            result,
+                            wasi::Filestat {
                                 dev: 0,
                                 ino: metadata.node,
                                 filetype: into_wasi_filetype(metadata.file_type),
@@ -1424,8 +1470,8 @@ pub unsafe extern "C" fn __ic_custom_path_filestat_get(
                                 atim: metadata.times.accessed,
                                 mtim: metadata.times.modified,
                                 ctim: metadata.times.created,
-                            }
-                        };
+                            },
+                        );
                         wasi::ERRNO_SUCCESS.raw() as i32
                     }
                     Err(er) => into_errno(er),
@@ -1437,7 +1483,14 @@ pub unsafe extern "C" fn __ic_custom_path_filestat_get(
 
     #[cfg(feature = "report_wasi_calls")]
     {
-        let t = format!("res={:?}", *result);
+        let t = format!(
+            "res={:?}",
+            if result.is_null() == true {
+                None
+            } else {
+                Some(unsafe { *result })
+            }
+        );
         debug_instructions!("__ic_custom_path_filestat_get", r, start, "{t}");
     }
 
