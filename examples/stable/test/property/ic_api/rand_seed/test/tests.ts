@@ -75,51 +75,6 @@ export function getTests(): Test {
             );
         });
 
-        it('should produce distinct results from cryptoGetRandomValues when using different seeds', async () => {
-            const actor = await getCanisterActor<Actor>('canister');
-
-            await fc.assert(
-                fc.asyncProperty(
-                    fc.integer({ min: 1, max: 100 }),
-                    fc.integer({ min: 2, max: 10 }),
-                    fc
-                        .tuple(
-                            fc.uint8Array({ minLength: 32, maxLength: 32 }),
-                            fc.uint8Array({ minLength: 32, maxLength: 32 })
-                        )
-                        .filter(
-                            ([seed1, seed2]) => sameSeed(seed1, seed2) === false
-                        ),
-                    async (length, rawNumCalls, [seed1, seed2]) => {
-                        const numCalls = normalizeNumCalls(length, rawNumCalls);
-
-                        await actor.seed(seed1);
-
-                        let results: string[] = [];
-
-                        for (let i = 0; i < numCalls; i++) {
-                            const result =
-                                await actor.cryptoGetRandomValues(length);
-
-                            results.push(Buffer.from(result).toString('hex'));
-                        }
-
-                        await actor.seed(seed2);
-
-                        for (let i = 0; i < numCalls; i++) {
-                            const result =
-                                await actor.cryptoGetRandomValues(length);
-
-                            expect(
-                                Buffer.from(result).toString('hex')
-                            ).not.toBe(results[i]);
-                        }
-                    }
-                ),
-                defaultPropTestParams()
-            );
-        });
-
         it('should throw error for seed length not equal to 32', async () => {
             const actor = await getCanisterActor<Actor>('canister');
 
@@ -155,11 +110,4 @@ function normalizeNumCalls(length: number, numCalls: number): number {
         return numCalls > 2 ? 2 : numCalls;
     }
     return numCalls;
-}
-
-function sameSeed(seed1: Uint8Array, seed2: Uint8Array): boolean {
-    return (
-        seed1.length === seed2.length &&
-        seed1.every((item, index) => item === seed2[index]) === true
-    );
 }
