@@ -22,5 +22,5 @@ sha2 = "0.10.9"
 serde = { workspace = true }
 serde_json = { workspace = true }
 ic-wasi-polyfill = { workspace = true }
-wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "602159f403a0e13eeb5680d6a8ccd219c5b71422" }
 wasmi = "1.0.9"

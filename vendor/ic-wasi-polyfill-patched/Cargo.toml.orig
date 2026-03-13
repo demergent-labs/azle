@@ -1,0 +1,27 @@
+[package]
+name = "ic-wasi-polyfill"
+version = "0.12.0"
+edition = "2021"
+keywords = ["ic", "wasi", "wasi-polyfill"]
+description = "The project provides polyfill implementation of *wasi_snapshot_preview1* functions using IC System API."
+license = "MIT"
+repository = "https://github.com/wasm-forge/ic-wasi-polyfill"
+
+[dependencies]
+stable-fs.workspace = true
+ic-stable-structures.workspace = true
+ic-cdk.workspace = true
+anyhow.workspace = true
+rand.workspace = true
+
+[features]
+transient=[]
+report_wasi_calls=["count_wasi_calls"]
+count_wasi_calls=[]
+skip_unimplemented_functions=[]
+
+[lib]
+crate-type = ["staticlib","lib"]
+
+[dev-dependencies]
+candid.workspace = true
