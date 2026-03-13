@@ -46,7 +46,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             }
         });
 
-        let closure = move || {
+        let future = async move {
             let _cleanup_scopeguard = cleanup_scopeguard;
 
             let result = with_ctx(|ctx| {
@@ -82,7 +82,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             drain_inter_canister_call_futures();
         };
 
-        let timer_id: TimerId = set_timer(delay_duration, closure);
+        let timer_id: TimerId = set_timer(delay_duration, future);
         let timer_id_u64: u64 = timer_id.data().as_ffi();
 
         *timer_id_u64_rc.borrow_mut() = Some(timer_id_u64);

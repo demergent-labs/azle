@@ -34,7 +34,7 @@ impl JsFn for NativeFunction {
                 .delete(&timer_id.to_string());
         });
 
-        let closure = move || {
+        let future = async move {
             let _cleanup_scopeguard = cleanup_scopeguard;
 
             let timer_id = timer_id_u64_rc_cloned_for_timer_closure.borrow().unwrap();
@@ -73,7 +73,7 @@ impl JsFn for NativeFunction {
             });
         };
 
-        let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer(delay, closure);
+        let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer(delay, future);
         let timer_id_u64: u64 = timer_id.data().as_ffi();
 
         *timer_id_u64_rc.borrow_mut() = Some(timer_id_u64);

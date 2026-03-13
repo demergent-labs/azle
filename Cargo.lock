@@ -374,8 +374,18 @@ version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc7f46116c46ff9ab3eb1597a45688b6715c6e628b5c133e288e709a29bcb4ee"
 dependencies = [
- "darling_core",
- "darling_macro",
+ "darling_core 0.20.11",
+ "darling_macro 0.20.11",
+]
+
+[[package]]
+name = "darling"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25ae13da2f202d56bd7f91c25fba009e7717a1e4a1cc98a76d844b65ae912e9d"
+dependencies = [
+ "darling_core 0.23.0",
+ "darling_macro 0.23.0",
 ]
 
 [[package]]
@@ -393,12 +403,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "darling_core"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9865a50f7c335f53564bb694ef660825eb8610e0a53d3e11bf1b0d3df31e03b0"
+dependencies = [
+ "ident_case",
+ "proc-macro2",
+ "quote",
+ "strsim",
+ "syn 2.0.104",
+]
+
+[[package]]
 name = "darling_macro"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc34b93ccb385b40dc71c6fceac4b2ad23662c7eeb248cf10d529b7e055b6ead"
 dependencies = [
- "darling_core",
+ "darling_core 0.20.11",
+ "quote",
+ "syn 2.0.104",
+]
+
+[[package]]
+name = "darling_macro"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac3984ec7bd6cfa798e62b4a642426a5be0e68f9401cfc2a01e3fa9ea2fcdb8d"
+dependencies = [
+ "darling_core 0.23.0",
  "quote",
  "syn 2.0.104",
 ]
@@ -424,7 +458,7 @@ version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d5bcf7b024d6835cfb3d473887cd966994907effbe9227e8c8219824d06c4e8"
 dependencies = [
- "darling",
+ "darling 0.20.11",
  "proc-macro2",
  "quote",
  "syn 2.0.104",
@@ -597,7 +631,7 @@ dependencies = [
  "anyhow",
  "candid 0.10.24",
  "candid_parser 0.1.4",
- "ic-cdk",
+ "ic-cdk 0.20.0",
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",
@@ -637,95 +671,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456"
 dependencies = [
  "percent-encoding",
-]
-
-[[package]]
-name = "futures"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65bc07b1a8bc7c85c5f2e110c476c7389b4554ba72af57d8445ea63a576b0876"
-dependencies = [
- "futures-channel",
- "futures-core",
- "futures-executor",
- "futures-io",
- "futures-sink",
- "futures-task",
- "futures-util",
-]
-
-[[package]]
-name = "futures-channel"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dff15bf788c671c1934e366d07e30c1814a8ef514e1af724a602e8a2fbe1b10"
-dependencies = [
- "futures-core",
- "futures-sink",
-]
-
-[[package]]
-name = "futures-core"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05f29059c0c2090612e8d742178b0580d2dc940c837851ad723096f87af6663e"
-
-[[package]]
-name = "futures-executor"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e28d1d997f585e54aebc3f97d39e72338912123a67330d723fdbb564d646c9f"
-dependencies = [
- "futures-core",
- "futures-task",
- "futures-util",
-]
-
-[[package]]
-name = "futures-io"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e5c1b78ca4aae1ac06c48a526a655760685149f0d465d21f37abfe57ce075c6"
-
-[[package]]
-name = "futures-macro"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.104",
-]
-
-[[package]]
-name = "futures-sink"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e575fab7d1e0dcb8d0c7bcf9a63ee213816ab51902e6d244a95819acacf1d4f7"
-
-[[package]]
-name = "futures-task"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f90f7dce0722e95104fcb095585910c0977252f286e354b5e3bd38902cd99988"
-
-[[package]]
-name = "futures-util"
-version = "0.3.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9fa08315bb612088cc391249efdc3bc77536f16c91f6cf495e6fbe85b20a4a81"
-dependencies = [
- "futures-channel",
- "futures-core",
- "futures-io",
- "futures-macro",
- "futures-sink",
- "futures-task",
- "memchr",
- "pin-project-lite",
- "pin-utils",
- "slab",
 ]
 
 [[package]]
@@ -828,16 +773,17 @@ checksum = "9b112acc8b3adf4b107a8ec20977da0273a8c386765a3ec0229bd500a1443f9f"
 
 [[package]]
 name = "ic-cdk"
-version = "0.18.7"
+version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4efb278f5d3ef033b3eed7f01f1096eaf67701896aa5ef69f5eddf5a84833dc0"
+checksum = "818d6d5416a8f0212e1b132703b0da51e36c55f2b96677e96f2bbe7702e1bd85"
 dependencies = [
  "candid 0.10.24",
  "ic-cdk-executor",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.19.0",
  "ic-error-types",
  "ic-management-canister-types",
  "ic0",
+ "pin-project-lite",
  "serde",
  "serde_bytes",
  "slotmap",
@@ -845,23 +791,53 @@ dependencies = [
 ]
 
 [[package]]
-name = "ic-cdk-executor"
-version = "1.0.2"
+name = "ic-cdk"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99f4ee8930fd2e491177e2eb7fff53ee1c407c13b9582bdc7d6920cf83109a2d"
+checksum = "057912339f889013f42b36cc0623585949ed278457efb32aef041bdc48acb111"
+dependencies = [
+ "candid 0.10.24",
+ "ic-cdk-executor",
+ "ic-cdk-macros 0.20.0",
+ "ic-error-types",
+ "ic0",
+ "pin-project-lite",
+ "serde",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "ic-cdk-executor"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "33716b730ded33690b8a704bff3533fda87d229e58046823647d28816e9bcee7"
 dependencies = [
  "ic0",
  "slotmap",
+ "smallvec",
 ]
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.18.7"
+version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7eb14c5d691cc9d72bb95459b4761e3a4b3444b85a63d17555d5ddd782969a1e"
+checksum = "66dad91a214945cb3605bc9ef6901b87e2ac41e3624284c2cabba49d43aa4f43"
 dependencies = [
  "candid 0.10.24",
- "darling",
+ "darling 0.20.11",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+]
+
+[[package]]
+name = "ic-cdk-macros"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b140627c01710ac185fbc984ab1fda1781ffef4abbd952e07383350899b0952b"
+dependencies = [
+ "candid 0.10.24",
+ "darling 0.23.0",
  "proc-macro2",
  "quote",
  "syn 2.0.104",
@@ -869,16 +845,12 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
-version = "0.12.3"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb21b1f818e9989cd267c72ec5bf6390e49d5881e591117a911038f622b5d5ff"
+checksum = "6852b9c1d4a82ff50fc7318599298aee8bfb082bd7e9fe7e5c1420692b2170f7"
 dependencies = [
- "candid 0.10.24",
- "futures",
- "ic-cdk",
+ "ic-cdk-executor",
  "ic0",
- "serde",
- "serde_bytes",
  "slotmap",
 ]
 
@@ -895,9 +867,9 @@ dependencies = [
 
 [[package]]
 name = "ic-management-canister-types"
-version = "0.3.3"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea7e5b8a0f7c3b320d9450ac950547db4f24a31601b5d398f9680b64427455d2"
+checksum = "3149217e24186df3f13dc45eee14cdb3e5cad07d0b2b67bd53555c1c55462957"
 dependencies = [
  "candid 0.10.24",
  "serde",
@@ -915,12 +887,12 @@ dependencies = [
 
 [[package]]
 name = "ic-wasi-polyfill"
-version = "0.11.1"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d913d0b34bf4fcc8ffb46c8f91ef0445ff789992b44486c24f6183a227523ea"
+checksum = "0a7305b94cb2d3b0f1416e1b7da44610eb542de3ff1184548eb95a29673eaf5b"
 dependencies = [
  "anyhow",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-stable-structures",
  "rand 0.9.2",
  "stable-fs",
@@ -928,9 +900,9 @@ dependencies = [
 
 [[package]]
 name = "ic0"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8877193e1921b5fd16accb0305eb46016868cd1935b05c05eca0ec007b943272"
+checksum = "1499d08fd5be8f790d477e1865d63bab6a8d748300e141270c4296e6d5fdd6bc"
 
 [[package]]
 name = "ic_principal"
@@ -1503,15 +1475,9 @@ checksum = "5be167a7af36ee22fe3115051bc51f6e6c7054c9348e28deb4f49bd6f705a315"
 
 [[package]]
 name = "pin-project-lite"
-version = "0.2.16"
+version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b3cff922bd51709b605d9ead9aa71031d81447142d828eb4a6eba76fe619f9b"
-
-[[package]]
-name = "pin-utils"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
+checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
 name = "potential_utf"
@@ -1550,9 +1516,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.95"
+version = "1.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
+checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
 ]
@@ -1813,11 +1779,12 @@ dependencies = [
 
 [[package]]
 name = "serde_bytes"
-version = "0.11.17"
+version = "0.11.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8437fd221bde2d4ca316d61b90e337e9e702b3820b87d63caa9ba6c02bd06d96"
+checksum = "a5d440709e79d88e51ac01c4b72fc6cb7314017bb7da9eeff678aa94c10e3ea8"
 dependencies = [
  "serde",
+ "serde_core",
 ]
 
 [[package]]
@@ -1933,13 +1900,13 @@ checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
 
 [[package]]
 name = "stable-fs"
-version = "0.11.0"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f50a570b7015d096ee0a134f317e98d2f106f1711652459da220fdddb2d68cdc"
+checksum = "0bae8643db364dcf78d6782aa61cb75cc906c813ca3aff949cff1839b84e455c"
 dependencies = [
  "bitflags",
  "ciborium",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-stable-structures",
  "serde",
  "serde_bytes",
@@ -1951,7 +1918,7 @@ version = "0.0.0"
 dependencies = [
  "candid 0.10.24",
  "candid_parser 0.1.4",
- "ic-cdk",
+ "ic-cdk 0.20.0",
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",

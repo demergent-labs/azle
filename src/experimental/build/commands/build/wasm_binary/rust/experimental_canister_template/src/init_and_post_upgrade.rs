@@ -186,35 +186,33 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
 }
 
 fn seed_from_raw_rand() {
-    set_timer(Duration::new(0, 0), || {
-        ic_cdk::futures::spawn(async {
-            let result: Result<(), Box<dyn Error>> = async {
-                let randomness: Vec<u8> =
-                    Call::unbounded_wait(Principal::management_canister(), "raw_rand")
-                        .await?
-                        .candid()?;
+    set_timer(Duration::new(0, 0), async {
+        let result: Result<(), Box<dyn Error>> = async {
+            let randomness: Vec<u8> =
+                Call::unbounded_wait(Principal::management_canister(), "raw_rand")
+                    .await?
+                    .candid()?;
 
-                rand_seed(
-                    randomness
-                        .clone()
-                        .try_into()
-                        .map_err(|_| "seed must be exactly 32 bytes in length")?,
-                );
+            rand_seed(
+                randomness
+                    .clone()
+                    .try_into()
+                    .map_err(|_| "seed must be exactly 32 bytes in length")?,
+            );
 
-                // Seed the internal Azle CSPRNG used for UUID generation. We intentionally do not expose this seed.
-                seed_internal_csprng(
-                    randomness
-                        .try_into()
-                        .map_err(|_| "seed must be exactly 32 bytes in length")?,
-                );
+            // Seed the internal Azle CSPRNG used for UUID generation. We intentionally do not expose this seed.
+            seed_internal_csprng(
+                randomness
+                    .try_into()
+                    .map_err(|_| "seed must be exactly 32 bytes in length")?,
+            );
 
-                Ok(())
-            }
-            .await;
+            Ok(())
+        }
+        .await;
 
-            if let Err(e) = result {
-                trap(&format!("Azle SeedFromRawRandError: {}", e));
-            }
-        });
+        if let Err(e) = result {
+            trap(&format!("Azle SeedFromRawRandError: {}", e));
+        }
     });
 }

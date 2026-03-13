@@ -19,37 +19,43 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
         let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
 
         let closure = move || {
-            let result = with_ctx(|ctx| {
-                let timer_id = timer_id_u64_rc_cloned
-                    .borrow()
-                    .ok_or("TimerId not found in reference-counting pointer")?;
+            let timer_id_u64_rc_cloned = timer_id_u64_rc_cloned.clone();
 
-                let globals = ctx.globals();
+            async move {
+                let result = with_ctx(|ctx| {
+                    let timer_id = timer_id_u64_rc_cloned
+                        .borrow()
+                        .ok_or("TimerId not found in reference-counting pointer")?;
 
-                let timer_callbacks: Object = globals
-                    .get("_azleTimerCallbacks")
-                    .map_err(|e| format!("Failed to get globalThis._azleTimerCallbacks: {e}"))?;
-                let timer_callback: Function =
-                    timer_callbacks.get(timer_id.to_string()).map_err(|e| {
-                        format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
+                    let globals = ctx.globals();
+
+                    let timer_callbacks: Object = globals.get("_azleTimerCallbacks").map_err(|e| {
+                        format!("Failed to get globalThis._azleTimerCallbacks: {e}")
                     })?;
+                    let timer_callback: Function =
+                        timer_callbacks.get(timer_id.to_string()).map_err(|e| {
+                            format!(
+                                "Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}"
+                            )
+                        })?;
 
-                // JavaScript code execution: macrotask
-                call_with_error_handling(&ctx, &timer_callback, ())?;
+                    // JavaScript code execution: macrotask
+                    call_with_error_handling(&ctx, &timer_callback, ())?;
 
-                // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
-                drain_microtasks(&ctx);
+                    // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
+                    drain_microtasks(&ctx);
 
-                Ok(())
-            });
+                    Ok(())
+                });
 
-            if let Err(e) = result {
-                trap(&format!("Azle TimerError: {e}"));
+                if let Err(e) = result {
+                    trap(&format!("Azle TimerError: {e}"));
+                }
+
+                // We must drain all inter-canister call futures that could have been queued during the JavaScript code execution above
+                // This MUST be called outside of the with_ctx closure or it will trap
+                drain_inter_canister_call_futures();
             }
-
-            // We must drain all inter-canister call futures that could have been queued during the JavaScript code execution above
-            // This MUST be called outside of the with_ctx closure or it will trap
-            drain_inter_canister_call_futures();
         };
 
         let timer_id: TimerId = set_timer_interval(interval_duration, closure);
