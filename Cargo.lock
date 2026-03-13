@@ -159,15 +159,15 @@ checksum = "1e748733b7cbc798e1434b6ac524f0c1ff2ab456fe201501e6497c8417a4fc33"
 
 [[package]]
 name = "candid"
-version = "0.10.14"
-source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
+version = "0.10.17"
+source = "git+https://github.com/demergent-labs/candid?rev=7e1bd3b1ecde4163b86a231291ec7e5ad1250245#7e1bd3b1ecde4163b86a231291ec7e5ad1250245"
 dependencies = [
  "anyhow",
  "binread",
  "byteorder",
- "candid_derive 0.6.6",
+ "candid_derive 0.10.17",
  "hex",
- "ic_principal 0.1.1 (git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21)",
+ "ic_principal 0.1.1 (git+https://github.com/demergent-labs/candid?rev=7e1bd3b1ecde4163b86a231291ec7e5ad1250245)",
  "leb128",
  "num-bigint",
  "num-traits",
@@ -206,14 +206,14 @@ dependencies = [
 name = "candid-to-ts-js"
 version = "0.0.0"
 dependencies = [
- "candid_parser 0.2.0-beta.4",
+ "candid_parser 0.2.1",
  "wasm-bindgen",
 ]
 
 [[package]]
 name = "candid_derive"
-version = "0.6.6"
-source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
+version = "0.10.17"
+source = "git+https://github.com/demergent-labs/candid?rev=7e1bd3b1ecde4163b86a231291ec7e5ad1250245#7e1bd3b1ecde4163b86a231291ec7e5ad1250245"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -235,11 +235,11 @@ dependencies = [
 
 [[package]]
 name = "candid_parser"
-version = "0.2.0-beta.4"
-source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
+version = "0.2.1"
+source = "git+https://github.com/demergent-labs/candid?rev=7e1bd3b1ecde4163b86a231291ec7e5ad1250245#7e1bd3b1ecde4163b86a231291ec7e5ad1250245"
 dependencies = [
  "anyhow",
- "candid 0.10.14",
+ "candid 0.10.17",
  "codespan-reporting",
  "convert_case",
  "handlebars",
@@ -958,7 +958,7 @@ dependencies = [
 [[package]]
 name = "ic_principal"
 version = "0.1.1"
-source = "git+https://github.com/demergent-labs/candid?rev=22e24796dbb31b2d133bcd4d234abbaf34d6fd21#22e24796dbb31b2d133bcd4d234abbaf34d6fd21"
+source = "git+https://github.com/demergent-labs/candid?rev=7e1bd3b1ecde4163b86a231291ec7e5ad1250245#7e1bd3b1ecde4163b86a231291ec7e5ad1250245"
 dependencies = [
  "arbitrary",
  "crc32fast",

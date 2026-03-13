@@ -1107,7 +1107,7 @@ third_party_libraries:
       IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
       DEALINGS IN THE SOFTWARE.
 - package_name: candid
-  package_version: 0.10.14
+  package_version: 0.10.17
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
@@ -1523,7 +1523,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: candid_derive
-  package_version: 0.6.6
+  package_version: 0.10.17
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
@@ -1939,7 +1939,7 @@ third_party_libraries:
          See the License for the specific language governing permissions and
          limitations under the License.
 - package_name: candid_parser
-  package_version: 0.2.0-beta.4
+  package_version: 0.2.1
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
