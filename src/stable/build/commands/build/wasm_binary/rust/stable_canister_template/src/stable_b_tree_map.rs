@@ -23,6 +23,10 @@ impl Storable for AzleStableBTreeMapKey {
         Cow::Borrowed(&self.bytes)
     }
 
+    fn into_bytes(self) -> Vec<u8> {
+        self.bytes
+    }
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         AzleStableBTreeMapKey {
             bytes: bytes.to_vec(),
@@ -40,6 +44,10 @@ pub struct AzleStableBTreeMapValue {
 impl Storable for AzleStableBTreeMapValue {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         Cow::Borrowed(&self.bytes)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        self.bytes
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {

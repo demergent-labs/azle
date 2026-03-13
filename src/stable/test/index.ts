@@ -1,5 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { DEFAULT_EXPECTED_ERRORS } from 'cuzz';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
 import { execSyncPretty } from '#utils/exec_sync_pretty';
 
@@ -66,6 +68,8 @@ export function runTests(tests: Test): void {
             (shouldRunTypeChecks === true ? it : it.skip)(
                 'checks TypeScript types',
                 async () => {
+                    normalizeDfxGeneratedTypeDeclarations();
+
                     const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
                     try {
                         execSyncPretty(typeCheckCommand, {
@@ -258,6 +262,64 @@ function createWait(name: string, delay: number): () => Promise<void> {
             setTimeout(resolve, delay);
         });
     };
+}
+
+function normalizeDfxGeneratedTypeDeclarations(
+    generatedDirectoryPath: string = join(
+        process.cwd(),
+        'test',
+        'dfx_generated'
+    )
+): void {
+    if (existsSync(generatedDirectoryPath) === false) {
+        return;
+    }
+
+    getDfxGeneratedTypeDeclarationPaths(generatedDirectoryPath).forEach(
+        normalizeDfxGeneratedTypeDeclaration
+    );
+}
+
+function getDfxGeneratedTypeDeclarationPaths(directoryPath: string): string[] {
+    return readdirSync(directoryPath, { withFileTypes: true }).flatMap(
+        (directoryEntry) => {
+            const entryPath = join(directoryPath, directoryEntry.name);
+
+            if (directoryEntry.isDirectory() === true) {
+                return getDfxGeneratedTypeDeclarationPaths(entryPath);
+            }
+
+            if (entryPath.endsWith('.d.ts') === true) {
+                return [entryPath];
+            }
+
+            return [];
+        }
+    );
+}
+
+function normalizeDfxGeneratedTypeDeclaration(filePath: string): void {
+    const declaration = readFileSync(filePath, 'utf-8');
+    const normalizedDeclaration =
+        normalizeDfxGeneratedTypeDeclarationImports(declaration);
+
+    if (normalizedDeclaration === declaration) {
+        return;
+    }
+
+    writeFileSync(filePath, normalizedDeclaration);
+}
+
+function normalizeDfxGeneratedTypeDeclarationImports(
+    declaration: string
+): string {
+    return [
+        ['@dfinity/agent', '@icp-sdk/core/agent'],
+        ['@dfinity/candid', '@icp-sdk/core/candid'],
+        ['@dfinity/principal', '@icp-sdk/core/principal']
+    ].reduce((currentDeclaration, [from, to]) => {
+        return currentDeclaration.replaceAll(from, to);
+    }, declaration);
 }
 
 /**

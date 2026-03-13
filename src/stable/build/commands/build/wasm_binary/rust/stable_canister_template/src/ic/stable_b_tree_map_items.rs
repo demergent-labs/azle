@@ -33,7 +33,9 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                     .iter()
                     .skip(skip_amount)
                     .take(take_amount)
-                    .map(|(key, value)| {
+                    .map(|entry| {
+                        let (key, value) = entry.into_pair();
+
                         Ok(vec![
                             TypedArray::<u8>::new(ctx.clone(), key.bytes)?,
                             TypedArray::<u8>::new(ctx.clone(), value.bytes)?,
