@@ -225,7 +225,7 @@ impl HttpRequest {
     }
 
     pub fn js_get_method(&self, ctx: &mut Context) -> JsValue {
-        ctx.new_string(&format!("{:?}", self.method)).into()
+        ctx.new_string(&format!("{}", self.method)).into()
     }
 
     pub fn js_set_method(&mut self, _ctx: &mut Context, val: JsValue) {
