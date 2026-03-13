@@ -71,7 +71,7 @@
         "fast-check": "^4.6.0",
         "husky": "9.1.7",
         "jest": "^30.3.0",
-        "licensee": "^11.1.1",
+        "licensee": "^12.0.1",
         "lint-staged": "^16.3.3",
         "prettier": "^3.8.1",
         "puppeteer": "^24.39.0",
@@ -87,7 +87,7 @@
     "azle": {
         "globalDependencies": {
             "dfx": "0.29.1",
-            "node": "22.18.0",
+            "node": "22.22.0",
             "rust": "1.89.0",
             "cargo-auditable": "0.7.0",
             "cargo-audit": "https://github.com/rustsec/rustsec?rev=4cc355b042cc2c7468642c022191d8f1f1352884#4cc355b0",
