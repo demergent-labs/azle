@@ -128,6 +128,10 @@ The following guidelines should be followed whenever performing a code review.
 4. Ensure that the implementation is free of bugs, typos, organizational problems, code smells, etc
 5. In your review comment, please create a checkbox list for this entire numbered list (just copy the list entirely but replace the numbers with checkboxes) and check off each task that you have completed.
 
+## Git
+
+- When creating commits from the coding agent, always use `git commit --no-gpg-sign`
+
 ## Human Notes
 
 This section is for humans only, please ignore it if you are an AI.
