@@ -1,4 +1,4 @@
-root_name: experimental_canister_template, stable_canister_template
+root_name: experimental_canister_template, stable_canister_template, candid-to-ts-js
 third_party_libraries:
 - package_name: addr2line
   package_version: 0.24.2

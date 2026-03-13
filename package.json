@@ -86,14 +86,14 @@
     },
     "azle": {
         "globalDependencies": {
-            "dfx": "0.29.1",
-            "node": "22.22.0",
-            "rust": "1.89.0",
-            "cargo-auditable": "0.7.0",
+            "dfx": "0.31.0",
+            "node": "22.22.1",
+            "rust": "1.94.0",
+            "cargo-auditable": "0.7.4",
             "cargo-audit": "https://github.com/rustsec/rustsec?rev=4b5a4ab1#4b5a4ab1",
-            "cargo-bundle-licenses": "4.0.0",
+            "cargo-bundle-licenses": "4.2.0",
             "cargo-deny": "https://github.com/EmbarkStudios/cargo-deny?rev=93424189#93424189",
-            "wasi2ic": "0.2.15"
+            "wasi2ic": "0.2.16"
         }
     }
 }
