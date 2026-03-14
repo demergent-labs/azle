@@ -1,6 +1,8 @@
 import { ActorSubclass, Agent, HttpAgent, Identity } from '@icp-sdk/core/agent';
 import { join } from 'path';
 
+import { normalizeDfxGeneratedFiles } from '#test/normalize_dfx_generated';
+import { createLocalReplicaCompatibleFetch } from '#utils/create_local_replica_compatible_fetch';
 import { getCanisterId } from '#utils/dfx';
 
 type GetCanisterActorOptions = {
@@ -23,16 +25,23 @@ export async function getCanisterActor<T>(
     options: GetCanisterActorOptions = {}
 ): Promise<ActorSubclass<T>> {
     const parentDir = options.parentDir ?? join(process.cwd(), 'test');
+    const generatedDirectoryPath = join(parentDir, 'dfx_generated');
+
+    normalizeDfxGeneratedFiles(generatedDirectoryPath);
+
     const { createActor } = await import(
-        join(parentDir, 'dfx_generated', canisterName)
+        join(generatedDirectoryPath, canisterName)
     );
+    const host = 'http://127.0.0.1:4943';
 
     const agent =
         options.agent ??
         (await HttpAgent.create({
-            host: 'http://127.0.0.1:4943',
+            host,
             identity: options.identity,
-            shouldFetchRootKey: true
+            shouldFetchRootKey: true,
+            verifyQuerySignatures: false,
+            fetch: createLocalReplicaCompatibleFetch(host)
         }));
 
     const actor = createActor(getCanisterId(canisterName), {

@@ -3,6 +3,10 @@ import { readFile } from 'fs/promises';
 
 import { MethodMeta } from '#utils/types';
 
+type MemorySegment = binaryen.MemorySegment & {
+    name?: string;
+};
+
 // TODO can we make the start function just load the passive segment into memory?
 export async function manipulateWasmBinary<T extends Record<string, unknown>>(
     js: string,
@@ -19,32 +23,36 @@ export async function manipulateWasmBinary<T extends Record<string, unknown>>(
 
     const encodedJs = encode(js);
     const encodedWasmData = encode(JSON.stringify(wasmData));
+    const jsPassiveDataName = 'js_passive_data';
+    const wasmDataPassiveDataName = 'wasm_data_passive_data';
 
     addPassiveDataSegmentsToMemory(
         module,
         memoryInfo,
         memorySegmentInfos,
         encodedJs,
-        encodedWasmData
+        encodedWasmData,
+        jsPassiveDataName,
+        wasmDataPassiveDataName
     );
 
-    addPassiveSizeFunction(module, 'js_passive_data_size', encodedJs);
+    addPassiveSizeFunction(module, `${jsPassiveDataName}_size`, encodedJs);
     addPassiveSizeFunction(
         module,
-        'wasm_data_passive_data_size',
+        `${wasmDataPassiveDataName}_size`,
         encodedWasmData
     );
 
     addInitPassiveDataFunction(
         module,
-        'init_js_passive_data',
-        memorySegmentInfos.length,
+        `init_${jsPassiveDataName}`,
+        jsPassiveDataName,
         encodedJs
     );
     addInitPassiveDataFunction(
         module,
-        'init_wasm_data_passive_data',
-        memorySegmentInfos.length + 1,
+        `init_${wasmDataPassiveDataName}`,
+        wasmDataPassiveDataName,
         encodedWasmData
     );
 
@@ -166,26 +174,25 @@ export function addCanisterMethod(
 
 export function getMemoryInformation(module: binaryen.Module): {
     memoryInfo: binaryen.MemoryInfo;
-    memorySegmentInfos: binaryen.MemorySegmentInfo[];
+    memorySegmentInfos: MemorySegment[];
 } {
     const memoryInfo = module.getMemoryInfo();
-
-    const numMemorySegments = module.getNumMemorySegments();
-
-    let memorySegmentInfos: binaryen.MemorySegmentInfo[] = [];
-
-    for (let i = 0; i < numMemorySegments; i++) {
-        const segment = module.getMemorySegmentInfoByIndex(i);
-
-        memorySegmentInfos.push(segment);
-    }
+    const memorySegmentInfos = getMemorySegmentNames(module).map(
+        (memorySegmentName) => {
+            return {
+                name: memorySegmentName,
+                ...module.getMemorySegmentInfo(memorySegmentName)
+            };
+        }
+    );
 
     // Normalization is necessary for some reason
     // the TypeScript types work out fine without normalization
     // but not the actual values during manipulation
     const normalizedMemorySegmentInfos = memorySegmentInfos.map(
-        (memorySegmentInfo) => {
+        ({ name, ...memorySegmentInfo }) => {
             return {
+                name,
                 offset: module.i32.const(memorySegmentInfo.offset),
                 // This must be wrapped in a Uint8Array or this error will be thrown during the build: Azle BuildError: RuntimeError: null function or function signature mismatch
                 data: new Uint8Array(memorySegmentInfo.data),
@@ -207,18 +214,22 @@ export function encode(text: string): Uint8Array {
 export function addPassiveDataSegmentsToMemory(
     module: binaryen.Module,
     memoryInfo: binaryen.MemoryInfo,
-    memorySegmentInfos: binaryen.MemorySegmentInfo[],
+    memorySegmentInfos: MemorySegment[],
     encodedJs: Uint8Array,
-    encodedWasmData: Uint8Array
+    encodedWasmData: Uint8Array,
+    jsPassiveDataName: string,
+    wasmDataPassiveDataName: string
 ): void {
     module.setMemory(memoryInfo.initial, memoryInfo.max ?? -1, null, [
         ...memorySegmentInfos,
         {
+            name: jsPassiveDataName,
             offset: 0,
             data: encodedJs,
             passive: true
         },
         {
+            name: wasmDataPassiveDataName,
             offset: 0,
             data: encodedWasmData,
             passive: true
@@ -245,7 +256,7 @@ export function addPassiveSizeFunction(
 export function addInitPassiveDataFunction(
     module: binaryen.Module,
     name: string,
-    segmentNumber: number,
+    segmentName: string,
     encoded: Uint8Array
 ): void {
     module.removeFunction(name);
@@ -257,12 +268,29 @@ export function addInitPassiveDataFunction(
         [],
         module.block(null, [
             module.memory.init(
-                segmentNumber.toString() as unknown as number,
+                segmentName,
                 module.local.get(0, binaryen.i32),
                 module.i32.const(0),
                 module.i32.const(encoded.byteLength)
             ),
-            module.data.drop(segmentNumber.toString() as unknown as number)
+            module.data.drop(segmentName)
         ])
     );
+}
+
+export function getMemorySegmentNames(module: binaryen.Module): string[] {
+    const memorySegmentNames = Array.from(
+        module.emitText().matchAll(/\(data\s+(\$[^\s)]+)/g),
+        ([, memorySegmentName]) => {
+            return memorySegmentName.slice(1);
+        }
+    );
+
+    if (memorySegmentNames.length !== module.getNumMemorySegments()) {
+        throw new Error(
+            'Unable to determine all Binaryen memory segment names'
+        );
+    }
+
+    return memorySegmentNames;
 }

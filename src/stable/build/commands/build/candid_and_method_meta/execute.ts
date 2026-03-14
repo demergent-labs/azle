@@ -128,7 +128,7 @@ export async function execute(
             // This will strip the Wasm (canister) backtrace from the error
             // The Node.js backtrace will still be available
             // The Node.js backtrace is toggled by the AZLE_VERBOSE environment variable
-            throw new Error(error.message);
+            throw new Error(error.message, { cause: error });
         }
     }
 }

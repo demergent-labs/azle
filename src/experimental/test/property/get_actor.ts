@@ -3,6 +3,8 @@ import '#experimental/build/assert_experimental';
 import { ActorSubclass, Agent, HttpAgent } from '@icp-sdk/core/agent';
 import { createRequire } from 'module';
 
+import { normalizeDfxGeneratedFiles } from '#test/normalize_dfx_generated';
+import { createLocalReplicaCompatibleFetch } from '#utils/create_local_replica_compatible_fetch';
 import { getCanisterId } from '#utils/dfx';
 
 /**
@@ -16,24 +18,32 @@ export async function getActor<T>(
     agent?: Agent
 ): Promise<ActorSubclass<T> & { [key: string]: any }> {
     const require = createRequire(import.meta.url);
+    const generatedDirectoryPath = `${parentDir}/dfx_generated`;
+    const generatedCanisterPath = `${generatedDirectoryPath}/canister`;
+
+    normalizeDfxGeneratedFiles(generatedDirectoryPath);
+
     const resolvedPathIndex = require.resolve(
-        `${parentDir}/dfx_generated/canister/index.js`
+        `${generatedCanisterPath}/index.js`
     );
     const resolvedPathDid = require.resolve(
-        `${parentDir}/dfx_generated/canister/canister.did.js`
+        `${generatedCanisterPath}/canister.did.js`
     );
 
     delete require.cache[resolvedPathIndex];
     delete require.cache[resolvedPathDid];
 
-    const { createActor } = require(`${parentDir}/dfx_generated/canister`);
+    const { createActor } = require(generatedCanisterPath);
+    const host = 'http://127.0.0.1:4943';
 
     return createActor(getCanisterId('canister'), {
         agent:
             agent ??
             (await HttpAgent.create({
-                host: 'http://127.0.0.1:4943',
-                shouldFetchRootKey: true
+                host,
+                shouldFetchRootKey: true,
+                verifyQuerySignatures: false,
+                fetch: createLocalReplicaCompatibleFetch(host)
             }))
     });
 }

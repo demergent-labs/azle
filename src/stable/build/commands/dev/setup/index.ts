@@ -33,9 +33,13 @@ function installDependency(dependency: DependencyName): void {
     const version = azle.globalDependencies[dependency];
     const script = `install_${dependency}.sh`;
     execSyncPretty(
-        `${AZLE_ROOT}/src/stable/build/commands/dev/setup/${script} ${version}`,
+        `${AZLE_ROOT}/src/stable/build/commands/dev/setup/${script} ${quoteShellArgument(version)}`,
         {
             stdio: 'inherit'
         }
     );
+}
+
+function quoteShellArgument(argument: string): string {
+    return `'${argument.replaceAll("'", `'"'"'`)}'`;
 }

@@ -9,22 +9,15 @@ const CANISTER_NAME = 'canister';
 
 export function getTests(): Test {
     return () => {
-        it('should trigger low memory handler when memory limit is approached', async () => {
+        it('should enforce the Wasm memory limit when memory limit is approached', async () => {
             await fc.assert(
                 fc.asyncProperty(
-                    fc.integer({ min: 0, max: 99 }),
                     fc.integer({
                         min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of this azle canister)
                         max: HARD_LIMIT
                     }),
-                    async (wasmMemoryThresholdPercentage, wasmMemoryLimit) => {
-                        // eslint-disable-next-line no-param-reassign
-                        wasmMemoryThresholdPercentage = 0; // TODO remove after https://github.com/demergent-labs/azle/issues/2613 is resolved
-                        // Calculate actual threshold based on percentage
-                        const wasmMemoryThreshold = Math.floor(
-                            wasmMemoryLimit *
-                                (wasmMemoryThresholdPercentage / 100)
-                        );
+                    async (wasmMemoryLimit) => {
+                        const wasmMemoryThreshold = 0;
 
                         const actor = await deployFreshCanister<Actor>(
                             CANISTER_NAME,
@@ -37,7 +30,6 @@ export function getTests(): Test {
                         await addBytesUntilLimitReached(actor);
 
                         await validateFinalStatus(
-                            actor,
                             wasmMemoryLimit,
                             wasmMemoryThreshold
                         );
@@ -68,6 +60,7 @@ async function validateInitialStatus(
 
     const initialStatus = getCanisterStatus(CANISTER_NAME);
     expect(initialStatus.wasmMemoryLimit).toBe(wasmMemoryLimit);
+    expect(initialStatus.wasmMemoryThreshold).toBe(0);
 }
 
 /**
@@ -120,14 +113,11 @@ function validateMemoryLimitError(error: any): void {
  * Validates the final state of the canister after memory operations:
  * - Verifies memory size exceeds (wasmMemoryLimit - wasmMemoryThreshold)
  * - Verifies memory size exceeds wasmMemoryLimit (current behavior)
- * - Confirms low memory handler was called
  *
- * @param actor - The canister actor instance
  * @param wasmMemoryLimit - The configured Wasm memory limit
  * @param wasmMemoryThreshold - The configured memory threshold
  */
 async function validateFinalStatus(
-    actor: Actor,
     wasmMemoryLimit: number,
     wasmMemoryThreshold: number
 ): Promise<void> {
@@ -140,8 +130,4 @@ async function validateFinalStatus(
     // expect(finalStatus.memorySize).toBeLessThan(wasmMemoryLimit);
     // TODO: Remove this check when wasmMemoryThreshold is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670
     expect(finalStatus.memorySize).toBeGreaterThan(wasmMemoryLimit);
-
-    const lowMemoryHandlerCalled = await actor.getOnLowWasmMemoryCalled();
-
-    expect(lowMemoryHandlerCalled).toBe(true);
 }

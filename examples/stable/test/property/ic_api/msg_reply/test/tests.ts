@@ -14,6 +14,8 @@ import fc from 'fast-check';
 import { cp, mkdir, rm, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 
+import { createLocalReplicaCompatibleFetch } from '../../../../../../../src/stable/build/utils/create_local_replica_compatible_fetch';
+import { normalizeDfxGeneratedFiles } from '../../../../../../../src/stable/test/normalize_dfx_generated';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import { generateCanister } from './generate_canister';
 import { pretest } from './pretest';
@@ -22,7 +24,10 @@ export function getTests(): Test {
     return () => {
         it('should always reply with the input in alwaysReplyQuery and alwaysReplyUpdate', async () => {
             const context: Context<CandidValueConstraints> = {
-                constraints: {}
+                constraints: {
+                    depthLevel: 3,
+                    maxLength: 5
+                }
             };
             await fc.assert(
                 fc.asyncProperty(
@@ -60,7 +65,7 @@ export function getTests(): Test {
                             );
                         expect(updateResult).toEqual(agentArgumentValue);
 
-                        cleanUpCanister(uuid);
+                        await cleanUpCanister(uuid);
                     }
                 ),
                 defaultPropTestParams()
@@ -113,18 +118,23 @@ export async function getCanisterActor<T>(
     canisterName: string,
     uuid: string = ''
 ): Promise<ActorSubclass<T>> {
-    const importPath = join(
+    const generatedCanisterPath = join(
         process.cwd(),
         'test',
         'dfx_generated',
         `${canisterName}${uuid}`
     );
 
-    const { createActor } = await import(importPath);
+    normalizeDfxGeneratedFiles(generatedCanisterPath);
+
+    const { createActor } = await import(generatedCanisterPath);
+    const host = 'http://127.0.0.1:4943';
 
     const agent = await HttpAgent.create({
-        host: 'http://127.0.0.1:4943',
-        shouldFetchRootKey: true
+        host,
+        shouldFetchRootKey: true,
+        verifyQuerySignatures: false,
+        fetch: createLocalReplicaCompatibleFetch(host)
     });
 
     const actor = createActor(getCanisterId(canisterName), {

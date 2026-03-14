@@ -7,7 +7,7 @@ use crate::{RUNTIME, benchmarking::record_benchmark, ic::drain_microtasks};
 #[unsafe(no_mangle)]
 #[allow(unused)]
 pub extern "C" fn execute_method_js(function_index: i32) {
-    ic_cdk::futures::in_executor_context(|| {
+    ic_cdk::futures::internals::in_executor_context(|| {
         let function_name = function_index.to_string();
 
         RUNTIME.with(|runtime| {

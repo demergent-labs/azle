@@ -69,7 +69,7 @@ impl JsFn for NativeFunction {
                                     .iter()
                                     .enumerate()
                                     .map(|(index, param_value_type)| match param_value_type {
-                                        wasmi::core::ValType::I32 => {
+                                        wasmi::ValType::I32 => {
                                             let param_i32 = if let JsValue::Int(int) =
                                                 argv.get(index).unwrap()
                                             {
@@ -80,7 +80,7 @@ impl JsFn for NativeFunction {
 
                                             wasmi::Val::I32(*param_i32)
                                         }
-                                        wasmi::core::ValType::I64 => {
+                                        wasmi::ValType::I64 => {
                                             let param_i64 = if let JsValue::Int(int) =
                                                 argv.get(index).unwrap()
                                             {
@@ -91,7 +91,7 @@ impl JsFn for NativeFunction {
 
                                             wasmi::Val::I64(*param_i64 as i64)
                                         }
-                                        wasmi::core::ValType::F32 => {
+                                        wasmi::ValType::F32 => {
                                             let param_f64 = if let JsValue::Float(float) =
                                                 argv.get(index).unwrap()
                                             {
@@ -102,7 +102,7 @@ impl JsFn for NativeFunction {
 
                                             wasmi::Val::F32((*param_f64 as f32).into())
                                         }
-                                        wasmi::core::ValType::F64 => {
+                                        wasmi::ValType::F64 => {
                                             let param_f64 = if let JsValue::Float(float) =
                                                 argv.get(index).unwrap()
                                             {
@@ -113,9 +113,9 @@ impl JsFn for NativeFunction {
 
                                             wasmi::Val::F64((*param_f64).into())
                                         }
-                                        wasmi::core::ValType::FuncRef => todo!(),
-                                        wasmi::core::ValType::ExternRef => todo!(),
-                                        wasmi::core::ValType::V128 => todo!(),
+                                        wasmi::ValType::FuncRef => todo!(),
+                                        wasmi::ValType::ExternRef => todo!(),
+                                        wasmi::ValType::V128 => todo!(),
                                     })
                                     .collect();
 
@@ -126,7 +126,7 @@ impl JsFn for NativeFunction {
 
                                 let mut buf: Vec<wasmi::Val> =
                                     vec![
-                                        wasmi::Val::default(wasmi::core::ValType::I32);
+                                        wasmi::Val::default(wasmi::ValType::I32);
                                         func_result_types.len()
                                     ];
 
@@ -137,26 +137,26 @@ impl JsFn for NativeFunction {
 
                                 // TODO check all of these conversions, they are bad
                                 match func_result_types.get(0).unwrap() {
-                                    wasmi::core::ValType::I32 => {
+                                    wasmi::ValType::I32 => {
                                         JsValue::Int(buf.get(0).unwrap().i32().unwrap())
                                     }
-                                    wasmi::core::ValType::I64 => {
+                                    wasmi::ValType::I64 => {
                                         JsValue::Int(buf.get(0).unwrap().i64().unwrap() as i32)
                                         // TODO should this not be a bigint?
                                     }
-                                    wasmi::core::ValType::F32 => {
+                                    wasmi::ValType::F32 => {
                                         let f32_val = buf.get(0).unwrap().f32().unwrap();
                                         let native_f32: f32 = f32_val.into();
                                         JsValue::Float(f64::from(native_f32))
                                     }
-                                    wasmi::core::ValType::F64 => {
+                                    wasmi::ValType::F64 => {
                                         let f64_val = buf.get(0).unwrap().f64().unwrap();
 
                                         JsValue::Float(f64_val.into())
                                     }
-                                    wasmi::core::ValType::FuncRef => todo!(),
-                                    wasmi::core::ValType::ExternRef => todo!(),
-                                    wasmi::core::ValType::V128 => todo!(),
+                                    wasmi::ValType::FuncRef => todo!(),
+                                    wasmi::ValType::ExternRef => todo!(),
+                                    wasmi::ValType::V128 => todo!(),
                                 }
                             })
                         },

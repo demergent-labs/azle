@@ -1,4 +1,4 @@
-use rand::RngCore;
+use rand::Rng;
 use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 use crate::INTERNAL_CSPRNG;

@@ -1,10 +1,9 @@
-import { ActorSubclass } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
 
-export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test {
+export function getTests(listOfListsCanister: _SERVICE): Test {
     return () => {
         it('listOfStringOne test', async () => {
             const expectedResult = ['hello', 'world'];

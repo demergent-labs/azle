@@ -1,9 +1,8 @@
-import { ActorSubclass } from '@icp-sdk/core/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from '../dfx_generated/hello/hello.did';
 
-export function getTests(hello_canister: ActorSubclass<_SERVICE>): Test {
+export function getTests(hello_canister: _SERVICE): Test {
     return () => {
         it('greets the given entity', async () => {
             const result = await hello_canister.greet('everyone');

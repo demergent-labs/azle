@@ -20,40 +20,44 @@ impl JsFn for NativeFunction {
         let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
 
         let closure = move || {
-            let timer_id = timer_id_u64_rc_cloned.borrow().unwrap();
+            let timer_id_u64_rc_cloned = timer_id_u64_rc_cloned.clone();
 
-            RUNTIME.with(|runtime| {
-                let mut runtime = runtime.borrow_mut();
-                let runtime = runtime.as_mut().unwrap();
+            async move {
+                let timer_id = timer_id_u64_rc_cloned.borrow().unwrap();
 
-                runtime.run_with_context(|context| {
-                    let global = context.get_global();
+                RUNTIME.with(|runtime| {
+                    let mut runtime = runtime.borrow_mut();
+                    let runtime = runtime.as_mut().unwrap();
 
-                    let timer_callback = global
-                        .get("_azleTimerCallbacks")
-                        .to_obj()
-                        .unwrap()
-                        .get(&timer_id.to_string())
-                        .to_function()
-                        .unwrap();
+                    runtime.run_with_context(|context| {
+                        let global = context.get_global();
 
-                    let result = timer_callback.call(&[]);
+                        let timer_callback = global
+                            .get("_azleTimerCallbacks")
+                            .to_obj()
+                            .unwrap()
+                            .get(&timer_id.to_string())
+                            .to_function()
+                            .unwrap();
 
-                    // TODO error handling is mostly done in JS right now
-                    // TODO we would really like wasmedge-quickjs to add
-                    // TODO good error info to JsException and move error handling
-                    // TODO out of our own code
-                    match &result {
-                        wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                            js_exception.dump_error();
-                            panic!("TODO needs error info");
-                        }
-                        _ => drain_microtasks(context),
-                    };
+                        let result = timer_callback.call(&[]);
 
-                    // TODO handle errors
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                panic!("TODO needs error info");
+                            }
+                            _ => drain_microtasks(context),
+                        };
+
+                        // TODO handle errors
+                    });
                 });
-            });
+            }
         };
 
         let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer_interval(interval, closure);

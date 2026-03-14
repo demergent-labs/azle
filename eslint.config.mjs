@@ -23,6 +23,7 @@ export default tseslint.config(
             '**/node_modules/**',
             '**/run_time_errors/**',
             '**/target/**',
+            '**/vendor/**',
             '**/webpack.config.js',
             'src/stable/build/commands/generate/rust/candid_to_ts_js/pkg',
             'src/stable/lib/canisters/**/idl/*'

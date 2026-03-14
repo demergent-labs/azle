@@ -1,4 +1,10 @@
-use candid_parser::{IDLProg, TypeEnv, bindings::typescript_and_javascript::compile, check_prog};
+use candid_parser::{
+    IDLProg,
+    TypeEnv,
+    bindings::{javascript, typescript},
+    check_prog,
+    syntax::IDLMergedProg,
+};
 use wasm_bindgen::prelude::{JsValue, wasm_bindgen};
 
 /// Converts a Candid service string to its corresponding TypeScript types and JavaScript IDL types.
@@ -25,7 +31,16 @@ pub fn candid_to_ts_js(candid: String) -> Result<JsValue, JsValue> {
     let actor = check_prog(&mut env, &ast)
         .map_err(|e| JsValue::from_str(&format!("Failed to type check Candid: {e}")))?;
 
-    let ts_js = compile(&env, &actor);
+    let merged_prog = IDLMergedProg::new(ast);
+    let ts = typescript::compile(&env, &actor, &merged_prog)
+        .replace("import type { IDL }", "import { IDL }")
+        .replace("export declare const idlFactory: IDL.InterfaceFactory;\n", "")
+        .replace(
+            "export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];\n",
+            ""
+        );
+    let js = javascript::compile(&env, &actor);
+    let ts_js = format!("{ts}\n{js}");
 
     Ok(JsValue::from_str(&ts_js))
 }

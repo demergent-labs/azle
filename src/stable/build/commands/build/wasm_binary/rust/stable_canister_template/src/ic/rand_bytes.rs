@@ -1,4 +1,4 @@
-use rand::RngCore;
+use rand::Rng;
 use rquickjs::{Ctx, Function, Result, TypedArray};
 
 use crate::CSPRNG;

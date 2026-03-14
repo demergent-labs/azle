@@ -1,6 +1,6 @@
 use std::{env::var, error::Error};
 
-use ic_cdk::{api::performance_counter, futures::in_executor_context, trap};
+use ic_cdk::{api::performance_counter, futures::internals::in_executor_context, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
